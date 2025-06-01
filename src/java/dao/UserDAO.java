@@ -23,13 +23,14 @@ public class UserDAO {
             + "WHERE userID LIKE ?";
     private final String DELETE_USER = "DELETE FROM tblUsers WHERE userID LIKE ?";
 
-    public User getUserByID(String userID) throws SQLException {
+    public User getUserByID(String userID, boolean isHidePassword) throws SQLException {
         try ( Connection conn = DBContext.getConnection();  
                 PreparedStatement stm = conn.prepareStatement(GET_USER_BY_ID)) {
             stm.setString(1, userID);
             try ( ResultSet rs = stm.executeQuery()) {
                 if (rs.next()) {
-                    return mapRow(rs, rs.getString("password"));
+                String password = isHidePassword ? "***" : rs.getString("password");
+                    return mapRow(rs, password);
                 }
             }
         }

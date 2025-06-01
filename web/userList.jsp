@@ -43,33 +43,14 @@
             <input type="submit" value="LOGOUT" />
         </form>
 
-        <!-- Price‐range search -->
-<!--        <form action="${pageContext.request.contextPath}/main" method="POST">
-            Price between
-            <input type="number" step="0.01" name="minPrice" placeholder="min"
-                   value="${param.minPrice}" required/>
-            and
-            <input type="number" step="0.01" name="maxPrice" placeholder="max"
-                   value="${param.maxPrice}" required/>
-            <button type="submit">Search Price</button>
-        </form>-->
-
         <p style="color: green;">${requestScope.MSG}</p>
         <hr />
-        
-        <h3>Create new user</h3>
-        <form action="${pageContext.request.contextPath}/main/user/create" method="POST">
-            <input type="text" name="userID" placeholder="User ID" required>
-            <input type="text" name="fullName" placeholder="Full name" required>
-            <select name="roleID" required>
-                <c:forEach var="r" items="${roleList}">
-                    <option value="${r.value}">${r}</option>
-                </c:forEach>
-            </select>
-            <input type="password" name="password" placeholder="Password" required>
-            <input type="password" name="confirmPassword" placeholder="Confirm password" required>
-            <button type="submit">Create</button>
+
+        <form action="${pageContext.request.contextPath}/main/user" method="GET">
+            <button type="submit" name="action" value="create">Create user</button> |
+            <button type="submit" name="action" value="update">Update user</button>
         </form>
+
         <hr />
 
         <c:if test="${empty users}">
@@ -83,40 +64,25 @@
                     <th>UserID</th>
                     <th>Full name</th>
                     <th>Role</th>
-                    <th>Password</th>
-                    <th>Confirm password</th>
                     <th>Action</th>
                 </tr>
             </thead>
             <tbody>
                 <c:forEach var="user" items="${requestScope.users}" varStatus="st">
-                <form action="${pageContext.request.contextPath}/main/user/" method="POST">
+
                     <tr>
                         <td>${st.count}</td>
-                        <td>
-                            <input type="hidden" name="userID" value="${user.userID}"/>
-                            ${user.userID}
-                        </td>
-                        <td><input type="text"  name="fullName" value="${user.fullName}" required/></td>
-                        <td>
-                            <select name="roleID" required>
-                                <c:forEach var="r" items="${roleList}">
-                                    <option value="${r.value}" ${r == user.role ? "selected" : ""}>
-                                        ${r}
-                                    </option>
-                                </c:forEach>
-                            </select>
-                        </td>
-                        <td><input type="password" name="password" placeholder="Password" /></td>
-                        <td><input type="password" name="confirmPassword" placeholder="Confirm password" /></td>
+                        <td>${user.userID}</td>
+                        <td>${user.fullName}</td>
+                        <td>${user.role}</td>
                         <td class="actions">
-                            <button type="submit" name="action" value="update">Update</button>
-                            <button type="submit" name="action" value="delete">Delete</button>
+                            <form action="${pageContext.request.contextPath}/main/user/delete" method="POST">
+                                <button type="submit" name="userID" value="${user.userID}">Delete</button>
+                            </form>
                         </td>
                     </tr>
-                </form>
-            </c:forEach>
-        </tbody>
-    </table>
-</body>
+                </c:forEach>
+            </tbody>
+        </table>
+    </body>
 </html>

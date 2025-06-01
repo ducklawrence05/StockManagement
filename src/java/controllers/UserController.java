@@ -17,6 +17,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.sql.SQLException;
 import java.util.List;
 import dto.User;
+import java.util.ArrayList;
 import services.UserService;
 import utils.AuthUtils;
 
@@ -29,9 +30,10 @@ public class UserController extends HttpServlet {
     private UserService userService = new UserService();
 
     private final String CREATE = "create";
-    private final String GET_ALL = "getAll";
-    private final String GET_BY_ID = "getByID";
-    private final String GET_BY_NAME = "getByName";
+    private final String GET_USER_BY_ID = "getUserByID";
+    private final String GET_ALL_USERS = "getAllUsers";
+    private final String GET_USERS_BY_ID = "getUsersByID";
+    private final String GET_USERS_BY_NAME = "getUSersByName";
     private final String UPDATE = "update";
     private final String DELETE = "delete";
 
@@ -43,27 +45,47 @@ public class UserController extends HttpServlet {
         }
         
         String action = request.getParameter("action");
-        if (action == null) action = GET_ALL;
+        if (action == null) action = GET_ALL_USERS;
         
         List<User> users = null;
+        String url = Url.USER_LIST_PAGE;
         switch(action) {
-            case GET_ALL: {
+            case CREATE: {
+                url = Url.CREATE_USER_PAGE;
+                break;
+            }
+            case UPDATE: {
+                url = Url.UPDATE_USER_PAGE;
+                break;
+            }
+            case GET_USER_BY_ID:{
+                users = new ArrayList<>();
+                users.add(getUserByID(request, response));
+                url = Url.UPDATE_USER_PAGE;
+                break;
+            }
+            case GET_ALL_USERS: {
                 users = getAllUsers(request, response);
                 break;
             }
-            case GET_BY_ID: {
+            case GET_USERS_BY_ID: {
                 users = getUsersByID(request, response);
                 break;
             }
-            case GET_BY_NAME: {
+            case GET_USERS_BY_NAME: {
                 users = getUsersByName(request, response);
                 break;
             }
         }
         
-        request.setAttribute("users", users);
+        if (action.equals(GET_USER_BY_ID)) {
+            request.setAttribute("user", users.get(0));
+        } else {
+            request.setAttribute("users", users);
+        }
+        
         request.setAttribute("roleList", Role.values());
-        request.getRequestDispatcher(Url.USER_LIST_PAGE).forward(request, response);
+        request.getRequestDispatcher(url).forward(request, response);
     }
 
     @Override
@@ -75,15 +97,17 @@ public class UserController extends HttpServlet {
 
         String action = request.getParameter("action");
         if (action == null) action = "";
-        
+        String url = Url.USER_LIST_PAGE;
         try {
             switch (action) {
                 case CREATE: {
                     createUser(request, response);
+                    url = Url.CREATE_USER_PAGE;
                     break;
                 }
                 case UPDATE: {
                     updateUser(request, response);
+                    url = Url.UPDATE_USER_PAGE;
                     break;
                 }
                 case DELETE: {
@@ -94,60 +118,29 @@ public class UserController extends HttpServlet {
             
             request.setAttribute("users", userService.getAllUsers());
             request.setAttribute("roleList", Role.values());
-            request.getRequestDispatcher(Url.USER_LIST_PAGE).forward(request, response);
+            request.getRequestDispatcher(url).forward(request, response);
         } catch (NumberFormatException | SQLException ex) {
             ex.printStackTrace();
             request.setAttribute("MSG", Message.SYSTEM_ERROR);
             request.getRequestDispatcher(Url.ERROR_PAGE).forward(request, response);
         }
     }
-
-    private void createUser(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException, SQLException {
-        String userID = request.getParameter("userID");
-        String fullName = request.getParameter("fullName");
-        String password = request.getParameter("password");
-        String confirmPassword = request.getParameter("confirmPassword");
-        int roleID = Integer.parseInt(request.getParameter("roleID"));
-        
-        boolean isSuccess = userService.createUser(userID, fullName,
-                Role.fromValue(roleID), password, confirmPassword);
-
-        if (isSuccess) {
-            request.setAttribute("MSG", Message.CREATE_USER_SUCCESSFULLY);
-        } else {
-            request.setAttribute("MSG", Message.USER_ID_IS_EXISTED);
-        }
-    }
     
-    private void updateUser(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException, SQLException, NumberFormatException {
-        String userID = request.getParameter("userID");
-        String fullName = request.getParameter("fullName");
-        String password = request.getParameter("password");
-        String confirmPassword = request.getParameter("confirmPassword");
-        int roleID = Integer.parseInt(request.getParameter("roleID"));
-
-        boolean isSuccess = userService.updateUser(userID, fullName,
-                Role.fromValue(roleID), password, confirmPassword);
-
-        if (isSuccess) {
-            request.setAttribute("MSG", Message.UPDATE_USER_SUCCESSFULLY);
-        } else {
-            request.setAttribute("MSG", Message.USER_NOT_FOUND);
+    private User getUserByID(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            String userID = request.getParameter("userID");
+            User user = userService.getUserByID(userID);
+            if (user == null) {
+                request.setAttribute("MSG", Message.USER_NOT_FOUND);
+                user = new User();
+            } 
+            return user;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            request.setAttribute("MSG", Message.SYSTEM_ERROR);
         }
-    }
-    
-    private void deleteUser(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException, SQLException {
-        String userID = request.getParameter("userID");
-        boolean isSuccess = userService.deleteUser(userID);
-
-        if (isSuccess) {
-            request.setAttribute("MSG", Message.DELETE_USER_SUCCESSFULLY);
-        } else {
-            request.setAttribute("MSG", Message.USER_NOT_FOUND);
-        }
+        return null;
     }
     
     private List<User> getAllUsers(HttpServletRequest request, HttpServletResponse response)
@@ -183,5 +176,42 @@ public class UserController extends HttpServlet {
             request.setAttribute("MSG", Message.SYSTEM_ERROR);
         }
         return null;
+    }
+    
+    private void createUser(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException, SQLException {
+        String userID = request.getParameter("userID");
+        String fullName = request.getParameter("fullName");
+        String password = request.getParameter("password");
+        String confirmPassword = request.getParameter("confirmPassword");
+        int roleID = Integer.parseInt(request.getParameter("roleID"));
+        
+        String message = userService.createUser(userID, fullName,
+                Role.fromValue(roleID), password, confirmPassword);
+
+        request.setAttribute("MSG", message);
+    }
+    
+    private void updateUser(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException, SQLException, NumberFormatException {
+        String userID = request.getParameter("userID");
+        String fullName = request.getParameter("fullName");
+        String oldPassword = request.getParameter("oldPassword");
+        String password = request.getParameter("password");
+        String confirmPassword = request.getParameter("confirmPassword");
+        int roleID = Integer.parseInt(request.getParameter("roleID"));
+
+        String message = userService.updateUser(userID, fullName,
+                Role.fromValue(roleID), oldPassword, password, confirmPassword);
+
+        request.setAttribute("MSG", message);
+    }
+    
+    private void deleteUser(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException, SQLException {
+        String userID = request.getParameter("userID");
+        String message = userService.deleteUser(userID);
+
+        request.setAttribute("MSG", message);
     }
 }

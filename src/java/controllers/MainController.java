@@ -34,7 +34,6 @@ public class MainController extends HttpServlet {
         String path = request.getRequestURI(); // /StockManagement/main/controller/action
         String context = request.getContextPath(); // /StockManagement
         String relativePath = path.substring(context.length()); // /main/controller/action
-        // /main/controller?action=
         String[] parts = relativePath.split("/");
         
         String url = Url.ERROR_PAGE;
@@ -42,6 +41,16 @@ public class MainController extends HttpServlet {
             if (parts.length >= 3) {
                 String controller = parts[2]; // controller
                 String action = parts.length >= 4 ? parts[3] : ""; // action
+                
+                // in case url is /main/controller?action=
+                if (action.isEmpty() && controller.contains("?action=")) {
+                    parts = controller.split("\\?action=");
+                    controller = parts[0]; // "controller"
+                    if (parts.length > 1) {
+                        action = parts[1]; // "action"
+                    }
+                }
+
                 
                 switch (controller) {
                     case AUTH: {

@@ -74,7 +74,6 @@ public class AlertDAO {
     }
     
     public boolean create(Alert alert) throws Exception {
-
         boolean isCreated = false;
         try ( Connection conn = DBContext.getConnection()) {
             if (conn != null) {

@@ -30,6 +30,17 @@ public class Transaction {
         this.status = status;
     }
 
+    public Transaction(String userID, String ticker, String type, int quantity, float price, String status) {
+        this.userID = userID;
+        this.ticker = ticker;
+        this.type = type;
+        this.quantity = quantity;
+        this.price = price;
+        this.status = status;
+    }
+
+    
+
     public int getId() {
         return id;
     }

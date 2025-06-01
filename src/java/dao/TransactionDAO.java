@@ -10,6 +10,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
+
 import utils.DBContext;
 
 /**
@@ -18,95 +20,144 @@ import utils.DBContext;
  */
 public class TransactionDAO {
 
-    public ArrayList<Transaction> search(String search) throws SQLException {
-        ArrayList<Transaction> list = new ArrayList<>();
-        Connection conn = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            conn = DBContext.getConnection();
-            if (conn != null) {
-                String sql = "SELECT * FROM tblTransactions WHERE ticker LIKE ? OR userID LIKE ? OR status LIKE ?";
-                ps = conn.prepareStatement(sql);
-                ps.setString(1, '%' + search + '%');
-                ps.setString(2, '%' + search + '%');
-                ps.setString(3, '%' + search + '%');
-                rs = ps.executeQuery();
-                while (rs.next()) {
-                    int id = rs.getInt("id");
-                    String userID = rs.getString("userID");
-                    String ticker = rs.getString("ticker");
-                    String type = rs.getString("type");
-                    int quantity = rs.getInt("quantity");
-                    float price = rs.getFloat("price");
-                    String status = rs.getString("status");
-                    list.add(new Transaction(id, userID, ticker, type, quantity, price, status));
-                }
-            }
-        } catch (Exception e) {
-        } finally {
-            if (conn != null) {
-                conn.close();
-            }
-            if (ps != null) {
-                ps.close();
-            }
-            if (rs != null) {
-                rs.close();
+    private final String GET_ALL_TRANSACTION = "SELECT * FROM tblTransactions";
+    private final String SEARCH_TRANSACTION_BY_USERID = "SELECT * FROM tblTransactions WHERE userID LIKE ?";
+    private final String SEARCH_TRANSACTION_BY_TICKER = "SELECT * FROM tblTransactions WHERE ticker LIKE ?";
+    private final String SEARCH_TRANSACTION_BY_TYPE = "SELECT * FROM tblTransactions WHERE type LIKE ?";
+    private final String SEARCH_TRANSACTION_BY_STATUS = "SELECT * FROM tblTransactions WHERE status LIKE ?";
+    private final String CREATE_TRANSACTION = "INSERT INTO tblTransactions"
+            + "(userID, ticker, type, quantity, price, status)"
+            + " VALUES(?, ?, ?, ?,?,?)";
+    private final String UPDATE_TRANSACTION = "UPDATE tblTransactions SET status = ? WHERE id = ?";
+    private final String DELATE_TRANSACTION = "DELETE FROM tblTransactions WHERE userID=?";
+
+    public List<Transaction> getAllTransaction() throws SQLException {
+        List<Transaction> resultList = new ArrayList<>();
+        try ( Connection conn = DBContext.getConnection();  PreparedStatement stm = conn.prepareStatement(GET_ALL_TRANSACTION);  ResultSet rs = stm.executeQuery()) {
+            while (rs.next()) {
+                resultList.add(new Transaction(rs.getInt("id"),
+                        rs.getString("userID"),
+                        rs.getString("ticker"),
+                        rs.getString("type"),
+                        rs.getInt("quantity"),
+                        rs.getFloat("price"),
+                        rs.getString("status")));
             }
         }
-        return list;
+        return resultList;
+    }
+
+    public ArrayList<Transaction> searchByUserID(String search) throws SQLException {
+        ArrayList<Transaction> resultList = new ArrayList<>();
+        try ( Connection conn = DBContext.getConnection()) {
+            if (conn != null) {
+                PreparedStatement stm = conn.prepareStatement(SEARCH_TRANSACTION_BY_USERID);
+                stm.setString(1, search);
+                ResultSet rs = stm.executeQuery();
+                while (rs.next()) {
+                    resultList.add(new Transaction(rs.getInt("id"), rs.getString("userID"), rs.getString("ticker"),
+                            rs.getString("type"), rs.getInt("quantity"),
+                            rs.getFloat("price"), rs.getString("status")));
+                }
+            }
+        }
+        return resultList;
+    }
+
+    public ArrayList<Transaction> searchByTicker(String search) throws SQLException {
+        ArrayList<Transaction> resultList = new ArrayList<>();
+        try ( Connection conn = DBContext.getConnection()) {
+            if (conn != null) {
+                PreparedStatement stm = conn.prepareStatement(SEARCH_TRANSACTION_BY_TICKER);
+                stm.setString(1, search);
+                ResultSet rs = stm.executeQuery();
+                while (rs.next()) {
+                    resultList.add(new Transaction(rs.getInt("id"), rs.getString("userID"), rs.getString("ticker"),
+                            rs.getString("type"), rs.getInt("quantity"),
+                            rs.getFloat("price"), rs.getString("status")));
+                }
+            }
+        }
+        return resultList;
+    }
+
+    public ArrayList<Transaction> searchByType(String search) throws SQLException {
+        ArrayList<Transaction> resultList = new ArrayList<>();
+        try ( Connection conn = DBContext.getConnection()) {
+            if (conn != null) {
+                PreparedStatement stm = conn.prepareStatement(SEARCH_TRANSACTION_BY_TYPE);
+                stm.setString(1, search);
+                ResultSet rs = stm.executeQuery();
+                while (rs.next()) {
+                    resultList.add(new Transaction(rs.getInt("id"), rs.getString("userID"), rs.getString("ticker"),
+                            rs.getString("type"), rs.getInt("quantity"),
+                            rs.getFloat("price"), rs.getString("status")));
+                }
+            }
+        }
+        return resultList;
+    }
+
+    public ArrayList<Transaction> searchByStatus(String search) throws SQLException {
+        ArrayList<Transaction> resultList = new ArrayList<>();
+        try ( Connection conn = DBContext.getConnection()) {
+            if (conn != null) {
+                PreparedStatement stm = conn.prepareStatement(SEARCH_TRANSACTION_BY_STATUS);
+                stm.setString(1, search);
+                ResultSet rs = stm.executeQuery();
+                while (rs.next()) {
+                    resultList.add(new Transaction(rs.getInt("id"), rs.getString("userID"), rs.getString("ticker"),
+                            rs.getString("type"), rs.getInt("quantity"),
+                            rs.getFloat("price"), rs.getString("status")));
+                }
+            }
+        }
+        return resultList;
     }
 
     public boolean create(Transaction transaction) throws Exception {
-        Connection conn = null;
-        PreparedStatement ps = null;
         boolean isCreated = false;
-        try {
-            conn = DBContext.getConnection();
+        try ( Connection conn = DBContext.getConnection()) {
             if (conn != null) {
-                String sql = "INSERT INTO tblTransactions(userID, ticker, type, quantity, price, status) VALUES(?, ?, ?, ?, ?, ?)";
-                ps = conn.prepareStatement(sql);
-                ps.setString(1, transaction.getUserID());
-                ps.setString(2, transaction.getTicker());
-                ps.setString(3, transaction.getType());
-                ps.setInt(4, transaction.getQuantity());
-                ps.setFloat(5, transaction.getPrice());
-                ps.setString(6, transaction.getStatus());
-                isCreated = ps.executeUpdate() > 0;
-            }
-        } finally {
-            if (conn != null) {
-                conn.close();
-            }
-            if (ps != null) {
-                ps.close();
+                PreparedStatement stm = conn.prepareStatement(CREATE_TRANSACTION);
+                stm.setString(1, transaction.getUserID());
+                stm.setString(2, transaction.getTicker());
+                stm.setString(3, transaction.getType());
+                stm.setInt(4, transaction.getQuantity());
+                stm.setFloat(5, transaction.getPrice());
+                stm.setString(6, transaction.getStatus());
+                isCreated = stm.executeUpdate() > 0;
             }
         }
         return isCreated;
+
     }
 
     public boolean update(int transactionId, String status) throws Exception {
-        Connection conn = null;
-        PreparedStatement ps = null;
         boolean isUpdated = false;
-        try {
-            conn = DBContext.getConnection();
+        try ( Connection conn = DBContext.getConnection()) {
+
             if (conn != null) {
-                String sql = "UPDATE tblTransactions SET status = ? WHERE id = ?";
-                ps = conn.prepareStatement(sql);
-                ps.setString(1, status);
-                ps.setInt(2, transactionId);
-                isUpdated = ps.executeUpdate() > 0;
-            }
-        } finally {
-            if (conn != null) {
-                conn.close();
-            }
-            if (ps != null) {
-                ps.close();
+                PreparedStatement stm = conn.prepareStatement(UPDATE_TRANSACTION);
+                stm.setString(1, status);
+                stm.setInt(2, transactionId);
+                isUpdated = stm.executeUpdate() > 0;
             }
         }
         return isUpdated;
     }
+
+    public boolean delete(String userID) throws SQLException {
+        boolean isDelete = false;
+        try ( Connection conn = DBContext.getConnection()) {
+            if (conn != null) {
+
+                PreparedStatement stm = conn.prepareStatement(DELATE_TRANSACTION);
+                stm.setString(1, userID);
+                isDelete = stm.executeUpdate() > 0;
+            }
+            return isDelete;
+        }
+    }
+
 }

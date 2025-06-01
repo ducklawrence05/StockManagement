@@ -28,7 +28,7 @@ hs_err_pid*
 replay_pid*
 
 # Ignore NetBeans build output
-nbproject/
+nbproject/private/
 build/
 dist/
 

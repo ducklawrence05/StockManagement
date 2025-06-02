@@ -23,17 +23,17 @@ public class AlertDAO {
     private final String SEARCH_ALERT_BY_DIRECTION = "SELECT * FROM tblAlerts WHERE  direction LIKE ?";
     private final String SEARCH_ALERT_BY_STATUS = "SELECT * FROM tblAlerts WHERE  status LIKE ?";
     private final String CREATE_ALERT = "INSERT INTO tblAlerts(userID, ticker, threshold, direction) VALUES(?, ?, ?, ?)";
-    private final String UPDATE_ALERT = "UPDATE tblAlerts SET threshold = ?, status = ? WHERE alertID = ? AND userID = ? AND status = 'inactive'";
-    private final String DELETE_ALERT = "DELETE FROM tblAlerts WHERE alertID = ? AND userID = ? AND status = 'inactive'";
+    private final String UPDATE_ALERT = "UPDATE tblAlerts SET threshold = ?, status = ? WHERE alertID = ? AND status = 'inactive'";
+    private final String DELETE_ALERT = "DELETE FROM tblAlerts WHERE alertID = ? AND status = 'inactive'";
     private final String GET_ALL_ALERT = "SELECT * FROM tblAlerts";
     private final String GET_ALERT_BY_ID = "SELECT * FROM tblAlerts WHERE AlertID = ?";
     
-    public Alert getAlertByID(String alertID) throws SQLException{
+    public Alert getAlertByID(int alertID) throws SQLException{
         try(Connection conn = DBContext.getConnection();
                 PreparedStatement stm = conn.prepareStatement(GET_ALERT_BY_ID)){
             try(ResultSet rs = stm.executeQuery()){
                 while(rs.next()){
-                    return new Alert(rs.getInt("alertID"), rs.getString("UserID"), rs.getString("ticker"), rs.getFloat("threshold"), rs.getString("direction"), rs.getString("status"));
+                    return mapThrows(rs);
                 }
             }
         }
@@ -45,8 +45,7 @@ public class AlertDAO {
 
             try ( ResultSet rs = stm.executeQuery()) {
                 while (rs.next()) {
-                    resultList.add(new Alert(rs.getInt("alertID"), rs.getString("userID"), rs.getString("ticker"),
-                            rs.getFloat("threshold"), rs.getString("direction"), rs.getString("status")));
+                    resultList.add(mapThrows(rs));
                 }
             }
         }
@@ -54,47 +53,30 @@ public class AlertDAO {
     }
 
     public ArrayList<Alert> searchByTicker(String ticker) throws SQLException {
-        ArrayList<Alert> resultList = new ArrayList<>();
-        try ( Connection conn = DBContext.getConnection();  PreparedStatement stm = conn.prepareStatement(SEARCH_ALERT_BY_TICKER);) {
-            stm.setString(1, ticker);
-            try ( ResultSet rs = stm.executeQuery()) {
-                while (rs.next()) {
-                    resultList.add(new Alert(rs.getInt("alertID"), rs.getString("userID"), rs.getString("ticker"),
-                            rs.getFloat("threshold"), rs.getString("direction"), rs.getString("status")));
-                }
-            }
-        }
-        return resultList;
+        return SearchAlertByKeyword(SEARCH_ALERT_BY_TICKER, ticker);
     }
 
     public ArrayList<Alert> searchByDirection(String direction) throws SQLException {
-        ArrayList<Alert> resultList = new ArrayList<>();
-        try ( Connection conn = DBContext.getConnection();  PreparedStatement stm = conn.prepareStatement(SEARCH_ALERT_BY_DIRECTION)) {
-            stm.setString(1, direction);
-            try ( ResultSet rs = stm.executeQuery()) {
-                while (rs.next()) {
-                    resultList.add(new Alert(rs.getInt("alertID"), rs.getString("userID"), rs.getString("ticker"),
-                            rs.getFloat("threshold"), rs.getString("direction"), rs.getString("status")));
-                }
-            }
-        }
-        return resultList;
+        return SearchAlertByKeyword(SEARCH_ALERT_BY_DIRECTION, direction);
     }
 
     public ArrayList<Alert> searchByStatus(String status) throws SQLException {
+        return SearchAlertByKeyword(SEARCH_ALERT_BY_STATUS, status);
+    }
+
+    public ArrayList<Alert> SearchAlertByKeyword(String sql, String keyword) throws SQLException{
         ArrayList<Alert> resultList = new ArrayList<>();
-        try ( Connection conn = DBContext.getConnection();  PreparedStatement stm = conn.prepareStatement(SEARCH_ALERT_BY_STATUS);) {
-            stm.setString(1, status);
+        try ( Connection conn = DBContext.getConnection();  
+                PreparedStatement stm = conn.prepareStatement(sql);) {
+            stm.setString(1, keyword);
             try ( ResultSet rs = stm.executeQuery();) {
                 while (rs.next()) {
-                    resultList.add(new Alert(rs.getInt("alertID"), rs.getString("userID"), rs.getString("ticker"),
-                            rs.getFloat("threshold"), rs.getString("direction"), rs.getString("status")));
+                    resultList.add(mapThrows(rs));
                 }
             }
         }
         return resultList;
     }
-
     public boolean create(String userID, String ticker, float threshold, String direction) throws SQLException {
 
         boolean isCreated = false;
@@ -108,27 +90,34 @@ public class AlertDAO {
         return isCreated;
     }
 
-    public boolean update(int alertID, String userID, float threshold, String status) throws SQLException {
+    public boolean update(int alertID, float threshold, String status) throws SQLException {
 
         boolean isUpdated = false;
         try ( Connection conn = DBContext.getConnection();  PreparedStatement stm = conn.prepareStatement(UPDATE_ALERT);) {
             stm.setFloat(1, threshold);
             stm.setString(2, status);
             stm.setInt(3, alertID);
-            stm.setString(4, userID);
             isUpdated = stm.executeUpdate() > 0;
-
         }
         return isUpdated;
     }
 
-    public boolean delete(int alertID, String userID) throws SQLException {
+    public boolean delete(int alertID) throws SQLException {
         boolean isDeleted = false;
         try ( Connection conn = DBContext.getConnection();  PreparedStatement stm = conn.prepareStatement(DELETE_ALERT);) {
             stm.setInt(1, alertID);
-            stm.setString(2, userID);
             isDeleted = stm.executeUpdate() > 0;
         }
         return isDeleted;
+    }
+    
+    
+    public Alert mapThrows(ResultSet rs) throws SQLException{
+        return new Alert(rs.getInt("alertID"), 
+                         rs.getString("userID"), 
+                         rs.getString("ticker"),
+                         rs.getFloat("threshold"), 
+                         rs.getString("direction"), 
+                         rs.getString("status"));
     }
 }

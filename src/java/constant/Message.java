@@ -27,13 +27,18 @@ public class Message {
     public static final String USER_FOUND = "User found";
     public static final String USER_NOT_FOUND = "User not found";
     public static final String INVALID_USER_ID_OR_PASSWORD = "Invalid user ID or password.";
-    
+
     // Stock
-    
+    public static final String EMTY_STOCK_LIST = "Not found any stock.";
+    public static final String EMTY_STOCK_PRICE = "Not found any stock in range.";
+    public static final String STOCK_NOT_FOUND = "Stock not found";
+    public static final String TICKER_NOT_FOUND = "Ticker not found";
+    public static final String SECTOR_NOT_FOUND = "Sector not found";
     
     // Transaction
     
     
-    // Stock
+    // Alert
     
+
 }

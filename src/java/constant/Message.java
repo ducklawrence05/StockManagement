@@ -24,6 +24,7 @@ public class Message {
     public static final String UPDATE_USER_SUCCESSFULLY = "Update user successfully";
     public static final String UPDATE_USER_FAILED = "Update user failed";
     public static final String DELETE_USER_SUCCESSFULLY = "Delete user successfully";
+    public static final String USER_FOUND = "User found";
     public static final String USER_NOT_FOUND = "User not found";
     public static final String INVALID_USER_ID_OR_PASSWORD = "Invalid user ID or password.";
     

@@ -76,7 +76,11 @@
                         <td>${user.fullName}</td>
                         <td>${user.role}</td>
                         <td class="actions">
-                            <form action="${pageContext.request.contextPath}/main/user/delete" method="POST">
+                            <form 
+                                action="${pageContext.request.contextPath}/main/user/delete" 
+                                method="POST" 
+                                onsubmit="return confirm('Delete this user?');"
+                            >
                                 <button type="submit" name="userID" value="${user.userID}">Delete</button>
                             </form>
                         </td>

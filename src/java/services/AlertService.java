@@ -4,6 +4,7 @@
  */
 package services;
 
+import constant.Message;
 import dao.AlertDAO;
 import java.util.ArrayList;
 import dto.Alert;
@@ -34,8 +35,11 @@ public class AlertService {
         return dao.searchByStatus(status);
     }
 
-    public boolean createAlert(String userID, String ticker, float threshold, String direction) throws SQLException {
-        return dao.create(userID, ticker, threshold, direction);
+    public String createAlert(String userID, String ticker, float threshold, String direction) throws SQLException {
+        if( dao.create(userID, ticker, threshold, direction)){
+            return Message.CREATE_ALERT_SUCCESSFULLY;
+        }
+        return Message.CREATE_ALERT_FAILED;
     }
 
     public boolean isCreator(int alertID, String userID) throws SQLException {
@@ -48,17 +52,23 @@ public class AlertService {
         return false;
     }
     
-    public boolean updateAlert(int alertID, String userID, float threshold, String status) throws SQLException{
+    public String updateAlert(int alertID, String userID, float threshold, String status) throws SQLException{
         if(isCreator(alertID, userID)){
-            return dao.update(alertID, threshold, status);
+            if(dao.update(alertID, threshold, status)){
+                return Message.UPDATE_ALERT_SUCCESSFULLY;
+            }
+            return Message.UPDATE_ALERT_FAILED;
         }
-        return false;
+        return Message.IS_NOT_CREATOR;
     }
     
-    public boolean deleteAlert(int alertID, String userID) throws SQLException {
+    public String deleteAlert(int alertID, String userID) throws SQLException {
         if(isCreator(alertID, userID)){
-            return dao.delete(alertID);
+            if(dao.delete(alertID)){
+                return Message.DELETE_ALERT_SUCCESSFULLY;
+            }
+            return Message.DELETE_ALERT_FAILED;
         }
-        return false;
+        return Message.IS_NOT_CREATOR;
     }
 }

@@ -5,12 +5,14 @@
 package services;
 
 
+import constant.Message;
 import dao.TransactionDAO;
 import dao.UserDAO;
 import dto.Transaction;
 import dto.User;
 import java.sql.SQLException;
 import java.util.List;
+
 /**
  *
  * @author ngogi
@@ -20,29 +22,78 @@ public class TransactionService {
     private UserDAO userDAO = new UserDAO();
     
     
-    public boolean  createTransaction(int id, String userID, String ticker,
+    public String  createTransaction(String userID, String ticker,
             String type, int quantity, float price, String status)throws SQLException, Exception{
         if(userDAO.checkUserExists(userID)){
-            return false;
+            return Message.TRANSACTION_ID_IS_EXISTED;
         }
-        return transactionDAO.createTransaction(id, userID, ticker, type, quantity, price, status) == true;
+        
+        if(transactionDAO.createTransaction(userID, ticker, type, quantity, price, status) == false){
+            return Message.CREATE_TRANSACTION_FAILED;
+        }
+        return Message.CREATE_TRANSACTION_SUCCESSFULLY;
     }
     
-    public boolean updateTransaction(String userID, String sticker, String type,
+    public String updateTransaction(String id,String userID, String sticker, String type,
             int quantity, float  price, String status) throws SQLException, Exception{
+        if(!transactionDAO.checkTransactionExists(id)){
+            return Message.TRANSACTION_NOT_FOUND;
+        }
         
-        return transactionDAO.updateTransaction(userID, sticker, type, quantity, price, status);
+        Transaction transaction = transactionDAO.getTransactionByID(id);
+        
+        if(userID == null || userID.isEmpty()){
+            userID = transaction.getUserID();
+        }
+        
+        if(isNullOrEmptyString(sticker)){
+            sticker = transaction.getTicker();
+        }
+        
+        if(isNullOrEmptyString(type)){
+            type = transaction.getType();
+        }
+        
+        if(quantity == 0){
+            quantity = transaction.getQuantity();
+        }
+        
+        if(price == 0.0){  // if price < 0 ?
+            price = transaction.getPrice();
+        }
+        
+        if(isNullOrEmptyString(status)){
+            status = transaction.getStatus();
+        }
+        
+        if(transactionDAO.updateTransaction(userID, sticker, type, quantity, price, status) == false){
+            return Message.UPDATE_TRANSACTION_FAILED;
+        }
+        
+        return Message.UPDATE_TRANSACTION_SUCCESSFULLY;
         
     }
     
-    public boolean deleteTransaction(String userID) throws SQLException{
-        return transactionDAO.deleteTransaction(userID) == true;
+    public String deleteTransaction(String id) throws SQLException{
+        if(transactionDAO.deleteTransaction(id) == false){
+            return Message.TRANSACTION_NOT_FOUND;
+        }
+        return Message.DELETE_TRANSACTION_SUCCESSFULLY;
+        
     }
     
-    public List<Transaction> getTransactionByID(String userID) throws SQLException{
+    public List<Transaction> getAllTransactions() throws SQLException{
+        return transactionDAO.getAllTransaction();
+    }
+    
+    public Transaction getTransactionByID (String id) throws SQLException{
+        return transactionDAO.getTransactionByID(id);
+    }
+    
+    public List<Transaction> getTransactionsByID(String id) throws SQLException{
         List resultList = null;
-        if(!userID.isEmpty()){
-            resultList = transactionDAO.searchByUserID(userID);
+        if(!id.isEmpty()){
+            resultList = transactionDAO.searchByUserID(id);
         }
         return resultList;
     }
@@ -71,5 +122,8 @@ public class TransactionService {
         return resultList;
     }
     
+     private boolean isNullOrEmptyString(String str){
+        return str == null || str.isEmpty();
+    }
     
 }

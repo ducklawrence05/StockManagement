@@ -59,19 +59,19 @@ public class StockController extends HttpServlet {
                 break;
             }
             case SEARCH_BY_PRICE: {
-                
+                stocks = searchbyPrice(request, response);
                 break;
             }
             case SEARCH_BY_NAME: {
-                
+                stocks = searchbyName(request, response);
                 break;
             }
             case SEARCH_BY_TICKER: {
-                
+                stocks = searchbyTicker(request, response);
                 break;
             }
             case SEARCH_BY_SECTOR: {
-                
+                stocks = searchbySector(request, response);
                 break;
             }
         }

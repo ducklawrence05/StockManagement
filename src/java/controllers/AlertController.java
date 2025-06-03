@@ -5,6 +5,7 @@
 
 package controllers;
 
+import constant.Role;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -13,6 +14,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import services.AlertService;
+import utils.AuthUtils;
 
 /**
  *
@@ -28,35 +30,27 @@ public class AlertController extends HttpServlet {
     private final String GET_ALERTS_BY_Ticker = "getAlertByTicker";
     private final String UPDATE = "update";
     private final String DELETE = "delete";
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet AlertController</title>");  
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet AlertController at " + request.getContextPath () + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-        }
-    } 
+   
 
    
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        processRequest(request, response);
+        if (!AuthUtils.checkAuthorization(request, response, Role.ADMIN, Role.STAFF)) {
+            return;
+        }
+        
+        String action = request.getParameter("action");
+        if (action == null) action = GET_ALL_ALERTS;
+        
+        
     } 
 
    
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        processRequest(request, response);
+        
     }
 
     

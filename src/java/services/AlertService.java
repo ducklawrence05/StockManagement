@@ -19,10 +19,12 @@ public class AlertService {
 
     private AlertDAO dao = new AlertDAO();
 
-    public List<Alert> getAllAlert() throws SQLException {
+    public List<Alert> getAllAlerts() throws SQLException {
         return dao.getAllAlert();
     }
-
+    public Alert getAlertByID(int id) throws SQLException{
+        return dao.getAlertByID(id);
+    }
     public List<Alert> searchAlertByTicker(String ticker) throws SQLException {
         return dao.searchByTicker(ticker);
     }
@@ -54,21 +56,35 @@ public class AlertService {
     
     public String updateAlert(int alertID, String userID, float threshold, String status) throws SQLException{
         if(isCreator(alertID, userID)){
-            if(dao.update(alertID, threshold, status)){
-                return Message.UPDATE_ALERT_SUCCESSFULLY;
+            if(isInactive(alertID)){
+                if(dao.update(alertID, threshold, status)){
+                    return Message.UPDATE_ALERT_SUCCESSFULLY;
+                }
+                return Message.UPDATE_ALERT_FAILED;
             }
-            return Message.UPDATE_ALERT_FAILED;
+            return Message.ALERT_STATUS_IS_ACTIVE;
         }
         return Message.IS_NOT_CREATOR;
     }
     
     public String deleteAlert(int alertID, String userID) throws SQLException {
         if(isCreator(alertID, userID)){
-            if(dao.delete(alertID)){
-                return Message.DELETE_ALERT_SUCCESSFULLY;
+            if(isInactive(alertID)){
+                if(dao.delete(alertID)){
+                    return Message.DELETE_ALERT_SUCCESSFULLY;
+                }
+                return Message.DELETE_ALERT_FAILED;
             }
-            return Message.DELETE_ALERT_FAILED;
+            return Message.ALERT_STATUS_IS_ACTIVE;
         }
         return Message.IS_NOT_CREATOR;
+    }
+    
+    public boolean isInactive(int alertID) throws SQLException{
+        Alert tmp = dao.getAlertByID(alertID);
+        if(tmp.getDirection().equalsIgnoreCase("inactive")){
+            return true;
+        }
+        return false;
     }
 }

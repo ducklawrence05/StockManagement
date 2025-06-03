@@ -39,11 +39,14 @@
     </head>
     <body>
         <h1>Welcome, <c:out value="${sessionScope.currentUser.fullName}"/></h1>
+        <a 
+            href="${pageContext.request.contextPath}/user"
+            style="text-decoration: none; color: black"
+        >User CRUD</a>
+        <hr />
         <form action="${pageContext.request.contextPath}/main/auth/logout" method="POST">
             <input type="submit" value="LOGOUT" />
         </form>
-
-        <p style="color: green;">${requestScope.MSG}</p>
         <hr />
 
         <form action="${pageContext.request.contextPath}/main/user" method="GET">
@@ -52,6 +55,18 @@
         </form>
 
         <hr />
+        
+        <form action="${pageContext.request.contextPath}/main/user" method="GET">
+            <label for="keySearch">Search</label>
+            <input type="text" id="keySearch" name="keySearch" placeholder="Search..." required/> |
+
+            <select name="action">
+                <option value="getUsersByID">Search by ID</option>
+                <option value="getUsersByName">Search by Name</option>
+            </select> |
+
+            <button type="submit">Search</button>
+        </form>
 
         <c:if test="${empty users}">
             <p>No matching users found!</p>

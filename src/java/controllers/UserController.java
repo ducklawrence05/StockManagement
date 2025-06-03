@@ -33,7 +33,7 @@ public class UserController extends HttpServlet {
     private final String GET_USER_BY_ID = "getUserByID";
     private final String GET_ALL_USERS = "getAllUsers";
     private final String GET_USERS_BY_ID = "getUsersByID";
-    private final String GET_USERS_BY_NAME = "getUSersByName";
+    private final String GET_USERS_BY_NAME = "getUsersByName";
     private final String UPDATE = "update";
     private final String DELETE = "delete";
 
@@ -159,7 +159,7 @@ public class UserController extends HttpServlet {
     private List<User> getUsersByID(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            String userID = request.getParameter("userID");
+            String userID = request.getParameter("keySearch");
             return userService.getUsersByID(userID);
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -171,7 +171,7 @@ public class UserController extends HttpServlet {
     private List<User> getUsersByName(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            String name = request.getParameter("name");
+            String name = request.getParameter("keySearch");
             return userService.getUsersByName(name);
         } catch (SQLException ex) {
             ex.printStackTrace();

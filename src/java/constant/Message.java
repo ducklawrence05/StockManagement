@@ -36,6 +36,13 @@ public class Message {
     public static final String SECTOR_NOT_FOUND = "Sector not found";
     
     // Transaction
+    public static final String TRANSACTION_ID_IS_EXISTED = "Transaction ID is existed";
+    public static final String CREATE_TRANSACTION_SUCCESSFULLY = "Create Transaction successfully";
+    public static final String CREATE_TRANSACTION_FAILED = "Create Transaction failed";
+    public static final String UPDATE_TRANSACTION_SUCCESSFULLY = "UPDATE Transaction successfully";
+    public static final String UPDATE_TRANSACTION_FAILED = "UPDATE Transaction failed";
+    public static final String DELETE_TRANSACTION_SUCCESSFULLY = "UPDATE Transaction successfully";
+    public static final String TRANSACTION_NOT_FOUND = "TRANSACTION not found";
     
     
     // Alert

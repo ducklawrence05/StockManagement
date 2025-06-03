@@ -24,13 +24,25 @@ public class Message {
     public static final String UPDATE_USER_SUCCESSFULLY = "Update user successfully";
     public static final String UPDATE_USER_FAILED = "Update user failed";
     public static final String DELETE_USER_SUCCESSFULLY = "Delete user successfully";
+    public static final String USER_FOUND = "User found";
     public static final String USER_NOT_FOUND = "User not found";
     public static final String INVALID_USER_ID_OR_PASSWORD = "Invalid user ID or password.";
-    
+
     // Stock
-    
+    public static final String EMTY_STOCK_LIST = "Not found any stock.";
+    public static final String EMTY_STOCK_PRICE = "Not found any stock in range.";
+    public static final String STOCK_NOT_FOUND = "Stock not found";
+    public static final String TICKER_NOT_FOUND = "Ticker not found";
+    public static final String SECTOR_NOT_FOUND = "Sector not found";
     
     // Transaction
+    public static final String TRANSACTION_ID_IS_EXISTED = "Transaction ID is existed";
+    public static final String CREATE_TRANSACTION_SUCCESSFULLY = "Create Transaction successfully";
+    public static final String CREATE_TRANSACTION_FAILED = "Create Transaction failed";
+    public static final String UPDATE_TRANSACTION_SUCCESSFULLY = "UPDATE Transaction successfully";
+    public static final String UPDATE_TRANSACTION_FAILED = "UPDATE Transaction failed";
+    public static final String DELETE_TRANSACTION_SUCCESSFULLY = "UPDATE Transaction successfully";
+    public static final String TRANSACTION_NOT_FOUND = "TRANSACTION not found";
     
     
     // Alert
@@ -43,5 +55,4 @@ public class Message {
     public static final String ALERT_NOT_FOUND = "Alert not found";
     public static final String IS_NOT_CREATOR = "You are not the creator of this alert";
     public static final String THRESHOLD_CAN_NOT_BE_NEGATIVE = "Thrshold can not be negative";
-    
 }

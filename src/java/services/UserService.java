@@ -36,7 +36,7 @@ public class UserService {
     }
     
     public List<User> getUsersByName(String name) throws SQLException {
-        return userDAO.getUsersByID(name);
+        return userDAO.getUsersByName(name);
     }
     
     public String createUser(String userID, String fullName, Role role,

@@ -27,7 +27,7 @@ public class MainController extends HttpServlet {
     private final String AUTH = "auth";
     private final String USER = "user";
     private final String STOCK = "stock";
-    
+    private final String ALERT = "alert";
     
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
@@ -63,6 +63,10 @@ public class MainController extends HttpServlet {
                     }
                     case STOCK:{
                         url = Url.STOCK_CONTROLLER;
+                        break;
+                    }
+                    case ALERT:{
+                        url = Url.ALERT_CONTROLLER;
                         break;
                     }
                     default: {

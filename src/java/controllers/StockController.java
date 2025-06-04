@@ -88,15 +88,17 @@ public class StockController extends HttpServlet {
         }
         String action = request.getParameter("action");
         if (action == null) action = "";
-        
+        String url = Url.STOCK_LIST_PAGE;
         try {
             switch (action) {
                 case CREATE: {
                     createStock(request, response);
+                    url = Url.ADD_STOCK_PAGE;
                     break;
                 }
                 case UPDATE: {
                     updateStock(request, response);
+                    url = Url.UPDATE_STOCK_PAGE;
                     break;
                 }
                 case DELETE: {
@@ -107,7 +109,7 @@ public class StockController extends HttpServlet {
             
             request.setAttribute("stocks", stockService.getAllStock());
             request.setAttribute("roleList", Role.values());
-            request.getRequestDispatcher(Url.STOCK_LIST_PAGE).forward(request, response);
+            request.getRequestDispatcher(url).forward(request, response);
         } catch (NumberFormatException | SQLException ex) {
             ex.printStackTrace();
             request.setAttribute("MSG", Message.SYSTEM_ERROR);
@@ -181,7 +183,7 @@ public class StockController extends HttpServlet {
         }
         return null;
     }
-    private boolean createStock(HttpServletRequest request, HttpServletResponse response)
+    private void createStock(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, SQLException{
         boolean status;
         String ticker = (String)request.getParameter("ticker");
@@ -196,25 +198,24 @@ public class StockController extends HttpServlet {
             status=false;
         }
         Stock stock = new Stock(ticker, name, sector, price, status);
-        boolean isSuccess = stockService.create(stock);
-        return isSuccess;
+        String message = stockService.create(stock);
+        request.setAttribute("MSG", message);
     }
 
-    private boolean updateStock(HttpServletRequest request, HttpServletResponse response) 
+    private void updateStock(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException, SQLException, NumberFormatException{
         boolean isSuccesfull;
         String name = (String)request.getParameter("name");
         List<Stock> list = stockService.searchByName(name);
         Stock stock = list.get(0);
-        isSuccesfull = stockService.update(stock);
-        return isSuccesfull;
+        String message = stockService.update(stock);
+        request.setAttribute("MSG", message);
     }
 
-    private boolean  deleteStock(HttpServletRequest request, HttpServletResponse response) 
+    private void  deleteStock(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException, SQLException, NumberFormatException{
-        boolean isSuccesfull;
         String ticker = (String)request.getParameter("ticker");
-        isSuccesfull = stockService.delete(ticker);
-        return isSuccesfull;
+        String message = stockService.delete(ticker);
+        request.setAttribute("MSG", message);
     }
 }

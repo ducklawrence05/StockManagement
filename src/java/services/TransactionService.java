@@ -9,7 +9,6 @@ import constant.Message;
 import dao.TransactionDAO;
 import dao.UserDAO;
 import dto.Transaction;
-import dto.User;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -54,11 +53,11 @@ public class TransactionService {
             type = transaction.getType();
         }
         
-        if(quantity == 0){
+        if(quantity == 0 || quantity < 0){
             quantity = transaction.getQuantity();
         }
         
-        if(price == 0.0){  // if price < 0 ?
+        if(price == 0.0 || price < 0){  // if price < 0 ?
             price = transaction.getPrice();
         }
         

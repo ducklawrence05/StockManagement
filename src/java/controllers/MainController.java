@@ -27,6 +27,7 @@ public class MainController extends HttpServlet {
     private final String AUTH = "auth";
     private final String USER = "user";
     private final String STOCK = "stock";
+    private final String TRANSACTION = "transaction";
     
     
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
@@ -64,6 +65,9 @@ public class MainController extends HttpServlet {
                     case STOCK:{
                         url = Url.STOCK_CONTROLLER;
                         break;
+                    }
+                    case TRANSACTION: {
+                        url = Url.TRANSACTION_CONTROLLER;
                     }
                     default: {
                         throw new Exception();

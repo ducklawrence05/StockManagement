@@ -33,7 +33,15 @@ public class Message {
     public static final String STOCK_NOT_FOUND = "Stock not found";
     public static final String TICKER_NOT_FOUND = "Ticker not found";
     public static final String SECTOR_NOT_FOUND = "Sector not found";
-    
+    public static final String STOCK_TICKER_IS_EXISTED = "Stock ticker is existed";
+    public static final String STOCK_PRICE_UNDER_LIMIT = "Price is under limit";
+    public static final String CREATE_STOCK_SUCCESSFULLY = "Create stock successfully";
+    public static final String CREATE_STOCK_FAILED = "Create stock failed";
+    public static final String UPDATE_STOCK_FAILED = "Update stock failed";
+    public static final String UPDATE_STOCK_SUCCESSFULLY = "Update stock successfully";
+    public static final String DELETE_STOCK_FAILED = "Delete stock failed";
+    public static final String DELETE_STOCK_SUCCESSFULLY = "Delete stock successfully";
+
     // Transaction
     
     

@@ -21,69 +21,51 @@ public class AlertService {
     public List<Alert> getAllAlerts() throws SQLException {
         return dao.getAllAlert();
     }
-    public Alert getAlertByID(int id) throws SQLException{
+
+    public Alert searchAlertByID(int id) throws SQLException {
         return dao.getAlertByID(id);
     }
-    public List<Alert> searchAlertByTicker(String ticker) throws SQLException {
+
+    public List<Alert> searchAlertsByTicker(String ticker) throws SQLException {
         return dao.searchByTicker(ticker);
     }
 
-    public List<Alert> searchAlertByDirection(String direction) throws SQLException {
+    public List<Alert> searchAlertsByDirection(String direction) throws SQLException {
         return dao.searchByDirection(direction);
     }
 
-    public List<Alert> searchAlertByStatus(String status) throws SQLException {
+    public List<Alert> searchAlertsByStatus(String status) throws SQLException {
         return dao.searchByStatus(status);
     }
 
     public String createAlert(String userID, String ticker, float threshold, String direction) throws SQLException {
-        if( dao.create(userID, ticker, threshold, direction)){
+        if (dao.create(userID, ticker, threshold, direction)) {
             return Message.CREATE_ALERT_SUCCESSFULLY;
         }
         return Message.CREATE_ALERT_FAILED;
     }
 
-    public boolean isCreator(int alertID, String userID) throws SQLException {
-        Alert tmp = dao.getAlertByID(alertID);
-        if (tmp != null) {
-            if(tmp.getUserID().equalsIgnoreCase(userID)){
-                return true;
-            }
-        }
-        return false;
+    public boolean isCreator(Alert alert, String userID) throws SQLException {
+        return alert.getUserID().equalsIgnoreCase(userID);
     }
-    
-    public String updateAlert(int alertID, String userID, float threshold, String status) throws SQLException{
-        if(isCreator(alertID, userID)){
-            if(isInactive(alertID)){
-                if(dao.update(alertID, threshold, status)){
-                    return Message.UPDATE_ALERT_SUCCESSFULLY;
-                }
-                return Message.UPDATE_ALERT_FAILED;
-            }
-            return Message.ALERT_STATUS_IS_ACTIVE;
+
+    public String updateAlert(int alertID, float threshold, String status) throws SQLException {
+        if (dao.update(alertID, threshold, status)) {
+            return Message.UPDATE_ALERT_SUCCESSFULLY;
         }
-        return Message.IS_NOT_CREATOR;
+        return Message.UPDATE_ALERT_FAILED;
     }
-    
+
     public String deleteAlert(int alertID, String userID) throws SQLException {
-        if(isCreator(alertID, userID)){
-            if(isInactive(alertID)){
-                if(dao.delete(alertID)){
-                    return Message.DELETE_ALERT_SUCCESSFULLY;
-                }
-                return Message.DELETE_ALERT_FAILED;
-            }
-            return Message.ALERT_STATUS_IS_ACTIVE;
+
+        if (dao.delete(alertID)) {
+            return Message.DELETE_ALERT_SUCCESSFULLY;
         }
-        return Message.IS_NOT_CREATOR;
+        return Message.DELETE_ALERT_FAILED;
+
     }
-    
-    public boolean isInactive(int alertID) throws SQLException{
-        Alert tmp = dao.getAlertByID(alertID);
-        if(tmp.getDirection().equalsIgnoreCase("inactive")){
-            return true;
-        }
-        return false;
+
+    public boolean isInactive(Alert alert) throws SQLException {
+        return alert.getStatus().equalsIgnoreCase("inactive");
     }
 }

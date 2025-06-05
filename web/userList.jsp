@@ -38,6 +38,7 @@
         </style>
     </head>
     <body>
+        
         <h1>Welcome, <c:out value="${sessionScope.currentUser.fullName}"/></h1>
         <a 
             href="${pageContext.request.contextPath}/user"

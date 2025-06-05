@@ -14,6 +14,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import utils.AuthUtils;
 
 /**
  *
@@ -27,20 +28,19 @@ public class MainController extends HttpServlet {
     private final String AUTH = "auth";
     private final String USER = "user";
     private final String STOCK = "stock";
-    
+    private final String TRANSACTION = "transaction";
+    private final String ALERT = "alert";
     
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         String path = request.getRequestURI(); // /StockManagement/main/controller/action
-        String context = request.getContextPath(); // /StockManagement
-        String relativePath = path.substring(context.length()); //""/main/controller/action
-        String[] parts = relativePath.split("/");
+        String[] parts = path.split("/"); // ''/StockManagement/main/controller/action
         
         String url = Url.ERROR_PAGE;
         try {
-            if (parts.length >= 3) {
-                String controller = parts[2]; // controller
-                String action = parts.length >= 4 ? parts[3] : ""; // action
+            if (parts.length >= 4) {
+                String controller = parts[3]; // controller
+                String action = parts.length >= 5 ? parts[4] : ""; // action
                 
                 // in case url is /main/controller?action=
                 if (action.isEmpty() && controller.contains("?action=")) {
@@ -51,6 +51,9 @@ public class MainController extends HttpServlet {
                     }
                 }
 
+                if (!controller.equals(AUTH) && !action.equals("login")) {
+                    if (!AuthUtils.checkAuthentication(request, response)) return;
+                }
                 
                 switch (controller) {
                     case AUTH: {
@@ -65,6 +68,14 @@ public class MainController extends HttpServlet {
                         url = Url.STOCK_CONTROLLER;
                         break;
                     }
+                    case TRANSACTION: {
+                        url = Url.TRANSACTION_CONTROLLER;
+                        break;
+                    }
+                    case ALERT:{
+                        url = Url.ALERT_CONTROLLER;
+                        break;
+                    }
                     default: {
                         throw new Exception();
                     }
@@ -74,7 +85,7 @@ public class MainController extends HttpServlet {
                 }
             }
         } catch (Exception e) {
-            request.setAttribute("MSG", Message.ACTION_NOT_FOUND);
+            request.setAttribute("MSG", Message.CONTROLLER_NOT_FOUND);
         } finally {
             request.getRequestDispatcher(url).forward(request, response);
         }

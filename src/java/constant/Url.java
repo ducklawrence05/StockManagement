@@ -31,7 +31,7 @@ public class Url {
     
     // Alert
     public static final String ALERT_LIST_PAGE = "/alertList.jsp";
-    public static final String ADD_ALERT_PAGE = "/addAlert.jsp";
+    public static final String CREATE_ALERT_PAGE = "/createAlert.jsp";
     public static final String UPDATE_ALERT_PAGE = "/updateAlert.jsp";
     
     // Controller

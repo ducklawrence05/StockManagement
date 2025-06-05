@@ -134,9 +134,11 @@ public class UserController extends HttpServlet {
             String userID = request.getParameter("userID");
             User user = userService.getUserByID(userID);
             if (user == null) {
-                request.setAttribute("MSG", Message.USER_NOT_FOUND);
                 user = new User();
-            } 
+                request.setAttribute("MSG", Message.USER_NOT_FOUND);
+            } else {
+                request.setAttribute("MSG", Message.USER_FOUND);
+            }
             return user;
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -216,4 +218,6 @@ public class UserController extends HttpServlet {
 
         request.setAttribute("MSG", message);
     }
+    
+    
 }

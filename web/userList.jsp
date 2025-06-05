@@ -101,6 +101,7 @@
                                 style="display: inline"
                                 action="${pageContext.request.contextPath}/main/user/delete" 
                                 method="POST"
+                                onsubmit="return confirm('Delete this user?');"
                             >
                                 <button type="submit" name="userID" value="${user.userID}">Delete</button>
                             </form>

@@ -27,13 +27,13 @@ public class MainController extends HttpServlet {
     private final String AUTH = "auth";
     private final String USER = "user";
     private final String STOCK = "stock";
-    
+    private final String ALERT = "alert";
     
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         String path = request.getRequestURI(); // /StockManagement/main/controller/action
         String context = request.getContextPath(); // /StockManagement
-        String relativePath = path.substring(context.length()); // /main/controller/action
+        String relativePath = path.substring(context.length()); // ''/main/controller/action
         String[] parts = relativePath.split("/");
         
         String url = Url.ERROR_PAGE;
@@ -63,6 +63,10 @@ public class MainController extends HttpServlet {
                     }
                     case STOCK:{
                         url = Url.STOCK_CONTROLLER;
+                        break;
+                    }
+                    case ALERT:{
+                        url = Url.ALERT_CONTROLLER;
                         break;
                     }
                     default: {

@@ -23,18 +23,17 @@
     <p style="color:red">${MSG}</p>
   </c:if>
   <form action="${pageContext.request.contextPath}/main/auth/login" method="POST">
-    <label>UserID:
+    <label>UserID
       <input type="text" value="${requestScope.userIDSaved}" name="userID" required />
     </label>
     <br /><br />
-    <label>Password:
+    <label>Password
       <input type="password" name="password" required />
     </label>
     <br /><br />
-    <div>
-        <input type="checkbox" name="rememberMe" id="rememberMe" />
-        <label for="rememberMe">Remember me</label>
-    </div>
+    <label>
+        <input type="checkbox" name="rememberMe" /> Remember me
+    </label>
     <br /><br />
     <button type="submit">Login</button>
   </form>

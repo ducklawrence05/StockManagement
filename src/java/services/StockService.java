@@ -4,6 +4,7 @@
  */
 package services;
 
+import constant.Message;
 import dao.StockDAO;
 import dto.Stock;
 import java.sql.SQLException;
@@ -17,25 +18,25 @@ public class StockService {
     private StockDAO stockDAO = new StockDAO();
     
     //create
-    public boolean create(Stock stock) throws SQLException{
+    public String create(Stock stock) throws SQLException{
         if(stockDAO.isTickerExist(stock.getTicker())){
-            return false;
+            return Message.STOCK_TICKER_IS_EXISTED;
         }
-        if(stock.getPrice()<=0){return false;}
+        if(stock.getPrice()<=0){return Message.STOCK_PRICE_UNDER_LIMIT;}
         return stockDAO.create(stock);
     }
     
     //update
-    public boolean update(Stock stock) throws SQLException{
+    public String update(Stock stock) throws SQLException{
         if(!stockDAO.isTickerExist(stock.getTicker())){
-            return false;
+            return Message.EMTY_STOCK_LIST;
         }
-        if(stock.getPrice()<=0){return false;}
+        if(stock.getPrice()<=0){return Message.STOCK_PRICE_UNDER_LIMIT;}
         return stockDAO.update(stock);
     }
     
     //delete
-    public boolean delete(String ticker) throws SQLException{
+    public String delete(String ticker) throws SQLException{
         return stockDAO.delete(ticker);
     }
     

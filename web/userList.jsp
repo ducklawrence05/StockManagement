@@ -38,12 +38,13 @@
         </style>
     </head>
     <body>
+        
         <h1>Welcome, <c:out value="${sessionScope.currentUser.fullName}"/></h1>
         <form action="${pageContext.request.contextPath}/main/auth/logout" method="POST">
             <input type="submit" value="LOGOUT" />
         </form>
 
-         <p style="color: green;">${requestScope.MSG}</p> 
+        <p style="color: green;">${requestScope.MSG}</p>
         <hr />
 
         <form action="${pageContext.request.contextPath}/main/user" method="GET">
@@ -76,7 +77,11 @@
                         <td>${user.fullName}</td>
                         <td>${user.role}</td>
                         <td class="actions">
-                            <form action="${pageContext.request.contextPath}/main/user/delete" method="POST">
+                            <form 
+                                action="${pageContext.request.contextPath}/main/user/delete" 
+                                method="POST" 
+                                onsubmit="return confirm('Delete this user?');"
+                            >
                                 <button type="submit" name="userID" value="${user.userID}">Delete</button>
                             </form>
                         </td>

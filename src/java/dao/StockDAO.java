@@ -1,5 +1,6 @@
 package dao;
 
+import constant.Message;
 import constant.Role;
 import dto.Stock;
 import dto.User;
@@ -30,21 +31,29 @@ public class StockDAO {
         }
     }
     // create
-    public boolean create(Stock s) throws SQLException{
+    public String create(Stock s) throws SQLException{
         try(Connection conn = DBContext.getConnection(); PreparedStatement ps = conn.prepareStatement(ADD_STOCK)){
             ps.setString(1, s.getTicker());
             ps.setString(2, s.getName());
             ps.setString(3, s.getSector());
             ps.setFloat(4, s.getPrice());
             ps.setBoolean(4, s.isStatus());
-            return ps.executeUpdate()>0;
+            if(ps.executeUpdate()<=0){
+                return Message.CREATE_STOCK_FAILED;
+            }
+            else{return Message.CREATE_STOCK_SUCCESSFULLY;}
         }
     }
     // delete
-    public boolean delete(String ticker) throws SQLException{
+    public String delete(String ticker) throws SQLException{
         try(Connection conn = DBContext.getConnection(); PreparedStatement ps = conn.prepareStatement(DELETE_STOCK)){
             ps.setString(1, ticker);
-            return ps.executeUpdate()>0;
+            if(ps.executeUpdate()>0){
+                return Message.DELETE_STOCK_SUCCESSFULLY;
+            }
+            else{
+                return Message.DELETE_STOCK_FAILED;
+            }
         }
     }
     //search by name
@@ -124,14 +133,17 @@ public class StockDAO {
         return list;
     }
     // update
-    public boolean update(Stock s) throws SQLException {
+    public String update(Stock s) throws SQLException {
         try(Connection conn = DBContext.getConnection();PreparedStatement ps = conn.prepareStatement(UPDATE)){
             ps.setString(1, s.getName());
             ps.setString(2, s.getSector());
             ps.setFloat(3, s.getPrice());
             ps.setBoolean(4, s.isStatus());
             ps.setString(5, s.getTicker());
-            return ps.executeUpdate() > 0;
+            if(ps.executeUpdate() > 0){
+                return Message.UPDATE_STOCK_SUCCESSFULLY;
+            }
+            else{return  Message.UPDATE_STOCK_FAILED;}
         }
     }
 

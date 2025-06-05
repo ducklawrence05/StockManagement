@@ -8,79 +8,139 @@
 <%@page import="java.util.ArrayList"%>
 <%@page import="dto.User"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>>
 <!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Alert List Page</title>
+        <style>
+            #directionSelect,
+            #statusSelect,
+            #tickerInput {
+                display: none;
+            }
+        </style>
     </head>
     <body>
-        <%
-            User loginUser = (User) session.getAttribute("LOGIN_USER");
-            if (loginUser == null) {
-                response.sendRedirect("login.jsp");
-                return;
-            }
-        %>
-        <h1>Welcome: <%= loginUser.getFullName()%></h1>
-        <form action="MainController" method="POST">
-            <button type="submit" name="action" value="Logout">Logout</button> </br>
-            <input type="text" name="search" placeholder="Search">
-            <button type="submit" name="action" value="SearchAlert">Search</button>
+        <h1>Welcome, <c:out value="${sessionScope.currentUser.fullName}"/></h1>
+        <a 
+            href="${pageContext.request.contextPath}/alert"
+            style="text-decoration: none; color: black"
+            >Alert CRUD</a>
+        <hr />
+        <form action="${pageContext.request.contextPath}/main/auth/logout" method="POST">
+            <input type="submit" value="LOGOUT" />
         </form>
-        <a href="createAlert.jsp">Create New Alert</a><br/>
+        <hr />
+        <form action="${pageContext.request.contextPath}/main/alert" method="GET">
+            <button type="submit" name="action" value="create">Create Alert</button> |
+            <button type="submit" name="action" value="update">Update Alert</button>
+        </form>
+
         <a href="transactionList.jsp">Go to Transaction History</a><br/>
         <a href="stockList.jsp">Go to Stock List</a><br/>
-        <%
-            String MSG = (String) request.getAttribute("MSG");
-            if (MSG != null) {
-        %>
-        <h3> <%= MSG%> </h3>
-        <%
-            }
-            ArrayList<Alert> list = (ArrayList<Alert>) request.getAttribute("list");
-            if (list != null) {
-        %>
-        <table>
+
+        <form action="${pageContext.request.contextPath}/main/alert" method="GET">
+            <label for="keySearch">Search By:</label>
+            <select id="action" name="action" onchange="updateSelectOptions()">
+                <option value="">--Select--</option>
+                <option value="getAlertsByDirection">Direction</option>
+                <option value="getAlertsByStatus">Status</option>
+                <option value="getAlertsByTicker">Ticker</option>
+            </select>
+
+            <div id="directionSelect">
+                <label for="directionValue">Select Direction:</label>
+                <select id="directionValue" name="keySearch">
+                    <option value="Increase">Increase</option>
+                    <option value="Decrease">Decrease</option>
+                </select>
+            </div>
+
+            <div id="statusSelect">
+                <label for="statusValue">Select Status:</label>
+                <select id="statusValue" name="keySearch">
+                    <option value="Active">Active</option>
+                    <option value="Inactive">Inactive</option>
+                </select>
+            </div>
+
+            <div id="tickerInput">
+                <label for="tickerValue">Search Ticker:</label>
+                <input type="text" id="tickerValue" name="keySearch" placeholder="Ex: VNM">
+            </div>
+
+            <br>
+            <button type="submit">Search</button>
+        </form>
+    <c:if test="${empty alerts}">
+        <p>No matching alerts found!</p>
+    </c:if>
+
+    <table>
+        <thead>
             <tr>
-                <th>No</th>
+                <th>No   </th>
                 <th>User ID</th>
                 <th>Ticker</th>
                 <th>Threshold</th>
                 <th>Direction</th>
                 <th>Status</th>
-                <th>Function</th>
             </tr>
-            <%
-                int count = 0;
-                for (Alert alert : list) {
-                    count++;
-            %>
+        </thead>
+        <tbody>
+        <c:forEach var="alert" items="${requestScope.alerts}" varStatus="st">
+
             <tr>
-            <form action="MainController" method="POST">
-                <td><%= count%></td>
-                <td><%= alert.getUserID()%></td>
-                <td><%= alert.getTicker()%></td>
-                <td><input type="text" name="threshold" value="<%= alert.getThreshold()%>"></td>
-                <td><%= alert.getDirection()%></td>
-                <td><select name="status" required>
-                        <option value="active" <%= "active".equals(alert.getStatus()) ? "selected" : ""%>>active</option>
-                        <option value="inactive" <%= "inactive".equals(alert.getStatus()) ? "selected" : ""%>>inactive</option>
-                    </select></td>
-                <input type="hidden" name="alertID" value="<%= alert.getAlertID()%>">
-                <td>
-                    <button type="submit" name="action" value="UpdateAlert">Update</button>
-                    <% if ("inactive".equals(alert.getStatus())) { %>
-                    <button type="submit" name="action" value="DeleteAlert">Delete</button>
-                    <% } %>
+                <td>${st.count}</td>
+                <td>${alert.userID}</td>
+                <td>${alert.ticker}</td>
+                <td>${alert.threshold}</td>
+                <td>${alert.direction}</td>
+                <td>${alert.status}</td>
+                <td class="actions">
+                    <form 
+                        action="${pageContext.request.contextPath}/main/alert/delete" 
+                        method="POST" 
+                        onsubmit="return confirm('Delete this alert?');"
+                        >
+                        <button type="submit" name="userID" value="${alert.userID}">Delete</button>
+                    </form>
                 </td>
-            </form>
-        </tr>
-        <% }
-        %>
-    </table>
-    <%
+            </tr>
+        </c:forEach>
+    </tbody>
+</table>
+
+
+    <script>
+    function updateSelectOptions() {
+        const action = document.getElementById("action").value;
+
+        // Ẩn và disable tất cả
+        document.getElementById("directionSelect").style.display = "none";
+        document.getElementById("statusSelect").style.display = "none";
+        document.getElementById("tickerInput").style.display = "none";
+
+        document.getElementById("directionValue").disabled = true;
+        document.getElementById("statusValue").disabled = true;
+        document.getElementById("tickerValue").disabled = true;
+
+        // Hiện và enable đúng cái đang chọn
+        if (action === "getAlertsByDirection") {
+            document.getElementById("directionSelect").style.display = "block";
+            document.getElementById("directionValue").disabled = false;
+        } else if (action === "getAlertsByStatus") {
+            document.getElementById("statusSelect").style.display = "block";
+            document.getElementById("statusValue").disabled = false;
+        } else if (action === "getAlertsByTicker") {
+            document.getElementById("tickerInput").style.display = "block";
+            document.getElementById("tickerValue").disabled = false;
         }
-    %>
+    }
+
+    window.onload = updateSelectOptions;
+</script>
 </body>
 </html>

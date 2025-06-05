@@ -5,6 +5,7 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
     <head>
@@ -12,8 +13,17 @@
         <title>Create Alert Page</title>
     </head>
     <body>
+         <h1>Welcome, <c:out value="${sessionScope.currentUser.fullName}"/></h1>
+        <form action="${pageContext.request.contextPath}/main/auth/logout" method="POST">
+            <input type="submit" value="LOGOUT" />
+        </form>
+
         <h1>Create Alert</h1>
-        <form action="MainController" method="POST">
+        <p style="color: green;">${requestScope.MSG}</p>
+        <hr />
+
+        <form action="${pageContext.request.contextPath}/main/alert/create" method="POST">
+            UserID:  <input type="text" name ="userID" value="${sessionScope.currentUser.userID}" readonly> <br/>
             Ticker: <input type="text" name="ticker" placeholder="Enter ticker" required /><br/>
             Threshold: <input type="number" name="threshold" placeholder="Enter threshold" step="0.01" required /><br/>
             Direction: 
@@ -21,12 +31,10 @@
                 <option value="increase">increase</option>
                 <option value="decrease">decrease</option>
             </select><br/>
-            <input type="submit" name="action" value="CreateAlert" /><br/>
-            <a href="alertList.jsp">Back to Alert List</a>
+            <input type="submit" name="action" value="create" /><br/>    
         </form>
-        <% String msg = (String) request.getAttribute("MSG"); %>
-        <% if (msg != null) { %>
-            <p style="color: red;"><%= msg %></p>
-        <% } %>
+        
+        
+        
     </body>
 </html>

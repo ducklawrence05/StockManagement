@@ -109,6 +109,8 @@ public class UserController extends HttpServlet {
                 case UPDATE: {
                     updateUser(request, response);
                     url = Url.UPDATE_USER_PAGE;
+                    User user = getUserByID(request, response);
+                    request.setAttribute("user", user);
                     break;
                 }
                 case DELETE: {

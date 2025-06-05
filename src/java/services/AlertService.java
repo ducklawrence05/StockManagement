@@ -6,7 +6,6 @@ package services;
 
 import constant.Message;
 import dao.AlertDAO;
-import java.util.ArrayList;
 import dto.Alert;
 import java.sql.SQLException;
 import java.util.List;

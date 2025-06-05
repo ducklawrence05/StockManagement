@@ -8,7 +8,6 @@ import constant.Message;
 import constant.Role;
 import constant.Url;
 import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -18,10 +17,8 @@ import java.util.List;
 import services.AlertService;
 import utils.AuthUtils;
 import dto.Alert;
-import jakarta.websocket.Session;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import services.UserService;
 
 /**
  *

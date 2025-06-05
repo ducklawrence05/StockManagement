@@ -183,7 +183,7 @@ public class UserController extends HttpServlet {
     }
     
     private void createUser(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException, SQLException {
+            throws ServletException, IOException, SQLException, NumberFormatException {
         String userID = request.getParameter("userID");
         String fullName = request.getParameter("fullName");
         String password = request.getParameter("password");
@@ -218,6 +218,4 @@ public class UserController extends HttpServlet {
 
         request.setAttribute("MSG", message);
     }
-    
-    
 }

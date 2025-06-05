@@ -16,6 +16,6 @@
             String error= (String)request.getAttribute("MSG");
             if(error== null) error= "";
         %>
-        Error: <h1><%= error %></h1>
+        <h1><%= error %></h1>
     </body>
 </html>

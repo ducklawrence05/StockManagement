@@ -35,6 +35,17 @@ public class AuthUtils {
         }
     }
     
+    public static boolean checkAuthentication(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute(USER_SESSION) == null) {
+            request.setAttribute("MSG", Message.UNAUTHENTICATION);
+            request.getRequestDispatcher(Url.LOGIN_PAGE).forward(request, response);
+            return false;
+        }
+        return true;
+    }
+    
     public static boolean checkAuthorization(HttpServletRequest request, HttpServletResponse response,
             Role... roles)
             throws ServletException, IOException {

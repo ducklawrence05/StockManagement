@@ -1,58 +1,95 @@
-<%-- 
-    Document   : updateUser
-    Created on : Jun 1, 2025, 9:19:22 PM
-    Author     : Admin
---%>
-
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Update user Page</title>
+        <meta charset="UTF-8" />
+        <title>Update User Page</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+        <style>
+            body {
+                background-color: #f8f9fa;
+                padding: 40px 20px;
+            }
+            .update-user-container {
+                max-width: 500px;
+                margin: auto;
+                background: white;
+                padding: 30px 40px;
+                border-radius: 10px;
+                box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            }
+            h1, h3 {
+                text-align: center;
+                margin-bottom: 30px;
+            }
+            .logout-btn {
+                display: block;
+                width: 100%;
+                margin-bottom: 30px;
+            }
+            .message {
+                color: green;
+                text-align: center;
+                margin-bottom: 20px;
+            }
+            label {
+                font-weight: 600;
+            }
+            input, select {
+                margin-bottom: 20px;
+            }
+            a.back-link {
+                display: block;
+                text-align: center;
+                margin-top: 20px;
+                color: #0d6efd;
+                text-decoration: none;
+            }
+            a.back-link:hover {
+                text-decoration: underline;
+            }
+        </style>
     </head>
     <body>
-        <h1>Welcome, <c:out value="${sessionScope.currentUser.fullName}"/></h1>
-        <form action="${pageContext.request.contextPath}/main/auth/logout" method="POST">
-            <input type="submit" value="LOGOUT" />
-        </form>
+        <div class="update-user-container">
+            <h1>Welcome, <c:out value="${sessionScope.currentUser.fullName}" /></h1>
 
-        <h3>Update user</h3>
-        <p style="color: green;">${requestScope.MSG}</p>
-<!--        <form action="${pageContext.request.contextPath}/main/user/getUserByID" method="GET">
-            <label for="userID">UserID</label><br>
-            <input type="text" id="userID" name="userID" placeholder="Enter user ID" required><br><br>
-            <button type="submit">Search</button>
-        </form>-->
-        <hr />
+            <form action="${pageContext.request.contextPath}/main/auth/logout" method="POST">
+                <input type="submit" class="btn btn-danger logout-btn" value="LOGOUT" />
+            </form>
 
-        <form id="updateForm" action="${pageContext.request.contextPath}/main/user/update" method="POST">
-            <input type="hidden" name="userID" value="${user.userID}"/>
+            <h3>Update User</h3>
+            <p class="message">${requestScope.MSG}</p>
+            <hr />
 
-            <label for="fullName">Full name</label><br>
-            <input type="text" id="fullName" name="fullName" value="${user.fullName}" required><br><br>
+            <form id="updateForm" action="${pageContext.request.contextPath}/main/user/update" method="POST">
+                <input type="hidden" name="userID" value="${user.userID}" />
 
-            <label for="roleID">Role</label>
-            <select id="roleID" name="roleID" required>
-                <c:forEach var="r" items="${roleList}">
-                    <option value="${r.value}" ${r == user.role ? "selected" : ""}>${r}</option>
-                </c:forEach>
-            </select><br /><br />
+                <label for="fullName">Full name</label>
+                <input type="text" id="fullName" name="fullName" value="${user.fullName}" required class="form-control" />
 
-            <label for="oldPassword">Old password</label><br>
-            <input type="password" id="oldPassword" name="oldPassword" placeholder="Enter old password" ><br><br>
+                <label for="roleID">Role</label>
+                <select id="roleID" name="roleID" required class="form-select">
+                    <c:forEach var="r" items="${roleList}">
+                        <option value="${r.value}" ${r == user.role ? "selected" : ""}>${r}</option>
+                    </c:forEach>
+                </select>
 
-            <label for="password">Password</label><br>
-            <input type="password" id="password" name="password" placeholder="Enter password" ><br><br>
+                <label for="oldPassword">Old password</label>
+                <input type="password" id="oldPassword" name="oldPassword" placeholder="Enter old password" class="form-control" />
 
-            <label for="confirmPassword">Confirm password</label><br>
-            <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Enter confirm password" ><br><br>
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Enter new password" class="form-control" />
 
-            <button type="submit">Update</button>
-        </form>
+                <label for="confirmPassword">Confirm password</label>
+                <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm new password" class="form-control" />
 
-        <a href="${pageContext.request.contextPath}/user">Back to user CRUD</a>
+                <button type="submit" class="btn btn-primary w-100">Update</button>
+            </form>
+
+            <a href="${pageContext.request.contextPath}/user" class="back-link">Back to user CRUD</a>
+        </div>
 
         <script>
             const oldpwd = document.getElementById('oldPassword');
@@ -72,9 +109,9 @@
                 }
             }
 
-            oldpwd.addEventListener('keydown', checkRequired);
-            pwd.addEventListener('keydown', checkRequired);
-            confirmpwd.addEventListener('keydown', checkRequired);
+            oldpwd.addEventListener('input', checkRequired);
+            pwd.addEventListener('input', checkRequired);
+            confirmpwd.addEventListener('input', checkRequired);
 
             form.addEventListener('submit', function (e) {
                 checkRequired();

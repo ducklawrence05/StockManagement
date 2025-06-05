@@ -5,110 +5,97 @@
     <head>
         <meta charset="UTF-8">
         <title>User List</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
         <style>
             body {
-                font-family: Arial;
-                margin: 20px;
+                background-color: #f8f9fa;
+                padding: 30px;
             }
-            a {
-                color: #06c;
-                text-decoration: none;
+            .table-actions form {
+                display: inline;
             }
-            a:hover {
-                text-decoration: underline;
-            }
-            table {
-                border-collapse: collapse;
-                margin-top: 10px;
-            }
-            th, td {
-                border: 1px solid #ccc;
-                padding: 4px 8px;
+            .table th, .table td {
+                vertical-align: middle;
                 white-space: nowrap;
             }
-            th {
-                background: #f0f0f0;
-            }
-            td.actions {
+            .table td.actions {
                 text-align: center;
-            }
-            input[type=number] {
-                width:80px;
             }
         </style>
     </head>
     <body>
-        <h1>Welcome, <c:out value="${sessionScope.currentUser.fullName}"/></h1>
-        <a 
-            href="${pageContext.request.contextPath}/user"
-            style="text-decoration: none; color: black"
-        >User CRUD</a>
-        <hr />
-        <form action="${pageContext.request.contextPath}/main/auth/logout" method="POST">
-            <input type="submit" value="LOGOUT" />
-        </form>
-        <hr />
 
-        <form action="${pageContext.request.contextPath}/main/user" method="GET">
-            <button type="submit" name="action" value="create">Create user</button>
-        </form>
+        <div class="container bg-white p-4 rounded shadow-sm">
+            <h2 class="mb-4">Welcome, <c:out value="${sessionScope.currentUser.fullName}" /></h2>
 
-        <hr />
-        
-        <form action="${pageContext.request.contextPath}/main/user" method="GET">
-            <label for="keySearch">Search</label>
-            <input type="text" id="keySearch" name="keySearch" placeholder="Search..." required/> |
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <a href="${pageContext.request.contextPath}/user" class="btn btn-outline-primary">User CRUD</a>
+                <form action="${pageContext.request.contextPath}/main/auth/logout" method="POST">
+                    <input type="submit" class="btn btn-danger" value="LOGOUT" />
+                </form>
+            </div>
 
-            <select name="action">
-                <option value="getUsersByID">Search by ID</option>
-                <option value="getUsersByName">Search by Name</option>
-            </select> |
+            <form action="${pageContext.request.contextPath}/main/user" method="GET" class="mb-3">
+                <button type="submit" name="action" value="create" class="btn btn-success">Create User</button>
+            </form>
 
-            <button type="submit">Search</button>
-        </form>
+            <form action="${pageContext.request.contextPath}/main/user" method="GET" class="row g-2 mb-4">
+                <div class="col-md-4">
+                    <input type="text" class="form-control" id="keySearch" name="keySearch" placeholder="Search..." required />
+                </div>
+                <div class="col-md-4">
+                    <select name="action" class="form-select">
+                        <option value="getUsersByID">Search by ID</option>
+                        <option value="getUsersByName">Search by Name</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <button type="submit" class="btn btn-primary w-100">Search</button>
+                </div>
+            </form>
 
-        <c:if test="${empty users}">
-            <p>No matching users found!</p>
-        </c:if>
+            <c:if test="${empty users}">
+                <div class="alert alert-warning">No matching users found!</div>
+            </c:if>
 
-        <table>
-            <thead>
-                <tr>
-                    <th>No</th>
-                    <th>UserID</th>
-                    <th>Full name</th>
-                    <th>Role</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <c:forEach var="user" items="${requestScope.users}" varStatus="st">
-
-                    <tr>
-                        <td>${st.count}</td>
-                        <td>${user.userID}</td>
-                        <td>${user.fullName}</td>
-                        <td>${user.role}</td>
-                        <td class="actions">
-                            <form 
-                                style="display: inline"
-                                action="${pageContext.request.contextPath}/main/user/update" 
-                                method="GET"
-                            >
-                                <button type="submit" name="userID" value="${user.userID}">Update</button>
-                            </form> | 
-                            <form 
-                                style="display: inline"
-                                action="${pageContext.request.contextPath}/main/user/delete" 
-                                method="POST"
-                                onsubmit="return confirm('Delete this user?');"
-                            >
-                                <button type="submit" name="userID" value="${user.userID}">Delete</button>
-                            </form>
-                        </td>
-                    </tr>
-                </c:forEach>
-            </tbody>
-        </table>
+            <c:if test="${not empty users}">
+                <table class="table table-bordered table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>No</th>
+                            <th>User ID</th>
+                            <th>Full Name</th>
+                            <th>Role</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <c:forEach var="user" items="${requestScope.users}" varStatus="st">
+                            <tr>
+                                <td>${st.count}</td>
+                                <td>${user.userID}</td>
+                                <td>${user.fullName}</td>
+                                <td>${user.role}</td>
+                                <td class="table-actions">
+                                    <form 
+                                        action="${pageContext.request.contextPath}/main/user/update" 
+                                        method="GET"
+                                    >
+                                        <button type="submit" name="userID" value="${user.userID}" class="btn btn-sm btn-warning">Update</button>
+                                    </form>
+                                    <form 
+                                        action="${pageContext.request.contextPath}/main/user/delete" 
+                                        method="POST" 
+                                        onsubmit="return confirm('Delete this user?');"
+                                    >
+                                        <button type="submit" name="userID" value="${user.userID}" class="btn btn-sm btn-danger">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        </c:forEach>
+                    </tbody>
+                </table>
+            </c:if>
+        </div>
     </body>
 </html>

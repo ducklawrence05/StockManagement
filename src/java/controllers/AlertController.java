@@ -149,7 +149,6 @@ public class AlertController extends HttpServlet {
                 if (alertService.isCreator(alert, userID)) {
                     if (alertService.isInactive(alert)) {
                         can = true;
-                        request.setAttribute("can", can);
                     } else {
                         request.setAttribute("ERRMSG", Message.ALERT_STATUS_IS_ACTIVE);
                     }
@@ -157,6 +156,7 @@ public class AlertController extends HttpServlet {
                     request.setAttribute("ERRMSG", Message.IS_NOT_CREATOR);
                 }
             }
+            request.setAttribute("can", can);
             return alert;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -254,8 +254,12 @@ public class AlertController extends HttpServlet {
             throws ServletException, IOException, SQLException {
         try {
             Alert alert = getAlertrByID(request, response);
-            String message = alertService.deleteAlert(alert.getAlertID(), alert.getUserID());
-
+            String message = "";
+            String _can = request.getAttribute("can").toString();
+            boolean can = Boolean.parseBoolean(_can);
+            if(can == true){
+                message = alertService.deleteAlert(alert.getAlertID(), alert.getUserID());
+            }
             request.setAttribute("MSG", message);
         } catch (Exception ex) {
             ex.printStackTrace();

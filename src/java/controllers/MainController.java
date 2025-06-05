@@ -38,7 +38,7 @@ public class MainController extends HttpServlet {
         String url = Url.ERROR_PAGE;
         try {
             if (parts.length >= 4) {
-                String controller = parts[2]; // controller
+                String controller = parts[3]; // controller
                 String action = parts.length >= 5 ? parts[4] : ""; // action
                 
                 // in case url is /main/controller?action=

@@ -33,7 +33,7 @@ public class MainController extends HttpServlet {
     throws ServletException, IOException {
         String path = request.getRequestURI(); // /StockManagement/main/controller/action
         String context = request.getContextPath(); // /StockManagement
-        String relativePath = path.substring(context.length()); // /main/controller/action
+        String relativePath = path.substring(context.length()); //""/main/controller/action
         String[] parts = relativePath.split("/");
         
         String url = Url.ERROR_PAGE;

@@ -39,10 +39,14 @@
     </head>
     <body>
         <h1>Welcome, <c:out value="${sessionScope.currentUser.fullName}"/></h1>
-        <p><a href="${pageContext.request.contextPath}/LogoutController">Logout</a></p>
+        <form action="${pageContext.request.contextPath}/main/auth/logout" method="POST">
+            <input type="submit" value="LOGOUT" />
+        </form>
 
-        <!-- Price‐range search -->
-        <form action="${pageContext.request.contextPath}/SearchPriceController" method="POST">
+        <p style="color: green;">${requestScope.MSG}</p>
+        <hr />
+        
+        <form action="${pageContext.request.contextPath}/main/stock" method="GET">
             Price between
             <input type="number" step="0.01" name="minPrice" placeholder="min"
                    value="${param.minPrice}" required/>
@@ -52,44 +56,5 @@
             <button type="submit">Search Price</button>
         </form>
 
-        <!-- Sort links -->
-        <p style="margin-top:8px;">
-            Sort by price:
-            <a href="${pageContext.request.contextPath}/MainController?sort=asc">Ascending</a> |
-            <a href="${pageContext.request.contextPath}/MainController?sort=desc">Descending</a> |
-            <a href="${pageContext.request.contextPath}/MainController">None</a>
-        </p>
-
-        <c:if test="${empty listStock}">
-            <p>No matching stocks found!</p>
-        </c:if>
-
-        <table>
-            <thead>
-                <tr>
-                    <th>No</th><th>Ticker</th><th>Name</th><th>Sector</th><th>Price</th><th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <c:forEach var="stock" items="${listStock}" varStatus="st">
-                    <tr>
-                        <form action="${pageContext.request.contextPath}/ActionController" method="POST">
-                            <td>${st.count}</td>
-                            <td>
-                                <input type="hidden" name="ticker" value="${stock.ticker}"/>
-                                ${stock.ticker}
-                            </td>
-                            <td><input type="text"  name="name"   value="${stock.name}"   required/></td>
-                            <td><input type="text"  name="sector" value="${stock.sector}" required/></td>
-                            <td><input type="number"step="0.01" name="price"  value="${stock.price}" required/></td>
-                            <td class="actions">
-                                <button type="submit" name="action" value="update">Update</button>
-                                <button type="submit" name="action" value="delete">Delete</button>
-                            </td>
-                        </form>
-                    </tr>
-                </c:forEach>
-            </tbody>
-</table>
-</body>
+    </body>
 </html>

@@ -4,7 +4,7 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>Stock List</title>
+        <title>User List</title>
         <style>
             body {
                 font-family: Arial;

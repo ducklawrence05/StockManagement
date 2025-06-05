@@ -31,27 +31,31 @@ public class StockDAO {
         }
     }
     // create
-    public String create(Stock s) throws SQLException{
-        try(Connection conn = DBContext.getConnection(); PreparedStatement ps = conn.prepareStatement(ADD_STOCK)){
+    public String create(Stock s) throws SQLException {
+        try (Connection conn = DBContext.getConnection();
+            PreparedStatement ps = conn.prepareStatement(ADD_STOCK)) {
             ps.setString(1, s.getTicker());
             ps.setString(2, s.getName());
             ps.setString(3, s.getSector());
             ps.setFloat(4, s.getPrice());
             ps.setBoolean(4, s.isStatus());
-            if(ps.executeUpdate()<=0){
+            ps.setFloat(4, s.getPrice());
+            ps.setBoolean(5, s.isStatus());
+            if(ps.executeUpdate() <= 0) {
                 return Message.CREATE_STOCK_FAILED;
+            } else {
+                return Message.CREATE_STOCK_SUCCESSFULLY;
             }
-            else{return Message.CREATE_STOCK_SUCCESSFULLY;}
         }
     }
     // delete
-    public String delete(String ticker) throws SQLException{
-        try(Connection conn = DBContext.getConnection(); PreparedStatement ps = conn.prepareStatement(DELETE_STOCK)){
+    public String delete(String ticker) throws SQLException {
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement ps = conn.prepareStatement(DELETE_STOCK)) {
             ps.setString(1, ticker);
-            if(ps.executeUpdate()>0){
+            if (ps.executeUpdate() > 0) {
                 return Message.DELETE_STOCK_SUCCESSFULLY;
-            }
-            else{
+            } else {
                 return Message.DELETE_STOCK_FAILED;
             }
         }

@@ -84,7 +84,7 @@ public class AlertDAO {
         boolean isCreated = false;
         try ( Connection conn = DBContext.getConnection();  PreparedStatement stm = conn.prepareStatement(CREATE_ALERT);) {
             stm.setString(1, userID);
-            stm.setString(2, ticker);
+            stm.setString(2, ticker.toUpperCase());
             stm.setFloat(3, threshold);
             stm.setString(4, direction);
             isCreated = stm.executeUpdate() > 0;

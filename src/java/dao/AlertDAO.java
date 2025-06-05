@@ -67,8 +67,10 @@ public class AlertDAO {
     public ArrayList<Alert> SearchAlertByKeyword(String sql, String keyword) throws SQLException{
         ArrayList<Alert> resultList = new ArrayList<>();
         try ( Connection conn = DBContext.getConnection();  
-                PreparedStatement stm = conn.prepareStatement(sql);) {
-            stm.setString(1, keyword);
+                PreparedStatement stm = conn.prepareStatement(sql)) {
+            if(sql.equalsIgnoreCase("SELECT * FROM tblAlerts WHERE  ticker LIKE ?")){
+                stm.setString(1, "%" + keyword + "%");
+            }else stm.setString(1, keyword);
             try ( ResultSet rs = stm.executeQuery();) {
                 while (rs.next()) {
                     resultList.add(mapThrows(rs));
@@ -82,7 +84,7 @@ public class AlertDAO {
         boolean isCreated = false;
         try ( Connection conn = DBContext.getConnection();  PreparedStatement stm = conn.prepareStatement(CREATE_ALERT);) {
             stm.setString(1, userID);
-            stm.setString(2, ticker);
+            stm.setString(2, ticker.toUpperCase());
             stm.setFloat(3, threshold);
             stm.setString(4, direction);
             isCreated = stm.executeUpdate() > 0;

@@ -11,8 +11,10 @@ package constant;
 public class Message {
     // System
     public static final String SYSTEM_ERROR = "System error";
+    public static final String UNAUTHENTICATION = "You are not authenticated. Please log in.";
     public static final String UNAUTHORIZED = "You do not have permission to access this function.";
-    public static final String ACTION_NOT_FOUND = "Action not found.";
+    public static final String CONTROLLER_NOT_FOUND = "Controller not found.";
+    public static final String ALL_FIELDS_ARE_REQUIRED = "All fields are required.";
     
     // User
     public static final String PASSWORD_NOT_MATCH_CONFIRM_PASSWORD = "Password not match confirm password!";
@@ -43,9 +45,26 @@ public class Message {
     public static final String DELETE_STOCK_SUCCESSFULLY = "Delete stock successfully";
 
     // Transaction
+    public static final String TRANSACTION_ID_IS_EXISTED = "Transaction ID is existed";
+    public static final String CREATE_TRANSACTION_SUCCESSFULLY = "Create Transaction successfully";
+    public static final String CREATE_TRANSACTION_FAILED = "Create Transaction failed";
+    public static final String UPDATE_TRANSACTION_SUCCESSFULLY = "UPDATE Transaction successfully";
+    public static final String UPDATE_TRANSACTION_FAILED = "UPDATE Transaction failed";
+    public static final String DELETE_TRANSACTION_SUCCESSFULLY = "UPDATE Transaction successfully";
+    public static final String TRANSACTION_NOT_FOUND = "TRANSACTION not found";
     
     
     // Alert
+    public static final String CREATE_ALERT_SUCCESSFULLY = "Create alert successfully";
+    public static final String CREATE_ALERT_FAILED = "Create alert failed";
+    public static final String UPDATE_ALERT_SUCCESSFULLY = "Update alert successfully";
+    public static final String UPDATE_ALERT_FAILED = "Update alert failed";
+    public static final String DELETE_ALERT_SUCCESSFULLY = "Delete alert successfully";
+    public static final String DELETE_ALERT_FAILED = "Delete alert failed";
+    public static final String ALERT_NOT_FOUND = "Alert not found";
+    public static final String ALERT_FOUND = "Alert found";
+    public static final String IS_NOT_CREATOR = "You are not the creator of this alert";
+    public static final String THRESHOLD_CAN_NOT_BE_NEGATIVE = "Thrshold can not be negative";
+    public static final String ALERT_STATUS_IS_ACTIVE = "Alert status is active, can not update or delete";
     
-
 }

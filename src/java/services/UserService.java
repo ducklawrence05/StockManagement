@@ -36,11 +36,19 @@ public class UserService {
     }
     
     public List<User> getUsersByName(String name) throws SQLException {
-        return userDAO.getUsersByID(name);
+        return userDAO.getUsersByName(name);
     }
     
     public String createUser(String userID, String fullName, Role role,
             String password, String confirmPassword) throws SQLException{
+        if(isNullOrEmptyString(userID) 
+                || isNullOrEmptyString(fullName)
+                || role == null
+                || isNullOrEmptyString(password)
+                || isNullOrEmptyString(confirmPassword)){
+            return Message.ALL_FIELDS_ARE_REQUIRED;
+        }
+        
         if(userDAO.checkUserExists(userID)){
             return Message.USER_ID_IS_EXISTED;
         }
@@ -65,10 +73,6 @@ public class UserService {
         
         User user = userDAO.getUserByID(userID, false);
         
-        if(fullName == null || fullName.isEmpty()){
-            fullName = user.getFullName();
-        }
-        
         if(!isNullOrEmptyString(oldPassword) 
             && (isNullOrEmptyString(password) 
                 || isNullOrEmptyString(confirmPassword))){
@@ -85,6 +89,14 @@ public class UserService {
             && !isNullOrEmptyString(confirmPassword)
             && !checkConfirmPassword(password, confirmPassword)){
             return Message.PASSWORD_NOT_MATCH_CONFIRM_PASSWORD;
+        }
+        
+        if(isNullOrEmptyString(fullName)){
+            fullName = user.getFullName();
+        }
+        
+        if(role == null) {
+            role = user.getRole();
         }
         
         if(isNullOrEmptyString(password)){

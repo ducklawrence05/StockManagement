@@ -9,12 +9,11 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Admin Page</title>
+        <title>Welcome Page</title>
     </head>
     <body>
-        <h1>Admin page</h1>
+        <h1>Staff page</h1>
         <h1>Welcome <c:out value="${sessionScope.currentUser.fullName}"/></h1>
-        <a href="${pageContext.request.contextPath}/main/user">User List</a><br />
         <a href="${pageContext.request.contextPath}/main/stock">Stock List</a><br />
         <a href="${pageContext.request.contextPath}/main/alert">Alert List</a><br />
         <a href="${pageContext.request.contextPath}/main/transaction">Transaction List</a>

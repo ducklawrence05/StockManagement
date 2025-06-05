@@ -87,7 +87,7 @@ public class TransactionDAO {
         return resultList;
     }
     
-    public boolean createTransaction(int id, String userID, String ticker,
+    public boolean createTransaction(String userID, String ticker,
             String type, int quantity, float price, String status) throws Exception {
         boolean isCreated = false;
         try ( Connection conn = DBContext.getConnection()) {
@@ -124,12 +124,12 @@ public class TransactionDAO {
         return isUpdated;
     }
 
-    public boolean deleteTransaction(String userID) throws SQLException {
+    public boolean deleteTransaction(String id) throws SQLException {
         boolean isDelete = false;
         try ( Connection conn = DBContext.getConnection()) {
             if (conn != null) {
                 PreparedStatement stm = conn.prepareStatement(DELATE_TRANSACTION);
-                stm.setString(1, userID);
+                stm.setString(1, id);
                 isDelete = stm.executeUpdate() > 0;
             }
             return isDelete;
@@ -142,5 +142,12 @@ public class TransactionDAO {
                             rs.getString("type"), rs.getInt("quantity"),
                             rs.getFloat("price"), rs.getString("status")
         );
+    }
+    
+    public boolean checkTransactionExists(String id) throws SQLException {
+        try ( Connection conn = DBContext.getConnection();  PreparedStatement stm = conn.prepareStatement(GET_TRANSACTION_BY_ID)) {
+            stm.setString(1, id);
+            return stm.executeQuery().next();
+        }
     }
 }

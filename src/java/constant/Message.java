@@ -51,7 +51,7 @@ public class Message {
     public static final String UPDATE_ALERT_SUCCESSFULLY = "Update alert successfully";
     public static final String UPDATE_ALERT_FAILED = "Update alert failed";
     public static final String DELETE_ALERT_SUCCESSFULLY = "Delete alert successfully";
-    public static final String DELETE_ALERT_FAILED = "Delete alert failed";
+    public static final String DELETE_ALERT_FAILED = "Delete alert failed: ";
     public static final String ALERT_NOT_FOUND = "Alert not found";
     public static final String ALERT_FOUND = "Alert found";
     public static final String IS_NOT_CREATOR = "You are not the creator of this alert";

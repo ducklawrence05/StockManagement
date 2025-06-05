@@ -37,8 +37,7 @@
             <button type="submit" name="action" value="create">Create Alert</button> 
         </form>
 
-        <a href="transactionList.jsp">Go to Transaction History</a><br/>
-        <a href="stockList.jsp">Go to Stock List</a><br/>
+        
 
         <form action="${pageContext.request.contextPath}/main/alert" method="GET">
             <label for="keySearch">Search By:</label>

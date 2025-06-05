@@ -9,9 +9,7 @@ import constant.Message;
 import constant.Role;
 import constant.Url;
 import dto.Stock;
-import dto.User;
 import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -55,7 +53,7 @@ public class StockController extends HttpServlet {
                 break;
             }
             case ORDER_BY_PRICE: {
-                stocks = getAllStocks(request, response);
+                stocks = findAllOrderByPrice(request, response);
                 break;
             }
             case SEARCH_BY_PRICE: {
@@ -76,7 +74,7 @@ public class StockController extends HttpServlet {
             }
         }
         
-        request.setAttribute("stocks", stocks);
+            request.setAttribute("stocks", stocks);
         request.getRequestDispatcher(Url.STOCK_LIST_PAGE).forward(request, response);
     } 
 
@@ -98,7 +96,9 @@ public class StockController extends HttpServlet {
                 }
                 case UPDATE: {
                     updateStock(request, response);
-                    url = Url.UPDATE_STOCK_PAGE;
+                    List<Stock> allList = stockService.getAllStock();
+                    request.setAttribute("stocks", allList);
+                    url = Url.STOCK_LIST_PAGE;
                     break;
                 }
                 case DELETE: {
@@ -141,8 +141,8 @@ public class StockController extends HttpServlet {
     private List<Stock> searchbyPrice(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException{
         try {
-            int min = Integer.parseInt(request.getParameter("min")) ;
-            int max = Integer.parseInt(request.getParameter("max"));
+            int min = Integer.parseInt(request.getParameter("minPrice")) ;
+            int max = Integer.parseInt(request.getParameter("maxPrice"));
             return stockService.searchbyPrice(min, max);
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -187,7 +187,7 @@ public class StockController extends HttpServlet {
             throws ServletException, IOException, SQLException{
         boolean status;
         String ticker = (String)request.getParameter("ticker");
-        String name = (String)request.getParameter("ticker");
+        String name = (String)request.getParameter("name");
         String sector = (String)request.getParameter("sector");
         float price = (float)Integer.parseInt(request.getParameter("price"));
         int statusRaw = Integer.parseInt(request.getParameter("status")) ;
@@ -203,12 +203,20 @@ public class StockController extends HttpServlet {
     }
 
     private void updateStock(HttpServletRequest request, HttpServletResponse response) 
-            throws ServletException, IOException, SQLException, NumberFormatException{
-        boolean isSuccesfull;
-        String name = (String)request.getParameter("name");
-        List<Stock> list = stockService.searchByName(name);
-        Stock stock = list.get(0);
-        String message = stockService.update(stock);
+        throws ServletException, IOException, SQLException, NumberFormatException {
+        // 1. Lấy param từ form
+        String tickerParam = request.getParameter("ticker");
+        String nameParam   = request.getParameter("name");
+        String sectorParam = request.getParameter("sector");
+        String priceStr    = request.getParameter("price");
+        String statusStr   = request.getParameter("status");
+        float priceParam = 0f;
+        if (priceStr != null && !priceStr.isEmpty()) {
+            priceParam = Float.parseFloat(priceStr);
+        }
+        boolean statusParam = "1".equals(statusStr);
+        Stock updatedStock = new Stock(tickerParam, nameParam, sectorParam, priceParam, statusParam);
+        String message = stockService.update(updatedStock);
         request.setAttribute("MSG", message);
     }
 

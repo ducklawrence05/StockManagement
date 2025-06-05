@@ -9,7 +9,6 @@
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
     </head>
     <body>
-
         <div class="staff-container">
             <h1>Welcome Page</h1>
             <h4>Welcome <c:out value="${sessionScope.currentUser.fullName}" /></h4>

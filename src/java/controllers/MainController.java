@@ -8,7 +8,6 @@ package controllers;
 import constant.Message;
 import constant.Url;
 import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -28,6 +27,7 @@ public class MainController extends HttpServlet {
     private final String AUTH = "auth";
     private final String USER = "user";
     private final String STOCK = "stock";
+    private final String TRANSACTION = "transaction";
     private final String ALERT = "alert";
     
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
@@ -67,6 +67,10 @@ public class MainController extends HttpServlet {
                         url = Url.STOCK_CONTROLLER;
                         break;
                     }
+                    case TRANSACTION: {
+                        url = Url.TRANSACTION_CONTROLLER;
+                        break;
+                    }
                     case ALERT:{
                         url = Url.ALERT_CONTROLLER;
                         break;
@@ -80,7 +84,7 @@ public class MainController extends HttpServlet {
                 }
             }
         } catch (Exception e) {
-            request.setAttribute("MSG", Message.ACTION_NOT_FOUND);
+            request.setAttribute("MSG", Message.CONTROLLER_NOT_FOUND);
         } finally {
             request.getRequestDispatcher(url).forward(request, response);
         }

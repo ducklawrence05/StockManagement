@@ -8,7 +8,6 @@ import constant.Message;
 import constant.Role;
 import constant.Url;
 import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -18,10 +17,8 @@ import java.util.List;
 import services.AlertService;
 import utils.AuthUtils;
 import dto.Alert;
-import jakarta.websocket.Session;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import services.UserService;
 
 /**
  *
@@ -49,7 +46,7 @@ public class AlertController extends HttpServlet {
         }
 
         String action = request.getParameter("action");
-        if (action == null) {
+        if (action == null || action.equals("")) {
             action = GET_ALL_ALERTS;
         }
 
@@ -90,9 +87,9 @@ public class AlertController extends HttpServlet {
         }
 
         if (action.equals(GET_ALERT_BY_ID)) {
-            request.setAttribute("user", alerts.get(0));
+            request.setAttribute("alerts", alerts.get(0));
         } else {
-            request.setAttribute("users", alerts);
+            request.setAttribute("alerts", alerts);
         }
 
         request.getRequestDispatcher(url).forward(request, response);
@@ -129,7 +126,7 @@ public class AlertController extends HttpServlet {
                 }
             }
 
-            request.setAttribute("users", alertService.getAllAlerts());
+            request.setAttribute("alerts", alertService.getAllAlerts());
             request.getRequestDispatcher(url).forward(request, response);
         } catch (NumberFormatException | SQLException ex) {
             ex.printStackTrace();

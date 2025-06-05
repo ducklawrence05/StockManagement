@@ -13,14 +13,12 @@
     </head>
     <body>
         <h1>Create Stock</h1>
-        <form action="main" method="POST">
-            <input type="hidden" name="entity" value="stock" />
-            <input type="hidden" name="action" value="create" />
+        <form action="MainController" method="POST">
             Ticker <input type="text" placeholder="Enter ticker" name="ticker" /><br/>
             Name <input type="text" placeholder="Enter name" name="name" /><br/>
             Sector <input type="text" placeholder="Enter sector" name="sector" /><br/>
             Price <input type="text" placeholder="Enter price" name="price" /><br/>
-            <input type="submit" value="Create" /><br/>
+            <input type="submit" name="action" value="Create" /><br/>
             <a href="stockList.jsp">Back</a></br>
         </form>
         <% String msg = (String) request.getAttribute("MSG"); %>

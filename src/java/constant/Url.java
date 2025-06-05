@@ -26,7 +26,7 @@ public class Url {
     
     // Transaction
     public static final String TRANSACTION_LIST_PAGE = "/transactionList.jsp";
-    public static final String ADD_TRANSACTION_PAGE = "/addTransaction.jsp";
+    public static final String CREATE_TRANSACTION_PAGE = "/createTransaction.jsp";
     public static final String UPDATE_TRANSACTION_PAGE = "/updateTransaction.jsp";
     
     // Alert

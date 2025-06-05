@@ -131,7 +131,7 @@ public class UserController extends HttpServlet {
         try {
             String userID = request.getParameter("userID");
             User user = userService.getUserByID(userID);
-            if (user == null) {
+            if (user == null) { 
                 request.setAttribute("MSG", Message.USER_NOT_FOUND);
                 user = new User();
             } 

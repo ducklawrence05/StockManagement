@@ -43,7 +43,7 @@
             <input type="submit" value="LOGOUT" />
         </form>
 
-        <p style="color: green;">${requestScope.MSG}</p>
+         <p style="color: green;">${requestScope.MSG}</p> 
         <hr />
 
         <form action="${pageContext.request.contextPath}/main/user" method="GET">

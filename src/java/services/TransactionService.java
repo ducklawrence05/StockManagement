@@ -23,17 +23,14 @@ public class TransactionService {
     
     public String  createTransaction(String userID, String ticker,
             String type, int quantity, float price, String status)throws SQLException, Exception{
-        if(userDAO.checkUserExists(userID)){
-            return Message.TRANSACTION_ID_IS_EXISTED;
-        }
         
-        if(transactionDAO.createTransaction(userID, ticker, type, quantity, price, status) == false){
+        if(transactionDAO.createTransaction(userID, ticker, type, quantity, price, status)){
             return Message.CREATE_TRANSACTION_FAILED;
         }
         return Message.CREATE_TRANSACTION_SUCCESSFULLY;
     }
     
-    public String updateTransaction(String id,String userID, String sticker, String type,
+    public String updateTransaction(int id,String userID, String sticker, String type,
             int quantity, float  price, String status) throws SQLException, Exception{
         if(!transactionDAO.checkTransactionExists(id)){
             return Message.TRANSACTION_NOT_FOUND;
@@ -41,7 +38,7 @@ public class TransactionService {
         
         Transaction transaction = transactionDAO.getTransactionByID(id);
         
-        if(userID == null || userID.isEmpty()){
+        if(isNullOrEmptyString(userID)){
             userID = transaction.getUserID();
         }
         
@@ -53,11 +50,11 @@ public class TransactionService {
             type = transaction.getType();
         }
         
-        if(quantity == 0 || quantity < 0){
+        if(quantity == 0){
             quantity = transaction.getQuantity();
         }
         
-        if(price == 0.0 || price < 0){  // if price < 0 ?
+        if(price == 0.0){
             price = transaction.getPrice();
         }
         
@@ -65,7 +62,7 @@ public class TransactionService {
             status = transaction.getStatus();
         }
         
-        if(transactionDAO.updateTransaction(userID, sticker, type, quantity, price, status) == false){
+        if(transactionDAO.updateTransaction(id,userID, sticker, type, quantity, price, status) == false){
             return Message.UPDATE_TRANSACTION_FAILED;
         }
         
@@ -85,11 +82,11 @@ public class TransactionService {
         return transactionDAO.getAllTransaction();
     }
     
-    public Transaction getTransactionByID (String id) throws SQLException{
+    public Transaction getTransactionByID (int id) throws SQLException{
         return transactionDAO.getTransactionByID(id);
     }
     
-    public List<Transaction> getTransactionsByID(String id) throws SQLException{
+    public List<Transaction> getTransactionsByUserID(String id) throws SQLException{
         List resultList = null;
         if(!id.isEmpty()){
             resultList = transactionDAO.searchByUserID(id);
@@ -98,25 +95,27 @@ public class TransactionService {
     }
     
     public List<Transaction> getTransactionByType(String type) throws SQLException{
-        List resultList = null;
-        if(!type.isEmpty()){
-            resultList = transactionDAO.searchByUserID(type);
-        }
-        return resultList;
+//        List resultList = null;
+//        if(!type.isEmpty()){
+//            resultList = transactionDAO.searchByType(type);
+//        }
+//        return resultList;
+            return transactionDAO.searchByType(type);
     }
     
     public List<Transaction> getTransactionByTicker(String ticker) throws SQLException{
-        List resultList = null;
-        if(!ticker.isEmpty()){
-            resultList = transactionDAO.searchByUserID(ticker);
-        }
-        return resultList;
+//        List resultList = null;
+//        if(!ticker.isEmpty()){
+//            resultList = transactionDAO.searchByTicker(ticker);
+//        }
+//        return resultList;
+            return transactionDAO.searchByTicker(ticker);
     }
     
      public List<Transaction> getTransactionByStatus(String status) throws SQLException{
         List resultList = null;
         if(!status.isEmpty()){
-            resultList = transactionDAO.searchByUserID(status);
+            resultList = transactionDAO.searchByStatus(status);
         }
         return resultList;
     }

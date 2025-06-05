@@ -14,8 +14,8 @@
     <body>
         <h1>Staff page</h1>
         <h1>Welcome <c:out value="${sessionScope.currentUser.fullName}"/></h1>
-        <a href="${pageContext.request.contextPath}/stock">Stock List</a><br />
-        <a href="${pageContext.request.contextPath}/alert">Alert List</a><br />
-        <a href="${pageContext.request.contextPath}/transaction">Transaction List</a>
+        <a href="${pageContext.request.contextPath}/main/stock">Stock List</a><br />
+        <a href="${pageContext.request.contextPath}/main/alert">Alert List</a><br />
+        <a href="${pageContext.request.contextPath}/main/transaction">Transaction List</a>
     </body>
 </html>

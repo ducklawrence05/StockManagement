@@ -13,7 +13,7 @@ public class Message {
     public static final String SYSTEM_ERROR = "System error";
     public static final String UNAUTHENTICATION = "You are not authenticated. Please log in.";
     public static final String UNAUTHORIZED = "You do not have permission to access this function.";
-    public static final String ACTION_NOT_FOUND = "Action not found.";
+    public static final String CONTROLLER_NOT_FOUND = "Controller not found.";
     public static final String ALL_FIELDS_ARE_REQUIRED = "All fields are required.";
     
     // User

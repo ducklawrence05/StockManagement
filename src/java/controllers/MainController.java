@@ -85,7 +85,7 @@ public class MainController extends HttpServlet {
                 }
             }
         } catch (Exception e) {
-            request.setAttribute("MSG", Message.ACTION_NOT_FOUND);
+            request.setAttribute("MSG", Message.CONTROLLER_NOT_FOUND);
         } finally {
             request.getRequestDispatcher(url).forward(request, response);
         }

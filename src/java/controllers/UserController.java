@@ -136,8 +136,6 @@ public class UserController extends HttpServlet {
             if (user == null) {
                 user = new User();
                 request.setAttribute("MSG", Message.USER_NOT_FOUND);
-            } else {
-                request.setAttribute("MSG", Message.USER_FOUND);
             }
             return user;
         } catch (SQLException ex) {

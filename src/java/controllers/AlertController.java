@@ -237,8 +237,10 @@ public class AlertController extends HttpServlet {
             String message = alertService.updateAlert(alertID, threshold, status);
             request.setAttribute("alert", new Alert(alertID, userID, ticker, threshold, direction, status));
             request.setAttribute("MSG", message);
-            boolean can = true;
-            request.setAttribute("can", can);
+            if(status.equalsIgnoreCase("inactive")){
+                boolean can = true;
+                request.setAttribute("can", can);
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
             request.setAttribute("MSG", Message.SYSTEM_ERROR);

@@ -38,6 +38,7 @@
         </style>
     </head>
     <body>
+        
         <h1>Welcome, <c:out value="${sessionScope.currentUser.fullName}"/></h1>
         <form action="${pageContext.request.contextPath}/main/auth/logout" method="POST">
             <input type="submit" value="LOGOUT" />

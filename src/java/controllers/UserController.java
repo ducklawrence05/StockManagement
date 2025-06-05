@@ -56,6 +56,8 @@ public class UserController extends HttpServlet {
             }
             case UPDATE: {
                 url = Url.UPDATE_USER_PAGE;
+                User user = getUserByID(request, response);
+                request.setAttribute("user", user);
                 break;
             }
             case GET_USER_BY_ID:{

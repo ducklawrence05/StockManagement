@@ -51,27 +51,27 @@ public class StockController extends HttpServlet {
         List<Stock> stocks = null;
         switch(action) {
             case GET_ALL: {
-                
+                stocks = getAllStocks(request, response);
                 break;
             }
             case ORDER_BY_PRICE: {
-                
+                stocks = getAllStocks(request, response);
                 break;
             }
             case SEARCH_BY_PRICE: {
-                
+                stocks = searchbyPrice(request, response);
                 break;
             }
             case SEARCH_BY_NAME: {
-                
+                stocks = searchbyName(request, response);
                 break;
             }
             case SEARCH_BY_TICKER: {
-                
+                stocks = searchbyTicker(request, response);
                 break;
             }
             case SEARCH_BY_SECTOR: {
-                
+                stocks = searchbySector(request, response);
                 break;
             }
         }
@@ -86,7 +86,35 @@ public class StockController extends HttpServlet {
         if (!AuthUtils.checkAuthorization(request, response, Role.ADMIN)) {
             return;
         }
-        
+        String action = request.getParameter("action");
+        if (action == null) action = "";
+        String url = Url.STOCK_LIST_PAGE;
+        try {
+            switch (action) {
+                case CREATE: {
+                    createStock(request, response);
+                    url = Url.ADD_STOCK_PAGE;
+                    break;
+                }
+                case UPDATE: {
+                    updateStock(request, response);
+                    url = Url.UPDATE_STOCK_PAGE;
+                    break;
+                }
+                case DELETE: {
+                    deleteStock(request, response);
+                    break;
+                }
+            }
+            
+            request.setAttribute("stocks", stockService.getAllStock());
+            request.setAttribute("roleList", Role.values());
+            request.getRequestDispatcher(url).forward(request, response);
+        } catch (NumberFormatException | SQLException ex) {
+            ex.printStackTrace();
+            request.setAttribute("MSG", Message.SYSTEM_ERROR);
+            request.getRequestDispatcher(Url.ERROR_PAGE).forward(request, response);
+        }
     }
     private List<Stock> getAllStocks(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -98,16 +126,96 @@ public class StockController extends HttpServlet {
         }
         return null;
     }
-//    
-//    private List<Stock> findAllOrderByPrice(HttpServletRequest request, HttpServletResponse response)
-//            throws ServletException, IOException {
-//        try {
-//            String userID = request.getParameter("userID");
-//            return userService.getUsersByID(userID);
-//        } catch (SQLException ex) {
-//            ex.printStackTrace();
-//            request.setAttribute("MSG", Message.SYSTEM_ERROR);
-//        }
-//        return null;
-//    }
+    
+    private List<Stock> findAllOrderByPrice(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            String order = request.getParameter("order");
+            return stockService.findAllOrderByPrice(order);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            request.setAttribute("MSG", Message.EMTY_STOCK_LIST);
+        }
+        return null;
+    }
+    private List<Stock> searchbyPrice(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException{
+        try {
+            int min = Integer.parseInt(request.getParameter("min")) ;
+            int max = Integer.parseInt(request.getParameter("max"));
+            return stockService.searchbyPrice(min, max);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            request.setAttribute("MSG", Message.EMTY_STOCK_PRICE);
+        }
+        return null;
+    }
+    private List<Stock> searchbyName(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException{
+        try {
+            String name = (String)request.getParameter("name");
+            return stockService.searchByName(name);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            request.setAttribute("MSG", Message.STOCK_NOT_FOUND);
+        }
+        return null;
+    }
+    private List<Stock> searchbyTicker(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException{
+        try {
+            String ticker = (String)request.getParameter("ticker");
+            return stockService.searchByTicker(ticker);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            request.setAttribute("MSG", Message.TICKER_NOT_FOUND);
+        }
+        return null;
+    }
+    private List<Stock> searchbySector(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException{
+        try {
+            String sector = (String)request.getParameter("sector");
+            return stockService.searchBySector(sector);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            request.setAttribute("MSG", Message.SECTOR_NOT_FOUND);
+        }
+        return null;
+    }
+    private void createStock(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException, SQLException{
+        boolean status;
+        String ticker = (String)request.getParameter("ticker");
+        String name = (String)request.getParameter("ticker");
+        String sector = (String)request.getParameter("sector");
+        float price = (float)Integer.parseInt(request.getParameter("price"));
+        int statusRaw = Integer.parseInt(request.getParameter("status")) ;
+        if(statusRaw == 1){
+            status=true;
+        }
+        else{
+            status=false;
+        }
+        Stock stock = new Stock(ticker, name, sector, price, status);
+        String message = stockService.create(stock);
+        request.setAttribute("MSG", message);
+    }
+
+    private void updateStock(HttpServletRequest request, HttpServletResponse response) 
+            throws ServletException, IOException, SQLException, NumberFormatException{
+        boolean isSuccesfull;
+        String name = (String)request.getParameter("name");
+        List<Stock> list = stockService.searchByName(name);
+        Stock stock = list.get(0);
+        String message = stockService.update(stock);
+        request.setAttribute("MSG", message);
+    }
+
+    private void  deleteStock(HttpServletRequest request, HttpServletResponse response) 
+            throws ServletException, IOException, SQLException, NumberFormatException{
+        String ticker = (String)request.getParameter("ticker");
+        String message = stockService.delete(ticker);
+        request.setAttribute("MSG", message);
+    }
 }

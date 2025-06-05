@@ -4,7 +4,7 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>Stock List</title>
+        <title>User List</title>
         <style>
             body {
                 font-family: Arial;
@@ -38,20 +38,35 @@
         </style>
     </head>
     <body>
+        
         <h1>Welcome, <c:out value="${sessionScope.currentUser.fullName}"/></h1>
+        <a 
+            href="${pageContext.request.contextPath}/user"
+            style="text-decoration: none; color: black"
+        >User CRUD</a>
+        <hr />
         <form action="${pageContext.request.contextPath}/main/auth/logout" method="POST">
             <input type="submit" value="LOGOUT" />
         </form>
-
-        <p style="color: green;">${requestScope.MSG}</p>
         <hr />
 
         <form action="${pageContext.request.contextPath}/main/user" method="GET">
-            <button type="submit" name="action" value="create">Create user</button> |
-            <button type="submit" name="action" value="update">Update user</button>
+            <button type="submit" name="action" value="create">Create user</button>
         </form>
 
         <hr />
+        
+        <form action="${pageContext.request.contextPath}/main/user" method="GET">
+            <label for="keySearch">Search</label>
+            <input type="text" id="keySearch" name="keySearch" placeholder="Search..." required/> |
+
+            <select name="action">
+                <option value="getUsersByID">Search by ID</option>
+                <option value="getUsersByName">Search by Name</option>
+            </select> |
+
+            <button type="submit">Search</button>
+        </form>
 
         <c:if test="${empty users}">
             <p>No matching users found!</p>
@@ -76,7 +91,19 @@
                         <td>${user.fullName}</td>
                         <td>${user.role}</td>
                         <td class="actions">
-                            <form action="${pageContext.request.contextPath}/main/user/delete" method="POST">
+                            <form 
+                                style="display: inline"
+                                action="${pageContext.request.contextPath}/main/user/update" 
+                                method="GET"
+                            >
+                                <button type="submit" name="userID" value="${user.userID}">Update</button>
+                            </form> | 
+                            <form 
+                                style="display: inline"
+                                action="${pageContext.request.contextPath}/main/user/delete" 
+                                method="POST"
+                                onsubmit="return confirm('Delete this user?');"
+                            >
                                 <button type="submit" name="userID" value="${user.userID}">Delete</button>
                             </form>
                         </td>

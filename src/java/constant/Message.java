@@ -24,12 +24,25 @@ public class Message {
     public static final String UPDATE_USER_SUCCESSFULLY = "Update user successfully";
     public static final String UPDATE_USER_FAILED = "Update user failed";
     public static final String DELETE_USER_SUCCESSFULLY = "Delete user successfully";
+    public static final String USER_FOUND = "User found";
     public static final String USER_NOT_FOUND = "User not found";
     public static final String INVALID_USER_ID_OR_PASSWORD = "Invalid user ID or password.";
-    
+
     // Stock
-    
-    
+    public static final String EMTY_STOCK_LIST = "Not found any stock.";
+    public static final String EMTY_STOCK_PRICE = "Not found any stock in range.";
+    public static final String STOCK_NOT_FOUND = "Stock not found";
+    public static final String TICKER_NOT_FOUND = "Ticker not found";
+    public static final String SECTOR_NOT_FOUND = "Sector not found";
+    public static final String STOCK_TICKER_IS_EXISTED = "Stock ticker is existed";
+    public static final String STOCK_PRICE_UNDER_LIMIT = "Price is under limit";
+    public static final String CREATE_STOCK_SUCCESSFULLY = "Create stock successfully";
+    public static final String CREATE_STOCK_FAILED = "Create stock failed";
+    public static final String UPDATE_STOCK_FAILED = "Update stock failed";
+    public static final String UPDATE_STOCK_SUCCESSFULLY = "Update stock successfully";
+    public static final String DELETE_STOCK_FAILED = "Delete stock failed";
+    public static final String DELETE_STOCK_SUCCESSFULLY = "Delete stock successfully";
+
     // Transaction
     public static final String TRANSACTION_ID_IS_EXISTED = "Transaction ID is existed";
     public static final String CREATE_TRANSACTION_SUCCESSFULLY = "Create Transaction successfully";
@@ -40,6 +53,17 @@ public class Message {
     public static final String TRANSACTION_NOT_FOUND = "TRANSACTION not found";
     
     
-    // Stock
+    // Alert
+    public static final String CREATE_ALERT_SUCCESSFULLY = "Create alert successfully";
+    public static final String CREATE_ALERT_FAILED = "Create alert failed";
+    public static final String UPDATE_ALERT_SUCCESSFULLY = "Update alert successfully";
+    public static final String UPDATE_ALERT_FAILED = "Update alert failed";
+    public static final String DELETE_ALERT_SUCCESSFULLY = "Delete alert successfully";
+    public static final String DELETE_ALERT_FAILED = "Delete alert failed";
+    public static final String ALERT_NOT_FOUND = "Alert not found";
+    public static final String ALERT_FOUND = "Alert found";
+    public static final String IS_NOT_CREATOR = "You are not the creator of this alert";
+    public static final String THRESHOLD_CAN_NOT_BE_NEGATIVE = "Thrshold can not be negative";
+    public static final String ALERT_STATUS_IS_ACTIVE = "Alert status is active, can not update or delete";
     
 }

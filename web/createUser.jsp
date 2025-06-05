@@ -6,54 +6,11 @@
         <meta charset="UTF-8" />
         <title>Create User Page</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-        <style>
-            body {
-                background-color: #f8f9fa;
-                padding: 40px 20px;
-            }
-            .create-user-container {
-                max-width: 500px;
-                margin: auto;
-                background: white;
-                padding: 30px 40px;
-                border-radius: 10px;
-                box-shadow: 0 0 15px rgba(0,0,0,0.1);
-            }
-            h1, h3 {
-                text-align: center;
-                margin-bottom: 30px;
-            }
-            .logout-btn {
-                display: block;
-                width: 100%;
-                margin-bottom: 30px;
-            }
-            .message {
-                color: green;
-                text-align: center;
-                margin-bottom: 20px;
-            }
-            label {
-                font-weight: 600;
-            }
-            input, select {
-                margin-bottom: 20px;
-            }
-            a.back-link {
-                display: block;
-                text-align: center;
-                margin-top: 20px;
-                color: #0d6efd;
-                text-decoration: none;
-            }
-            a.back-link:hover {
-                text-decoration: underline;
-            }
-        </style>
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
     </head>
     <body>
-        <div class="create-user-container">
-            <h1>Welcome, <c:out value="${sessionScope.currentUser.fullName}" /></h1>
+        <div class="post-user-container">
+            <h3>Welcome, <c:out value="${sessionScope.currentUser.fullName}" /></h3>
 
             <form action="${pageContext.request.contextPath}/main/auth/logout" method="POST">
                 <input type="submit" class="btn btn-danger logout-btn" value="LOGOUT" />

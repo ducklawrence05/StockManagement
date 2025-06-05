@@ -6,25 +6,14 @@
         <meta charset="UTF-8">
         <title>User List</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
         <style>
             body {
-                background-color: #f8f9fa;
                 padding: 30px;
-            }
-            .table-actions form {
-                display: inline;
-            }
-            .table th, .table td {
-                vertical-align: middle;
-                white-space: nowrap;
-            }
-            .table td.actions {
-                text-align: center;
             }
         </style>
     </head>
     <body>
-
         <div class="container bg-white p-4 rounded shadow-sm">
             <h2 class="mb-4">Welcome, <c:out value="${sessionScope.currentUser.fullName}" /></h2>
 
@@ -80,14 +69,14 @@
                                     <form 
                                         action="${pageContext.request.contextPath}/main/user/update" 
                                         method="GET"
-                                    >
+                                        >
                                         <button type="submit" name="userID" value="${user.userID}" class="btn btn-sm btn-warning">Update</button>
                                     </form>
                                     <form 
                                         action="${pageContext.request.contextPath}/main/user/delete" 
                                         method="POST" 
                                         onsubmit="return confirm('Delete this user?');"
-                                    >
+                                        >
                                         <button type="submit" name="userID" value="${user.userID}" class="btn btn-sm btn-danger">Delete</button>
                                     </form>
                                 </td>
@@ -96,6 +85,16 @@
                     </tbody>
                 </table>
             </c:if>
+
+            <!-- Back to home -->
+            <c:choose>
+                <c:when test="${sessionScope.currentUser.role.name() == 'ADMIN'}">
+                    <a href="${pageContext.request.contextPath}/admin.jsp" class="btn btn-outline-primary mt-3">Back to admin page</a>
+                </c:when>
+                <c:when test="${sessionScope.currentUser.role.name() == 'STAFF'}">
+                    <a href="${pageContext.request.contextPath}/welcome.jsp" class="btn btn-outline-primary mt-3">Back to home</a>
+                </c:when>
+            </c:choose>
         </div>
     </body>
 </html>

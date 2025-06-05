@@ -26,15 +26,16 @@
     <label>UserID:
       <input type="text" value="${requestScope.userIDSaved}" name="userID" required />
     </label>
-    <br/><br/>
+    <br/>
     <label>Password:
       <input type="password" name="password" required />
     </label>
-    <br/><br/>
+    <br/>
     <div>
         <input type="checkbox" name="rememberMe" id="rememberMe" />
         <label for="rememberMe">Remember me</label>
     </div>
+    <br /><br />
     <button type="submit">Login</button>
   </form>
 </body>

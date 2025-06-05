@@ -96,7 +96,9 @@ public class StockController extends HttpServlet {
                 }
                 case UPDATE: {
                     updateStock(request, response);
-                    url = Url.UPDATE_STOCK_PAGE;
+                    List<Stock> allList = stockService.getAllStock();
+                    request.setAttribute("stocks", allList);
+                    url = Url.STOCK_LIST_PAGE;
                     break;
                 }
                 case DELETE: {
@@ -201,12 +203,20 @@ public class StockController extends HttpServlet {
     }
 
     private void updateStock(HttpServletRequest request, HttpServletResponse response) 
-            throws ServletException, IOException, SQLException, NumberFormatException{
-        boolean isSuccesfull;
-        String name = (String)request.getParameter("name");
-        List<Stock> list = stockService.searchByName(name);
-        Stock stock = list.get(0);
-        String message = stockService.update(stock);
+        throws ServletException, IOException, SQLException, NumberFormatException {
+        // 1. Lấy param từ form
+        String tickerParam = request.getParameter("ticker");
+        String nameParam   = request.getParameter("name");
+        String sectorParam = request.getParameter("sector");
+        String priceStr    = request.getParameter("price");
+        String statusStr   = request.getParameter("status");
+        float priceParam = 0f;
+        if (priceStr != null && !priceStr.isEmpty()) {
+            priceParam = Float.parseFloat(priceStr);
+        }
+        boolean statusParam = "1".equals(statusStr);
+        Stock updatedStock = new Stock(tickerParam, nameParam, sectorParam, priceParam, statusParam);
+        String message = stockService.update(updatedStock);
         request.setAttribute("MSG", message);
     }
 

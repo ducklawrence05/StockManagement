@@ -10,7 +10,6 @@ import constant.Url;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
  import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -110,6 +109,8 @@ public class UserController extends HttpServlet {
                 case UPDATE: {
                     updateUser(request, response);
                     url = Url.UPDATE_USER_PAGE;
+                    User user = getUserByID(request, response);
+                    request.setAttribute("user", user);
                     break;
                 }
                 case DELETE: {

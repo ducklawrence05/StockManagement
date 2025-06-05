@@ -23,14 +23,14 @@ public class AlertDAO {
     private final String SEARCH_ALERT_BY_DIRECTION = "SELECT * FROM tblAlerts WHERE  direction LIKE ?";
     private final String SEARCH_ALERT_BY_STATUS = "SELECT * FROM tblAlerts WHERE  status LIKE ?";
     private final String CREATE_ALERT = "INSERT INTO tblAlerts(userID, ticker, threshold, direction) VALUES(?, ?, ?, ?)";
-    private final String UPDATE_ALERT = "UPDATE tblAlerts SET threshold = ?, status = ? WHERE alertID = ? AND status = 'inactive'";
+    private final String UPDATE_ALERT = "UPDATE tblAlerts SET threshold = ?, status = ? WHERE alertID = ?";
     private final String DELETE_ALERT = "DELETE FROM tblAlerts WHERE alertID = ? AND status = 'inactive'";
     private final String GET_ALL_ALERT = "SELECT * FROM tblAlerts";
-    private final String GET_ALERT_BY_ID = "SELECT * FROM tblAlerts WHERE AlertID = ?";
-    
+    private final String GET_ALERT_BY_ID = "SELECT * FROM tblAlerts WHERE alertID = ?";
     public Alert getAlertByID(int alertID) throws SQLException{
         try(Connection conn = DBContext.getConnection();
                 PreparedStatement stm = conn.prepareStatement(GET_ALERT_BY_ID)){
+            stm.setInt(1, alertID);
             try(ResultSet rs = stm.executeQuery()){
                 while(rs.next()){
                     return mapThrows(rs);
@@ -51,7 +51,6 @@ public class AlertDAO {
         }
         return resultList;
     }
-
     public ArrayList<Alert> searchByTicker(String ticker) throws SQLException {
         return SearchAlertByKeyword(SEARCH_ALERT_BY_TICKER, ticker);
     }

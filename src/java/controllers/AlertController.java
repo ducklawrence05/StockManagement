@@ -8,7 +8,6 @@ import constant.Message;
 import constant.Role;
 import constant.Url;
 import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -18,10 +17,8 @@ import java.util.List;
 import services.AlertService;
 import utils.AuthUtils;
 import dto.Alert;
-import jakarta.websocket.Session;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import services.UserService;
 
 /**
  *
@@ -61,10 +58,6 @@ public class AlertController extends HttpServlet {
                 break;
             }
             case UPDATE: {
-                url = Url.UPDATE_ALERT_PAGE;
-                break;
-            }
-            case GET_ALERT_BY_ID: {
                 alerts = new ArrayList<>();
                 alerts.add(getAlertrByID(request, response));
                 url = Url.UPDATE_ALERT_PAGE;
@@ -89,8 +82,8 @@ public class AlertController extends HttpServlet {
             }
         }
 
-        if (action.equals(GET_ALERT_BY_ID)) {
-            request.setAttribute("alerts", alerts.get(0));
+        if (action.equals(UPDATE)) {
+            request.setAttribute("alert", alerts.get(0));
         } else {
             request.setAttribute("alerts", alerts);
         }
@@ -141,18 +134,30 @@ public class AlertController extends HttpServlet {
     private Alert getAlertrByID(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, NumberFormatException {
         try {
+            String alertID = request.getParameter("alertID");
+            int alertID_ = Integer.parseInt(alertID);
             String userID = request.getParameter("userID");
-            Alert alert = alertService.getAlertByID(Integer.parseInt(userID));
+            Alert alert = alertService.searchAlertByID(alertID_);
+            boolean can = false;
             if (alert == null) {
                 alert = new Alert();
-                request.setAttribute("MSG", Message.ALERT_NOT_FOUND);
+                request.setAttribute("ERRMSG", Message.ALERT_NOT_FOUND);
             } else {
-                request.setAttribute("MSG", Message.ALERT_FOUND);
+                if (alertService.isCreator(alert, userID)) {
+                    if (alertService.isInactive(alert)) {
+                        can = true;
+                        request.setAttribute("can", can);
+                    } else {
+                        request.setAttribute("ERRMSG", Message.ALERT_STATUS_IS_ACTIVE);
+                    }
+                } else {
+                    request.setAttribute("ERRMSG", Message.IS_NOT_CREATOR);
+                }
             }
             return alert;
         } catch (Exception ex) {
             ex.printStackTrace();
-            request.setAttribute("MSG", Message.SYSTEM_ERROR);
+            request.setAttribute("ERRMSG", Message.SYSTEM_ERROR);
         }
         return null;
     }
@@ -172,7 +177,7 @@ public class AlertController extends HttpServlet {
             throws ServletException, IOException {
         try {
             String keySearch = request.getParameter("keySearch");
-            return alertService.searchAlertByTicker(keySearch);
+            return alertService.searchAlertsByTicker(keySearch);
         } catch (SQLException ex) {
             ex.printStackTrace();
             request.setAttribute("MSG", Message.SYSTEM_ERROR);
@@ -184,7 +189,7 @@ public class AlertController extends HttpServlet {
             throws ServletException, IOException {
         try {
             String keySearch = request.getParameter("keySearch");
-            return alertService.searchAlertByDirection(keySearch);
+            return alertService.searchAlertsByDirection(keySearch);
         } catch (SQLException ex) {
             ex.printStackTrace();
             request.setAttribute("MSG", Message.SYSTEM_ERROR);
@@ -196,7 +201,7 @@ public class AlertController extends HttpServlet {
             throws ServletException, IOException {
         try {
             String keySearch = request.getParameter("keySearch");
-            return alertService.searchAlertByStatus(keySearch);
+            return alertService.searchAlertsByStatus(keySearch);
         } catch (SQLException ex) {
             ex.printStackTrace();
             request.setAttribute("MSG", Message.SYSTEM_ERROR);
@@ -204,35 +209,54 @@ public class AlertController extends HttpServlet {
         return null;
     }
 
-
     private void createAlert(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException, SQLException{
-        String userID = request.getParameter("userID");
-        String ticker = request.getParameter("ticker");
-        float threshold =  Float.parseFloat(request.getParameter("threshold"));
-        String direction = request.getParameter("direction");
-        String message = alertService.createAlert(userID, ticker, threshold, direction);
-        
-        request.setAttribute("MSG", message);
-    }   
-    
+            throws ServletException, IOException, SQLException {
+        try {
+            String userID = request.getParameter("userID");
+            String ticker = request.getParameter("ticker");
+            float threshold = Float.parseFloat(request.getParameter("threshold"));
+            String direction = request.getParameter("direction");
+            String message = alertService.createAlert(userID, ticker, threshold, direction);
+            request.setAttribute("MSG", message);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            request.setAttribute("MSG", Message.SYSTEM_ERROR);
+        }
+
+    }
+
     private void updateAlert(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException, SQLException{
-        int alertID = Integer.parseInt(request.getParameter("alertID"));
-        String userID = request.getParameter("userID");
-        float threshold =  Float.parseFloat(request.getParameter("threshold"));
-        String status = request.getParameter("status");
-        String message = alertService.updateAlert(alertID, userID, threshold, status);
-        
-        request.setAttribute("MSG", message);
-    }   
-    
+            throws ServletException, IOException, SQLException {
+        try {
+            String ticker = request.getParameter("ticker");
+            String direction = request.getParameter("direction");
+            int alertID = Integer.parseInt(request.getParameter("alertID"));
+            String userID = request.getParameter("userID");
+            float threshold = Float.parseFloat(request.getParameter("threshold"));
+            String status = request.getParameter("status");
+            String message = alertService.updateAlert(alertID, threshold, status);
+            request.setAttribute("alert", new Alert(alertID, userID, ticker, threshold, direction, status));
+            request.setAttribute("MSG", message);
+            if(status.equalsIgnoreCase("inactive")){
+                boolean can = true;
+                request.setAttribute("can", can);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            request.setAttribute("MSG", Message.SYSTEM_ERROR);
+        }
+    }
+
     private void deleteAlert(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException, SQLException{
-        int alertID = Integer.parseInt(request.getParameter("alertID"));
-        String userID = request.getParameter("userID");
-        String message = alertService.deleteAlert(alertID, userID);
-        
-        request.setAttribute("MSG", message);
+            throws ServletException, IOException, SQLException {
+        try {
+            Alert alert = getAlertrByID(request, response);
+            String message = alertService.deleteAlert(alert.getAlertID(), alert.getUserID());
+
+            request.setAttribute("MSG", message);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            request.setAttribute("MSG", Message.SYSTEM_ERROR);
+        }
     }
 }

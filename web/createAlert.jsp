@@ -13,7 +13,7 @@
         <title>Create Alert Page</title>
     </head>
     <body>
-         <h1>Welcome, <c:out value="${sessionScope.currentUser.fullName}"/></h1>
+        <h1>Welcome, <c:out value="${sessionScope.currentUser.fullName}"/></h1>
         <form action="${pageContext.request.contextPath}/main/auth/logout" method="POST">
             <input type="submit" value="LOGOUT" />
         </form>
@@ -33,8 +33,10 @@
             </select><br/>
             <input type="submit" name="action" value="create" /><br/>    
         </form>
-        
-        
-        
+
+        <form action="${pageContext.request.contextPath}/main/alert" method="GET">
+            <button type="submit">Go To AlertList</button>
+        </form>
+
     </body>
 </html>

@@ -18,14 +18,13 @@
             <input type="submit" value="LOGOUT" />
         </form>
 
-        <h3>Update new user</h3>
+        <h3>Update user</h3>
         <p style="color: green;">${requestScope.MSG}</p>
-        <hr />
-        <form action="${pageContext.request.contextPath}/main/user/getUserByID" method="GET">
+<!--        <form action="${pageContext.request.contextPath}/main/user/getUserByID" method="GET">
             <label for="userID">UserID</label><br>
             <input type="text" id="userID" name="userID" placeholder="Enter user ID" required><br><br>
             <button type="submit">Search</button>
-        </form>
+        </form>-->
         <hr />
 
         <form id="updateForm" action="${pageContext.request.contextPath}/main/user/update" method="POST">

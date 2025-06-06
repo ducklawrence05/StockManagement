@@ -25,6 +25,7 @@
     <form action="${pageContext.request.contextPath}/main/auth/logout" method="POST">
         <input type="submit" value="LOGOUT" />
     </form>
+
     <!-- Filter Form -->
     <form action="stock" method="GET">
         <input type="text" name="name" placeholder="Filter by name" value="${param.name}" />
@@ -72,14 +73,17 @@
             <td><%= stock.getName() %></td>
             <td><%= stock.getSector() %></td>
             <td><%= stock.getPrice() %></td>
-            <td><%= stock.isStatus() ? "Active" : "Inactive" %></td>
+            <td><%= stock.isStatus() ? "Executed" : "Pending" %></td>
             <td>
-                <form action="stock" method="GET" style="display:inline">
-                    <input type="hidden" name="action" value="searchByTicker" />
+                <!-- Update Form -->
+                <form action="stock" method="GET" style="display:inline;">
+                    <input type="hidden" name="action" value="update" />
                     <input type="hidden" name="ticker" value="<%= stock.getTicker() %>" />
                     <button type="submit">Update</button>
                 </form>
-                <form action="stock" method="POST" style="display:inline" onsubmit="return confirm('Are you sure you want to delete this stock?');">
+
+                <!-- Delete Form -->
+                <form action="stock" method="POST" style="display:inline;" onsubmit="return confirm('Delete this stock?');">
                     <input type="hidden" name="action" value="delete" />
                     <input type="hidden" name="ticker" value="<%= stock.getTicker() %>" />
                     <button type="submit">Delete</button>

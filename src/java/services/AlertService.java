@@ -39,6 +39,12 @@ public class AlertService {
     }
 
     public String createAlert(String userID, String ticker, float threshold, String direction) throws SQLException {
+        if(isNullOrEmpty(userID) || isNullOrEmpty(ticker) || isNullOrEmpty(direction)){
+            return Message.ALL_FIELDS_ARE_REQUIRED;
+        }
+        if(threshold < 0){
+            return Message.THRESHOLD_CAN_NOT_BE_NEGATIVE;
+        }
         if (dao.create(userID, ticker, threshold, direction)) {
             return Message.CREATE_ALERT_SUCCESSFULLY;
         }
@@ -49,8 +55,11 @@ public class AlertService {
         return alert.getUserID().equalsIgnoreCase(userID);
     }
 
-    public String updateAlert(int alertID, float threshold, String status) throws SQLException {
-        if (dao.update(alertID, threshold, status)) {
+    public String updateAlert(int alertID, String direction, float threshold, String status) throws SQLException {
+        if(threshold < 0){
+            return Message.THRESHOLD_CAN_NOT_BE_NEGATIVE;
+        }
+        if (dao.update(alertID, direction, threshold, status)) {
             return Message.UPDATE_ALERT_SUCCESSFULLY;
         }
         return Message.UPDATE_ALERT_FAILED;
@@ -67,5 +76,9 @@ public class AlertService {
 
     public boolean isInactive(Alert alert) throws SQLException {
         return alert.getStatus().equalsIgnoreCase("inactive");
+    }
+    
+    public boolean isNullOrEmpty(String str){
+        return (str.isEmpty() || str == null);
     }
 }

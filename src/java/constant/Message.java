@@ -20,6 +20,7 @@ public class Message {
     public static final String PASSWORD_NOT_MATCH_CONFIRM_PASSWORD = "Password not match confirm password!";
     public static final String PASSWORD_AND_CONFIRM_PASSWORD_ARE_REQUIRED = "Password and confirm password are required";
     public static final String OLD_PASSWORD_ARE_REQUIRED = "Old password is required";
+    public static final String ROLE_ID_NOT_FOUND = "Role ID not found";
     public static final String CREATE_USER_SUCCESSFULLY = "Create user successfully";
     public static final String CREATE_USER_FAILED = "Create user failed";
     public static final String USER_ID_IS_EXISTED = "User ID is existed";
@@ -68,5 +69,6 @@ public class Message {
     public static final String IS_NOT_CREATOR = "You are not the creator of this alert";
     public static final String THRESHOLD_CAN_NOT_BE_NEGATIVE = "Thrshold can not be negative";
     public static final String ALERT_STATUS_IS_ACTIVE = "Alert status is active, can not update or delete";
-    
+    public static final String ALL_FIELDS_ARE_REQUIRED = "All fields are required";
+    public static final String ALL_FIELDS_ARE_REQUIRED_INPUT_TRUE_FROM = "All fields are required and please input true form of fields";
 }

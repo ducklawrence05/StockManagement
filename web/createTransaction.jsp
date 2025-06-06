@@ -52,10 +52,6 @@
             
         </form> <br />
             
-        <form 
-                action="${pageContext.request.contextPath}/main/transaction" 
-                method="GET">
-                <input type="submit" name="action" value="Back to Transaction List"></input>    
-            </form> 
+        <a href="${pageContext.request.contextPath}/main/transaction">Back to Transaction List</a>
     </body>
 </html>

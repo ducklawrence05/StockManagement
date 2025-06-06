@@ -47,6 +47,6 @@
                 <button type="submit" name="action" value="update">Update</button>
             </form>    
 
-        <a href="${pageContext.request.contextPath}/transaction">Back to transaction CRUD</a>
+        <a href="${pageContext.request.contextPath}/main/transaction">Back to transaction CRUD</a>
     </body>
 </html>

@@ -65,7 +65,7 @@
         </form>
 
         <!-- Back to list -->
-        <a href="${pageContext.request.contextPath}/main/stock" class="btn btn-link mt-3">Back to Stock List</a>
+        <a href="${pageContext.request.contextPath}/main/stock" class="btn btn-link mt-3">Back to stock list</a>
     </div>
 </body>
 </html>

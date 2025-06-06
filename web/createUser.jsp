@@ -9,7 +9,7 @@
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
     </head>
     <body>
-        <div class="post-user-container">
+        <div class="post-container">
             <h3>Welcome, <c:out value="${sessionScope.currentUser.fullName}" /></h3>
 
             <form action="${pageContext.request.contextPath}/main/auth/logout" method="POST">
@@ -43,7 +43,7 @@
                 <button type="submit" class="btn btn-primary w-100">Create</button>
             </form>
 
-            <a href="${pageContext.request.contextPath}/user" class="back-link">Back to user CRUD</a>
+            <a href="${pageContext.request.contextPath}/main/user" class="back-link">Back to user CRUD</a>
         </div>
     </body>
 </html>

@@ -50,7 +50,7 @@
             </div>
 
             <button type="submit" class="btn btn-primary">Update</button>
-            <a href="${pageContext.request.contextPath}/main/stock" class="btn btn-secondary">Cancel</a>
+            <a href="${pageContext.request.contextPath}/main/stock" class="btn btn-secondary">Back to stock list</a>
         </form>
     </body>
 </html>

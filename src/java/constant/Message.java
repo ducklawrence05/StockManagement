@@ -20,6 +20,7 @@ public class Message {
     public static final String PASSWORD_NOT_MATCH_CONFIRM_PASSWORD = "Password not match confirm password!";
     public static final String PASSWORD_AND_CONFIRM_PASSWORD_ARE_REQUIRED = "Password and confirm password are required";
     public static final String OLD_PASSWORD_ARE_REQUIRED = "Old password is required";
+    public static final String ROLE_ID_NOT_FOUND = "Role ID not found";
     public static final String CREATE_USER_SUCCESSFULLY = "Create user successfully";
     public static final String CREATE_USER_FAILED = "Create user failed";
     public static final String USER_ID_IS_EXISTED = "User ID is existed";
@@ -51,9 +52,17 @@ public class Message {
     public static final String CREATE_TRANSACTION_FAILED = "Create Transaction failed";
     public static final String UPDATE_TRANSACTION_SUCCESSFULLY = "UPDATE Transaction successfully";
     public static final String UPDATE_TRANSACTION_FAILED = "UPDATE Transaction failed";
-    public static final String DELETE_TRANSACTION_SUCCESSFULLY = "UPDATE Transaction successfully";
+    public static final String DELETE_TRANSACTION_SUCCESSFULLY = "Delete Transaction successfully";
     public static final String TRANSACTION_NOT_FOUND = "TRANSACTION not found";
-    
+
+    public static final String IS_NOT_CREATOR_TRANSACTION = "You are not the creator of this transaction";
+    public static final String UPDATE_TRANSACTION_FAILED_QUANTITY = "UPDATE Transaction failed (quantity > 0)";
+    public static final String UPDATE_TRANSACTION_FAILED_PRICE = "UPDATE Transaction failed (price > 0)";
+
+    public static final String TRANSACTION_CREATER = "you are not a creater of this tracsaction";
+    public static final String QUANTITY_CAN_NOT_BE_NEGATIVE = "Quantity can not be negetive";
+    public static final String PRICE_CAN_NOT_BE_NEGATIVE = "Price can not be negetive";
+
     
     // Alert
     public static final String CREATE_ALERT_SUCCESSFULLY = "Create alert successfully";
@@ -67,5 +76,5 @@ public class Message {
     public static final String IS_NOT_CREATOR = "You are not the creator of this alert";
     public static final String THRESHOLD_CAN_NOT_BE_NEGATIVE = "Thrshold can not be negative";
     public static final String ALERT_STATUS_IS_ACTIVE = "Alert status is active, can not update or delete";
-    
+    public static final String ALL_FIELDS_ARE_REQUIRED_INPUT_TRUE_FROM = "All fields are required and please input true form of fields";
 }

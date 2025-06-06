@@ -26,12 +26,10 @@ public class TransactionDAO {
     private final String SEARCH_TRANSACTION_BY_TICKER = "SELECT * FROM tblTransactions WHERE ticker LIKE ?";
     private final String SEARCH_TRANSACTION_BY_TYPE = "SELECT * FROM tblTransactions WHERE type LIKE ?";
     private final String SEARCH_TRANSACTION_BY_STATUS = "SELECT * FROM tblTransactions WHERE status LIKE ?";
-    private final String CREATE_TRANSACTION = "INSERT INTO tblTransactions"
-            + "(userID, ticker, type, quantity, price, status)"
-            + " VALUES(?, ?, ?, ?,?,?)";
-    private final String UPDATE_TRANSACTION = "UPDATE tblTransactions SET status = ? WHERE id = ?";
-    private final String DELATE_TRANSACTION = "DELETE FROM tblTransactions WHERE userID=?";
-
+    private final String CREATE_TRANSACTION = "INSERT INTO tblTransactions (userID, ticker, type, quantity, price, status)  VALUES(?,?,?,?,?,?)";
+    private final String UPDATE_TRANSACTION = "UPDATE tblTransactions SET userID = ?, ticker = ?, type = ?, quantity = ?, price = ?, status = ? WHERE id = ?";
+    private final String DELETE_TRANSACTION = "DELETE FROM tblTransactions WHERE id LIKE ?";
+    
     public List<Transaction> getAllTransaction() throws SQLException {
         List<Transaction> resultList = new ArrayList<>();
         try ( Connection conn = DBContext.getConnection();
@@ -44,10 +42,10 @@ public class TransactionDAO {
         return resultList;
     }
     
-    public Transaction getTransactionByID(String id) throws SQLException{
+    public Transaction getTransactionByID(int id) throws SQLException{
         try ( Connection conn = DBContext.getConnection();
                 PreparedStatement stm = conn.prepareStatement(GET_TRANSACTION_BY_ID)) {
-            stm.setString(1, id);
+            stm.setInt(1, id);
             try( ResultSet rs = stm.executeQuery()){
                 if(rs.next()) {
                     return mapRow(rs);
@@ -90,46 +88,43 @@ public class TransactionDAO {
     public boolean createTransaction(String userID, String ticker,
             String type, int quantity, float price, String status) throws Exception {
         boolean isCreated = false;
-        try ( Connection conn = DBContext.getConnection()) {
-            if (conn != null) {
-                PreparedStatement stm = conn.prepareStatement(CREATE_TRANSACTION);
+        try ( Connection conn = DBContext.getConnection(); PreparedStatement stm = conn.prepareStatement(CREATE_TRANSACTION)) {
+           
                 stm.setString(1, userID);
                 stm.setString(2, ticker);
                 stm.setString(3, type);
                 stm.setInt(4, quantity);
                 stm.setFloat(5, price);
                 stm.setString(6, status);
+                
                 isCreated = stm.executeUpdate() > 0;
-            }
         }
         return isCreated;
 
     }
     
-    public boolean updateTransaction(String userID, String sticker, String type,
+    public boolean updateTransaction(int id,String userID, String sticker, String type,
             int quantity, float  price, String status) throws Exception {
         boolean isUpdated = false;
-        try ( Connection conn = DBContext.getConnection()) {
-            if (conn != null) {
-                PreparedStatement stm = conn.prepareStatement(UPDATE_TRANSACTION);
+        try ( Connection conn = DBContext.getConnection();  PreparedStatement stm = conn.prepareStatement(UPDATE_TRANSACTION)) {  
                 stm.setString(1, userID);
                 stm.setString(2, sticker);
                 stm.setString(3, type);
                 stm.setInt(4, quantity);
                 stm.setFloat(5, price);
                 stm.setString(6, status);
+                stm.setInt(7, id);
                 isUpdated = stm.executeUpdate() > 0;
-            }
         }
         return isUpdated;
     }
 
-    public boolean deleteTransaction(String id) throws SQLException {
+    public boolean deleteTransaction(int id) throws SQLException {
         boolean isDelete = false;
         try ( Connection conn = DBContext.getConnection()) {
             if (conn != null) {
-                PreparedStatement stm = conn.prepareStatement(DELATE_TRANSACTION);
-                stm.setString(1, id);
+                PreparedStatement stm = conn.prepareStatement(DELETE_TRANSACTION);
+                stm.setInt(1, id);
                 isDelete = stm.executeUpdate() > 0;
             }
             return isDelete;
@@ -138,15 +133,16 @@ public class TransactionDAO {
 
     private Transaction mapRow(ResultSet rs) throws SQLException{
         return new Transaction(
+                            rs.getInt("id"),
                             rs.getString("userID"), rs.getString("ticker"),
                             rs.getString("type"), rs.getInt("quantity"),
                             rs.getFloat("price"), rs.getString("status")
         );
-    }
+    } 
     
-    public boolean checkTransactionExists(String id) throws SQLException {
+    public boolean checkTransactionExists(int id) throws SQLException {
         try ( Connection conn = DBContext.getConnection();  PreparedStatement stm = conn.prepareStatement(GET_TRANSACTION_BY_ID)) {
-            stm.setString(1, id);
+            stm.setInt(1, id);
             return stm.executeQuery().next();
         }
     }

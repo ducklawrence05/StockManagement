@@ -52,6 +52,6 @@
             
         </form>
             
-        <a href="transactionList.jsp">Back to Transaction List</a>
+        <a href="${pageContext.request.contextPath}/main/transaction">Back to Transaction List</a>
     </body>
 </html>

@@ -51,7 +51,11 @@
 
     <body>
         <h1>Welcome, <c:out value="${sessionScope.currentUser.fullName}"/></h1>
-
+        <a 
+            href="${pageContext.request.contextPath}/main/transaction"
+            style="text-decoration: none; color: black"
+            >Transaction CRUD</a>
+        <hr />
         <hr />
 
         <form action="${pageContext.request.contextPath}/main/auth/logout" method="POST">
@@ -74,15 +78,15 @@
             <button type="submit">Search</button>
         </form>
 
-        <c:if test="${empty users}">
-            <p>No matching users found!</p>
+        <c:if test="${empty transactions}">
+            <p>No matching transactions found!</p>
         </c:if>
 
-            <form 
-                action="${pageContext.request.contextPath}/main/transaction/create" 
-                method="GET">
-                <input type="submit" name="action" value="create"></input>    
-            </form> 
+        <form 
+            action="${pageContext.request.contextPath}/main/transaction/create" 
+            method="GET">
+            <input type="submit" name="action" value="create"></input>    
+        </form> 
 
         <table>
             <thead>
@@ -108,20 +112,20 @@
                         <td>${transaction.price}</td>
                         <td>${transaction.status}</td>
                         <td class="action">
-                            
+
                             <form 
                                 action="${pageContext.request.contextPath}/main/transaction/update" 
                                 method="GET">
                                 <input type="hidden" name="id" value="${transaction.id}">
                                 <button type="submit" name="action" value="update">Update</button>    
                             </form> 
-                                
+
                             <form 
                                 action="${pageContext.request.contextPath}/main/transaction/delete" 
                                 method="POST">
-                                
+
                                 <input type="hidden" name="id" value="${transaction.id}"> </input>
-                               <button type="submit" name="action" value="delete">Delete</button>
+                                <button type="submit" name="action" value="delete">Delete</button>
                             </form>                       
                         </td>
                     </tr>

@@ -25,7 +25,7 @@
     <body>
         <h1>Welcome, <c:out value="${sessionScope.currentUser.fullName}"/></h1>
         <a 
-            href="${pageContext.request.contextPath}/alert"
+            href="${pageContext.request.contextPath}/main/alert"
             style="text-decoration: none; color: black"
             >Alert CRUD</a>
         <hr />
@@ -120,8 +120,6 @@
         </c:if>
     </form>
 
-
-
     <c:if test="${empty requestScope.ERRMSG}">
         <p style="color: green;">${requestScope.MSG}</p>
         <hr />
@@ -131,10 +129,6 @@
         <p style="color: red;">${requestScope.ERRMSG}</p>
         <hr />
     </c:if>
-
-
-
-
 
     <script>
         function updateSelectOptions() {

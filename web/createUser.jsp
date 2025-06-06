@@ -43,7 +43,7 @@
                 <button type="submit" class="btn btn-primary w-100">Create</button>
             </form>
 
-            <a href="${pageContext.request.contextPath}/user" class="back-link">Back to user CRUD</a>
+            <a href="${pageContext.request.contextPath}/main/user" class="back-link">Back to user CRUD</a>
         </div>
     </body>
 </html>

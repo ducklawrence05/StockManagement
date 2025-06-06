@@ -35,6 +35,7 @@ public class TransactionController extends HttpServlet {
     private final String GET_ALL_TRANSACTIONS = "getAllTransactions";
     private final String GET_TRANSACTION_BY_ID = "getTransactionByID";
     private final String GET_TRANSACTIONS_BY_ID = "getTransactionsByID";
+    private final String GET_TRANSACTIONS_BY_USERID = "getTransactionsByUserID";
     private final String GET_TRANSACTION_BY_TYPE = "getTransactionByType";
     private final String GET_TRANSACTION_BY_TICKER = "getTransactionByTicker";
     private final String GET_TRANSACTION_BY_STATUS = "getTransactionByStatus";
@@ -57,24 +58,26 @@ public class TransactionController extends HttpServlet {
         String url = Url.TRANSACTION_LIST_PAGE;
         switch (action) {
             case CREATE: {
-                url = Url.ADD_TRANSACTION_PAGE;
+                url = Url.CREATE_TRANSACTION_PAGE;
                 break;
             }
             case UPDATE: {
+                transactions = new ArrayList<>();
+                transactions.add(getTransactionByID(request, response));
                 url = Url.UPDATE_TRANSACTION_PAGE;
                 break;
             }
             case GET_TRANSACTION_BY_ID: {
                 transactions = new ArrayList<>();
                 transactions.add(getTransactionByID(request, response));
-                url = Url.UPDATE_TRANSACTION_PAGE;
+                break;
             }
             case GET_ALL_TRANSACTIONS: {
                 transactions = getAllTransactions(request, response);
                 break;
             }
-            case GET_TRANSACTIONS_BY_ID: {
-                transactions = getTransactionsByID(request, response);
+            case GET_TRANSACTIONS_BY_USERID: {
+                transactions = getTransactionsByUserID(request, response);
                 break;
             } 
             case GET_TRANSACTION_BY_TYPE: {
@@ -91,13 +94,12 @@ public class TransactionController extends HttpServlet {
             }
         }
 
-        if (action.equals(GET_TRANSACTION_BY_ID)) {
+        if (action.equals(UPDATE)) {
             request.setAttribute("transaction", transactions.get(0));
         } else {
             request.setAttribute("transactions", transactions);
         }
 
-        request.setAttribute("transaction", transactions);
         request.getRequestDispatcher(url).forward(request, response);
     }
 
@@ -109,18 +111,17 @@ public class TransactionController extends HttpServlet {
         }
 
         String action = request.getParameter("action");
-        if (action == null) {
-            action = "";
-        }
+        if (action == null) action = "";
         String url = Url.TRANSACTION_LIST_PAGE;
         try {
             switch (action) {
                 case CREATE: {
-                    createTransaction(request, response);
-                    url = Url.ADD_TRANSACTION_PAGE;
+                createTransaction(request, response);
+                    url = Url.CREATE_TRANSACTION_PAGE;        
                     break;
                 }
                 case UPDATE: {
+                    
                     updateTransaction(request, response);
                     url = Url.UPDATE_TRANSACTION_PAGE;
                     break;
@@ -130,33 +131,17 @@ public class TransactionController extends HttpServlet {
                     break;
                 }   
             }
-            request.setAttribute("transaction", transactionService.getAllTransactions());
+            
+            request.setAttribute("transactions", transactionService.getAllTransactions());
             request.getRequestDispatcher(url).forward(request, response);
-        }catch (NumberFormatException | SQLException ex){
+        }catch (Exception ex){
             ex.printStackTrace();
             request.setAttribute("MSG", Message.SYSTEM_ERROR);
             request.getRequestDispatcher(Url.ERROR_PAGE).forward(request, response);
-        } catch (Exception ex) {
-            Logger.getLogger(TransactionController.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        } 
     }
 
-    private Transaction getTransactionByID(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        try {
-            String transactionID = request.getParameter("transactionID");
-            Transaction transaction = transactionService.getTransactionByID(transactionID);
-            if (transaction == null) {
-                request.setAttribute("MSG", Message.USER_NOT_FOUND);
-                transaction = new Transaction();
-            }
-            return transaction;
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-            request.setAttribute("MSG", Message.SYSTEM_ERROR);
-        }
-        return null;
-    }
+    
 
     private List<Transaction> getAllTransactions(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -168,11 +153,25 @@ public class TransactionController extends HttpServlet {
         }
         return null;
     }
-
-    private List<Transaction> getTransactionsByID(HttpServletRequest request, HttpServletResponse response)
+    
+    private Transaction getTransactionByID(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            return transactionService.getAllTransactions();
+            int id = Integer.parseInt(request.getParameter("id"));
+            
+            return transactionService.getTransactionByID(id);
+        } catch (SQLException ex) {
+            ex.printStackTrace(); 
+            request.setAttribute("MSG", Message.SYSTEM_ERROR);
+        }
+        return null;
+    }
+
+    private List<Transaction> getTransactionsByUserID (HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            String userID = request.getParameter("keySearch");
+            return transactionService.getTransactionsByUserID(userID);
         } catch (SQLException ex) {
             ex.printStackTrace();
             request.setAttribute("MSG", Message.SYSTEM_ERROR);
@@ -183,7 +182,7 @@ public class TransactionController extends HttpServlet {
     private List<Transaction> getTransactionByType(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            String type = request.getParameter("type");
+            String type = request.getParameter("keySearch");
             return transactionService.getTransactionByType(type);
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -195,7 +194,7 @@ public class TransactionController extends HttpServlet {
     private List<Transaction> getTransactionByTicker(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            String ticker = request.getParameter("ticker");
+            String ticker = request.getParameter("keySearch");
             return transactionService.getTransactionByTicker(ticker);
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -207,7 +206,7 @@ public class TransactionController extends HttpServlet {
     private List<Transaction> getTransactionByStatus(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            String status = request.getParameter("status");
+            String status = request.getParameter("keySearch");
             return transactionService.getTransactionByStatus(status);
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -233,7 +232,7 @@ public class TransactionController extends HttpServlet {
     
     public void updateTransaction(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, SQLException, Exception {
-        String id = request.getParameter("id");
+        int id = Integer.parseInt(request.getParameter("id"));
         String userID = request.getParameter("userID");
         String ticker = request.getParameter("ticker");
         String type = request.getParameter("type");
@@ -244,7 +243,11 @@ public class TransactionController extends HttpServlet {
         String message = transactionService.updateTransaction(id,userID, ticker, type,
                 quantity, price, status);
         
+        Transaction transaction = new Transaction(id, userID, ticker, type, quantity, price, status);
+        request.setAttribute("transaction", transaction);
+           
         request.setAttribute("MSG", message);
+        
     }
     
     public void deleteTransaction(HttpServletRequest request, HttpServletResponse response)

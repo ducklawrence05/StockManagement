@@ -251,7 +251,7 @@ public class TransactionController extends HttpServlet {
 
         String message = transactionService.updateTransaction(id, userID, ticker, type,
                 quantity, price, status);
-
+        request.setAttribute("can", true);
         Transaction transaction = new Transaction(id, userID, ticker, type, quantity, price, status);
         request.setAttribute("transaction", transaction);
 

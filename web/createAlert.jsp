@@ -31,8 +31,8 @@
 
         <form action="${pageContext.request.contextPath}/main/alert/create" method="POST">
             UserID:  <input type="text" name ="userID" value="${sessionScope.currentUser.userID}" readonly> <br/>
-            Ticker: <input type="text" name="ticker" placeholder="Enter ticker" /><br/>
-            Threshold: <input type="number" name="threshold" placeholder="Enter threshold" step="0.01"  /><br/>
+            Ticker: <input type="text" name="ticker" placeholder="Enter ticker" required /><br/>
+            Threshold: <input type="number" name="threshold" placeholder="Enter threshold" step="0.01" required /><br/>
             Direction: 
             <select name="direction" required>
                 <option value="increase">increase</option>

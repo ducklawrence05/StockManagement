@@ -96,6 +96,7 @@
             <p>No matching transactions found!</p>
         </c:if>
 
+        <p style="color: green;">${requestScope.MSG}</p>    
         <form 
             action="${pageContext.request.contextPath}/main/transaction/create" 
             method="GET">
@@ -140,6 +141,7 @@
                                 method="POST">
 
                                 <input type="hidden" name="id" value="${transaction.id}"> </input>
+                                <input type="hidden" name="userID" value="${sessionScope.currentUser.userID}">
                                 <button type="submit" name="action" value="delete">Delete</button>
                             </form>                       
                         </td>

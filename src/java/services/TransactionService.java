@@ -37,7 +37,7 @@ public class TransactionService {
             return Message.PRICE_CAN_NOT_BE_NEGATIVE;
         }
         
-        if(transactionDAO.createTransaction(userID, ticker, type, quantity, price, status)){
+        if(transactionDAO.createTransaction(userID, ticker, type, quantity, price, status) == false){
             return Message.CREATE_TRANSACTION_FAILED;
         }
         return Message.CREATE_TRANSACTION_SUCCESSFULLY;
@@ -83,7 +83,7 @@ public class TransactionService {
         
     }
     
-    public String deleteTransaction(String id) throws SQLException{
+    public String deleteTransaction(int id) throws SQLException{
         if(transactionDAO.deleteTransaction(id) == false){
             return Message.TRANSACTION_NOT_FOUND;
         }

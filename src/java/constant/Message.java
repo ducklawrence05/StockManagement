@@ -52,8 +52,13 @@ public class Message {
     public static final String CREATE_TRANSACTION_FAILED = "Create Transaction failed";
     public static final String UPDATE_TRANSACTION_SUCCESSFULLY = "UPDATE Transaction successfully";
     public static final String UPDATE_TRANSACTION_FAILED = "UPDATE Transaction failed";
-    public static final String DELETE_TRANSACTION_SUCCESSFULLY = "UPDATE Transaction successfully";
+    public static final String DELETE_TRANSACTION_SUCCESSFULLY = "Delete Transaction successfully";
     public static final String TRANSACTION_NOT_FOUND = "TRANSACTION not found";
+
+    public static final String IS_NOT_CREATOR_TRANSACTION = "You are not the creator of this transaction";
+    public static final String UPDATE_TRANSACTION_FAILED_QUANTITY = "UPDATE Transaction failed (quantity > 0)";
+    public static final String UPDATE_TRANSACTION_FAILED_PRICE = "UPDATE Transaction failed (price > 0)";
+
     public static final String TRANSACTION_CREATER = "you are not a creater of this tracsaction";
     public static final String QUANTITY_CAN_NOT_BE_NEGATIVE = "Quantity can not be negetive";
     public static final String PRICE_CAN_NOT_BE_NEGATIVE = "Price can not be negetive";

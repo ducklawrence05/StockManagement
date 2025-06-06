@@ -261,9 +261,14 @@ public class TransactionController extends HttpServlet {
 
     public void deleteTransaction(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, SQLException, Exception {
-        String id = request.getParameter("id");
-        String message = transactionService.deleteTransaction(id);
-
+        Transaction transaction = getTransactionByID(request, response);
+        String message = "";
+        if(request.getAttribute("can") != null){
+            message = transactionService.deleteTransaction(transaction.getId());
+        }else{
+            message = Message.IS_NOT_CREATOR_TRANSACTION;
+        }
+        
         request.setAttribute("MSG", message);
     }
 

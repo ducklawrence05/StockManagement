@@ -42,9 +42,9 @@
                                 <th>Direction</th>
                                 <th>Threshold</th>
                                 <th>Status</th>
-                                    <c:if test="${requestScope.can == true}">
+                                <c:if test="${requestScope.can == true}">
                                     <th>Action</th>
-                                    </c:if>
+                                </c:if>
                             </tr>
                         </thead>
                         <tbody>
@@ -78,12 +78,13 @@
                                 </td>
                                 <td>
                                     <c:choose>
-                                        <c:when test="${requestScope.can == true}">
-                                            <input type="text" name="threshold" value="${alert.threshold}" required class="form-control" />
-                                        </c:when>
-                                        <c:otherwise>
-                                            <input class="readonly-input" type="text" name="threshold" value="${alert.threshold}" readonly>
-                                        </c:otherwise>
+                                      <c:when test="${requestScope.can == true}">
+                                          <input style="text-align: center" type="number" name="threshold" step="0.01" value="${alert.threshold}" required />
+                                          <input style="text-align: center" type="hidden" name="_threshold" value="${alert.threshold}" />
+                                      </c:when>
+                                      <c:otherwise>
+                                          <input style="text-align: center" type="text" name="threshold" value="${alert.threshold}" readonly>
+                                      </c:otherwise>
                                     </c:choose>
                                 </td>
                                 <td>

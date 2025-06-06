@@ -39,6 +39,9 @@ public class AlertService {
     }
 
     public String createAlert(String userID, String ticker, float threshold, String direction) throws SQLException {
+        if(isNullOrEmpty(userID) || isNullOrEmpty(ticker) || isNullOrEmpty(direction)){
+            return Message.ALL_FIELDS_ARE_REQUIRED;
+        }
         if(threshold < 0){
             return Message.THRESHOLD_CAN_NOT_BE_NEGATIVE;
         }
@@ -73,5 +76,9 @@ public class AlertService {
 
     public boolean isInactive(Alert alert) throws SQLException {
         return alert.getStatus().equalsIgnoreCase("inactive");
+    }
+    
+    public boolean isNullOrEmpty(String str){
+        return (str.isEmpty() || str == null);
     }
 }

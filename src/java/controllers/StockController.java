@@ -38,7 +38,7 @@ public class StockController extends HttpServlet {
 
         String action = request.getParameter("action");
         if (action == null) action = GET_ALL;
-
+        String url = Url.STOCK_LIST_PAGE;
         List<Stock> stocks = null;
         switch (action) {
             case GET_ALL:
@@ -65,6 +65,10 @@ public class StockController extends HttpServlet {
             case UPDATE:
                 loadUpdateStockForm(request, response);
                 return;
+            case CREATE: {
+                url = Url.ADD_STOCK_PAGE;
+                break;
+            }
         }
 
         request.setAttribute("stocks", stocks);

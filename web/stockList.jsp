@@ -18,9 +18,8 @@
     </div>
 
     <!-- Create button -->
-    <form action="${pageContext.request.contextPath}/stock" method="POST" class="mb-3">
-        <input type="hidden" name="action" value="addPage" />
-        <button type="submit" class="btn btn-success">Create New Stock</button>
+    <form action="${pageContext.request.contextPath}/main/user" method="GET" class="mb-3">
+        <button type="submit" name="action" value="create" class="btn btn-success">Create Stock</button>
     </form>
 
     <!-- Search Filters -->
@@ -102,17 +101,21 @@
                     </c:choose>
                 </td>
                 <td>
-                    <a href="${pageContext.request.contextPath}/stock?action=update&ticker=${s.ticker}" class="btn btn-warning btn-sm">Update</a>
-                    <form action="${pageContext.request.contextPath}/stock" method="POST" style="display:inline;">
+                    <!-- Update button -->
+                    <form action="${pageContext.request.contextPath}/stock" method="GET" style="display:inline;">
+                        <input type="hidden" name="action" value="update" />
+                        <input type="hidden" name="ticker" value="${s.ticker}" />
+                        <button type="submit" class="btn btn-sm btn-warning">Update</button>
+                    </form>
+                    <!-- Delete button -->
+                    <form 
+                        action="${pageContext.request.contextPath}/stock" 
+                        method="POST" 
+                        style="display:inline;" 
+                        onsubmit="return confirm('Delete this stock?');">
                         <input type="hidden" name="action" value="delete" />
                         <input type="hidden" name="ticker" value="${s.ticker}" />
-                        <form 
-                                        action="${pageContext.request.contextPath}/main/stock/delete" 
-                                        method="POST" 
-                                        onsubmit="return confirm('Delete this stock?');"
-                                        >
-                                        <button type="submit" name="tinker" value="${stock.tinker}" class="btn btn-sm btn-danger">Delete</button>
-                                    </form>
+                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
                     </form>
                 </td>
             </tr>

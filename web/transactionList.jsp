@@ -68,12 +68,74 @@
             <label for="keySearch">Search</label>
             <input type="text" id="keySearch" name="keySearch" placeholder="Search..."/> |
 
-            <select name="action">
+            <select id="search" name="action">
                 <option value="getTransactionByTicker">Search by ticker</option>
                 <option value="getTransactionByType">Search by type</option>
                 <option value="getTransactionByStatus">Search by status</option>
                 <option value="getAllTransactions">Search all</option>
             </select>
+
+            <div id="type-options" style="display:none;">
+                <label for="typeSearch">Select Type:</label>
+                <select id="typeSearch">
+                    <option value="buy">buy</option>
+                    <option value="sell">sell</option>
+                </select>
+            </div>
+            
+             <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var searchSelect = document.getElementById("search");
+            var typeOptions = document.getElementById("type-options");
+            var typeSearch = document.getElementById("typeSearch");
+            var keySearch = document.getElementById("keySearch");
+
+            searchSelect.addEventListener("change", function () {
+                if (this.value === "getTransactionByType") {
+                    typeOptions.style.display = "block";
+                    keySearch.value = typeSearch.value; // Lấy giá trị ban đầu
+                } else {
+                    typeOptions.style.display = "none";
+                    keySearch.value = ""; // Xóa giá trị nếu không chọn type
+                }
+            });
+
+            typeSearch.addEventListener("change", function () {
+                keySearch.value = this.value; // Cập nhật keySearch với giá trị đã chọn
+            });
+        });
+    </script>
+
+     <div id="status-options" style="display:none;">
+        <label for="statusSearch">Select Status:</label>
+        <select id="statusSearch">
+            <option value="executed">Executed</option>
+            <option value="pending">Pending</option>
+        </select>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var searchSelect = document.getElementById("search");
+            var statusOptions = document.getElementById("status-options");
+            var statusSearch = document.getElementById("statusSearch");
+            var keySearch = document.getElementById("keySearch");
+
+            searchSelect.addEventListener("change", function () {
+                if (this.value === "getTransactionByStatus") {
+                    statusOptions.style.display = "block";
+                    keySearch.value = statusSearch.value; // Lấy giá trị ban đầu
+                } else {
+                    statusOptions.style.display = "none";
+                    keySearch.value = ""; // Xóa giá trị nếu không chọn status
+                }
+            });
+
+            statusSearch.addEventListener("change", function () {
+                keySearch.value = this.value; // Cập nhật keySearch với giá trị đã chọn
+            });
+        });
+    </script>
 
             <button type="submit">Search</button>
         </form>

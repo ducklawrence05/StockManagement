@@ -50,7 +50,7 @@
             
             <button type="submit" name="action" value="create">Create Transaction</button>
             
-        </form>
+        </form> <br />
             
         <a href="${pageContext.request.contextPath}/main/transaction">Back to Transaction List</a>
     </body>

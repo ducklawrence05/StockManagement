@@ -20,6 +20,38 @@
             #tickerInput {
                 display: none;
             }
+            body {
+                font-family: Arial;
+                margin: 20px;
+            }
+            a {
+                color: #06c;
+                text-decoration: none;
+            }
+            a:hover {
+                text-decoration: underline;
+            }
+            table {
+                border-collapse: collapse;
+                margin-top: 10px;
+            }
+            th, td {
+                border: 1px solid #ccc;
+                padding: 4px 8px;
+                white-space: nowrap;
+            }
+            th {
+                background: #f0f0f0;
+            }
+            td.actions {
+                text-align: center;
+            }
+            input[type=number] {
+                width:80px;
+            }
+            button{
+                width: 100px;
+            }
         </style>
     </head>
     <body>

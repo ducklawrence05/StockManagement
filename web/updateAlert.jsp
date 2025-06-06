@@ -11,6 +11,37 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Update Alert Page</title>
+        <style>
+            body {
+                font-family: Arial;
+                margin: 20px;
+            }
+            a {
+                color: #06c;
+                text-decoration: none;
+            }
+            a:hover {
+                text-decoration: underline;
+            }
+            table {
+                border-collapse: collapse;
+                margin-top: 10px;
+            }
+            th, td {
+                border: 1px solid #ccc;
+                padding: 4px 8px;
+                white-space: nowrap;
+            }
+            th {
+                background: #f0f0f0;
+            }
+            td.actions {
+                text-align: center;
+            }
+            input[type=number] {
+                width:80px;
+            }
+        </style>
     </head>
 
     <body>

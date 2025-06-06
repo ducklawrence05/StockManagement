@@ -19,7 +19,14 @@
         </form>
 
         <h1>Create Alert</h1>
-        <p style="color: green;">${requestScope.MSG}</p>
+        <c:if test="${empty requestScope.ERRMSG}">
+            <p style="color: green;">${requestScope.MSG}</p>
+        </c:if>
+
+        <c:if test="${!empty requestScope.ERRMSG}">
+            <p style="color: red;">${requestScope.ERRMSG}</p>
+            <hr />
+        </c:if>
         <hr />
 
         <form action="${pageContext.request.contextPath}/main/alert/create" method="POST">

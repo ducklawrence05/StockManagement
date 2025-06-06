@@ -217,7 +217,9 @@ public class AlertController extends HttpServlet {
             float threshold = Float.parseFloat(request.getParameter("threshold"));
             String direction = request.getParameter("direction");
             String message = alertService.createAlert(userID, ticker, threshold, direction);
-            request.setAttribute("MSG", message);
+            if(message.equals(Message.THRESHOLD_CAN_NOT_BE_NEGATIVE)){
+                request.setAttribute("ERRMSG", message);
+            }else request.setAttribute("MSG", message);
         } catch (Exception ex) {
             ex.printStackTrace();
             request.setAttribute("MSG", Message.SYSTEM_ERROR);
@@ -236,7 +238,9 @@ public class AlertController extends HttpServlet {
             String status = request.getParameter("status");
             String message = alertService.updateAlert(alertID, threshold, status);
             request.setAttribute("alert", new Alert(alertID, userID, ticker, threshold, direction, status));
-            request.setAttribute("MSG", message);
+            if(message.equals(Message.THRESHOLD_CAN_NOT_BE_NEGATIVE)){
+                request.setAttribute("ERRMSG", message);
+            }else request.setAttribute("MSG", message);
             if(status.equalsIgnoreCase("inactive")){
                 boolean can = true;
                 request.setAttribute("can", can);

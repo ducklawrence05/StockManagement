@@ -19,6 +19,7 @@
         </form>
 
         <h3>Update transaction</h3>
+        
         <p style="color: green;">${requestScope.MSG}</p>
        
         <hr />
@@ -43,8 +44,8 @@
                 
                 <label for="status">status</label>
                 <input type="text" id="status" name="status" value="${transaction.status}"> <br><br> 
+                <c:if test="${!empty requestScope.can}"><button type="submit" name="action" value="update">Update</button></c:if>
                 
-                <button type="submit" name="action" value="update">Update</button>
             </form>    
 
         <a href="${pageContext.request.contextPath}/transaction">Back to transaction CRUD</a>

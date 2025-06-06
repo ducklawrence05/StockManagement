@@ -54,6 +54,7 @@ public class Message {
     public static final String TRANSACTION_NOT_FOUND = "TRANSACTION not found";
     public static final String UPDATE_TRANSACTION_FAILED_QUANTITY = "UPDATE Transaction failed (quantity > 0)";
     public static final String UPDATE_TRANSACTION_FAILED_PRICE = "UPDATE Transaction failed (price > 0)";
+    public static final String TRANSACTION_CREATER = "you are not a creater of this tracsaction";
     
     
     // Alert

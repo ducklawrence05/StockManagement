@@ -131,6 +131,7 @@
                                 action="${pageContext.request.contextPath}/main/transaction/update" 
                                 method="GET">
                                 <input type="hidden" name="id" value="${transaction.id}">
+                                <input type="hidden" name="userID" value="${sessionScope.currentUser.userID}">
                                 <button type="submit" name="action" value="update">Update</button>    
                             </form> 
 

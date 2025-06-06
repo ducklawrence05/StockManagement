@@ -106,9 +106,7 @@ public class TransactionDAO {
     public boolean updateTransaction(int id,String userID, String sticker, String type,
             int quantity, float  price, String status) throws Exception {
         boolean isUpdated = false;
-        try ( Connection conn = DBContext.getConnection();  PreparedStatement stm = conn.prepareStatement(UPDATE_TRANSACTION)) {
-            
-               
+        try ( Connection conn = DBContext.getConnection();  PreparedStatement stm = conn.prepareStatement(UPDATE_TRANSACTION)) {  
                 stm.setString(1, userID);
                 stm.setString(2, sticker);
                 stm.setString(3, type);
@@ -117,7 +115,6 @@ public class TransactionDAO {
                 stm.setString(6, status);
                 stm.setInt(7, id);
                 isUpdated = stm.executeUpdate() > 0;
-            
         }
         return isUpdated;
     }
@@ -142,6 +139,7 @@ public class TransactionDAO {
                             rs.getFloat("price"), rs.getString("status")
         );
     } 
+    
     public boolean checkTransactionExists(int id) throws SQLException {
         try ( Connection conn = DBContext.getConnection();  PreparedStatement stm = conn.prepareStatement(GET_TRANSACTION_BY_ID)) {
             stm.setInt(1, id);

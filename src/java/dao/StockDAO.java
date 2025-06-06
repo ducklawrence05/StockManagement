@@ -32,18 +32,18 @@ public class StockDAO {
     public String create(Stock s) throws SQLException {
         try (Connection conn = DBContext.getConnection();
              PreparedStatement ps = conn.prepareStatement(ADD_STOCK)) {
-            ps.setString(1, s.getTicker());
-            ps.setString(2, s.getName());
-            ps.setString(3, s.getSector());
+
+            ps.setString(1, s.getTicker().trim());
+            ps.setString(2, s.getName().trim());
+            ps.setString(3, s.getSector().trim());
             ps.setFloat(4, s.getPrice());
             ps.setBoolean(5, s.isStatus());
-            if (ps.executeUpdate() <= 0) {
-                return Message.CREATE_STOCK_FAILED;
-            } else {
-                return Message.CREATE_STOCK_SUCCESSFULLY;
-            }
+
+            int result = ps.executeUpdate();
+            return (result > 0) ? Message.CREATE_STOCK_SUCCESSFULLY : Message.CREATE_STOCK_FAILED;
         }
     }
+
 
     public int delete(String userID) throws SQLException {
         try ( Connection conn = DBContext.getConnection();  PreparedStatement stm = conn.prepareStatement(DELETE_STOCK)) {

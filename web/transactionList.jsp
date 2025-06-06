@@ -1,206 +1,156 @@
-<%-- 
-    Document   : transactionList
-    Created on : Apr 23, 2025, 9:35:16 AM
-    Author     : admin
---%>
-
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@page import="java.util.ArrayList"%>
-<%@page import="dto.Transaction"%>
-<%@page import="dto.User"%>
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page contentType="text/html; charset=UTF-8"%>
 <!DOCTYPE html>
 <html>
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta charset="UTF-8">
         <title>Transaction List Page</title>
-        <style>
-            body {
-                font-family: Arial;
-                margin: 20px;
-            }
-            a {
-                color: #06c;
-                text-decoration: none;
-            }
-            a:hover {
-                text-decoration: underline;
-            }
-            table {
-                border-collapse: collapse;
-                margin-top: 10px;
-            }
-            th, td {
-                border: 1px solid #ccc;
-                padding: 4px 8px;
-                white-space: nowrap;
-            }
-            th {
-                background: #f0f0f0;
-            }
-            td.actions {
-                text-align: center;
-            }
-            input[type=number] {
-                width:80px;
-            }
-        </style>
-
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
     </head>
 
-
     <body>
-        <h1>Welcome, <c:out value="${sessionScope.currentUser.fullName}"/></h1>
-        <a 
-            href="${pageContext.request.contextPath}/main/transaction"
-            style="text-decoration: none; color: black"
-            >Transaction CRUD</a>
-        <hr />
-        <hr />
+        <div class="container bg-white p-4 rounded shadow-sm">
+            <h2>Welcome, <c:out value="${sessionScope.currentUser.fullName}"/></h2>
 
-        <form action="${pageContext.request.contextPath}/main/auth/logout" method="POST">
-            <button type="submit" name="action" value="Logout">Logout</button>
-        </form>
+            <div class="mb-3">
+                <a href="${pageContext.request.contextPath}/main/transaction" class="btn btn-primary me-2">Transaction CRUD</a>
 
-        <hr />    
-
-        <form action="${pageContext.request.contextPath}/main/transaction" method="GET">
-            <label for="keySearch">Search</label>
-            <input type="text" id="keySearch" name="keySearch" placeholder="Search..."/> |
-
-            <select id="search" name="action">
-                <option value="getTransactionByTicker">Search by ticker</option>
-                <option value="getTransactionByType">Search by type</option>
-                <option value="getTransactionByStatus">Search by status</option>
-            </select>
-
-            <div id="type-options" style="display:none;">
-                <label for="typeSearch">Select Type:</label>
-                <select id="typeSearch">
-                    <option value="buy">buy</option>
-                    <option value="sell">sell</option>
-                </select>
+                <form action="${pageContext.request.contextPath}/main/auth/logout" method="POST" class="d-inline">
+                    <button type="submit" name="action" value="Logout" class="btn btn-danger">Logout</button>
+                </form>
             </div>
 
-            <div id="status-options" style="display:none;">
-                <label for="statusSearch">Select Status:</label>
-                <select id="statusSearch">
-                    <option value="executed">Executed</option>
-                    <option value="pending">Pending</option>
-                </select>
-            </div>
-            <button type="submit">Search</button>
-        </form>
+            <form action="${pageContext.request.contextPath}/main/transaction" method="GET" class="mb-3">
+                <button type="submit" name="action" value="create" class="btn btn-success">Create User</button>
+            </form>
 
-        <c:if test="${empty transactions}">
-            <p>No matching transactions found!</p>
-        </c:if>
+            <!-- Search form -->
+            <form action="${pageContext.request.contextPath}/main/transaction" method="GET" class="mb-3">
+                <div class="row g-2 align-items-center">
+                    <div class="col-auto">
+                        <select id="search" name="action" class="form-select">
+                            <option value="getTransactionByTicker">Search by ticker</option>
+                            <option value="getTransactionByType">Search by type</option>
+                            <option value="getTransactionByStatus">Search by status</option>
+                        </select>
+                    </div>
+                    <div class="col-auto">
+                        <input type="text" id="keySearch" name="keySearch" class="form-control" placeholder="Search..." />
+                    </div>
+                    <div class="col-auto" id="type-options" style="display:none;">
+                        <select id="typeSearch" class="form-select">
+                            <option value="buy">buy</option>
+                            <option value="sell">sell</option>
+                        </select>
+                    </div>
+                    <div class="col-auto" id="status-options" style="display:none;">
+                        <select id="statusSearch" class="form-select">
+                            <option value="executed">Executed</option>
+                            <option value="pending">Pending</option>
+                        </select>
+                    </div>
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-success">Search</button>
+                    </div>
+                </div>
+            </form>
 
-        <p style="color: green;">${requestScope.MSG}</p>    
-        <form 
-            action="${pageContext.request.contextPath}/main/transaction/create" 
-            method="GET">
-            <input type="submit" name="action" value="create"></input>    
-        </form> 
+            <c:if test="${empty transactions}">
+                <div class="alert alert-warning">No matching transactions found!</div>
+            </c:if>
 
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>User ID</th>
-                    <th>Ticker</th>
-                    <th>Type</th>
-                    <th>Quantity</th>
-                    <th>Price</th>
-                    <th>Status</th>      
-                </tr>
-            </thead>
-            <tbody>
-                <c:forEach var = "transaction" items="${requestScope.transactions}" varStatus="st">
+            <c:if test="${not empty requestScope.MSG}">
+                <div class="alert alert-success">${requestScope.MSG}</div>
+            </c:if>
 
+            <table class="table table-bordered table-striped">
+                <thead class="table-light">
                     <tr>
-                        <td>${transaction.id}</td>
-                        <td>${transaction.userID}</td>
-                        <td>${transaction.ticker}</td>
-                        <td>${transaction.type}</td>
-                        <td>${transaction.quantity}</td>
-                        <td>${transaction.price}</td>
-                        <td>${transaction.status}</td>
-                        <td class="action">
-
-                            <form 
-                                action="${pageContext.request.contextPath}/main/transaction/update" 
-                                method="GET">
-                                <input type="hidden" name="id" value="${transaction.id}">
-                                <input type="hidden" name="userID" value="${sessionScope.currentUser.userID}">
-                                <button type="submit" name="action" value="update">Update</button>    
-                            </form> 
-
-                            <form 
-                                action="${pageContext.request.contextPath}/main/transaction/delete" 
-                                method="POST">
-
-                                <input type="hidden" name="id" value="${transaction.id}"> </input>
-                                <input type="hidden" name="userID" value="${sessionScope.currentUser.userID}">
-                                <button type="submit" name="action" value="delete">Delete</button>
-                            </form>                       
-                        </td>
+                        <th>ID</th>
+                        <th>User ID</th>
+                        <th>Ticker</th>
+                        <th>Type</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Status</th>
+                        <th>Actions</th>
                     </tr>
-                </c:forEach>
-            </tbody>    
-        </table>
+                </thead>
+                <tbody>
+                    <c:forEach var="transaction" items="${requestScope.transactions}">
+                        <tr>
+                            <td>${transaction.id}</td>
+                            <td>${transaction.userID}</td>
+                            <td>${transaction.ticker}</td>
+                            <td>${transaction.type}</td>
+                            <td>${transaction.quantity}</td>
+                            <td>${transaction.price}</td>
+                            <td>${transaction.status}</td>
+                            <td>
+                                <div class="d-flex gap-2">
+                                    <form action="${pageContext.request.contextPath}/main/transaction/update" method="GET">
+                                        <input type="hidden" name="id" value="${transaction.id}">
+                                        <input type="hidden" name="userID" value="${sessionScope.currentUser.userID}">
+                                        <button type="submit" name="action" value="update" class="btn btn-warning btn-sm">Update</button>
+                                    </form>
+                                    <form action="${pageContext.request.contextPath}/main/transaction/delete" method="POST">
+                                        <input type="hidden" name="id" value="${transaction.id}">
+                                        <input type="hidden" name="userID" value="${sessionScope.currentUser.userID}">
+                                        <button type="submit" name="action" value="delete" class="btn btn-danger btn-sm">Delete</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    </c:forEach>
+                </tbody>
+            </table>
 
-        <!-- Back to home -->
-        <c:choose>
-            <c:when test="${sessionScope.currentUser.role.name() == 'ADMIN'}">
-                <a href="${pageContext.request.contextPath}/admin.jsp" class="btn btn-outline-primary mt-3">Back to admin page</a>
-            </c:when>
-            <c:when test="${sessionScope.currentUser.role.name() == 'STAFF'}">
-                <a href="${pageContext.request.contextPath}/welcome.jsp" class="btn btn-outline-primary mt-3">Back to home</a>
-            </c:when>
-        </c:choose>
+            <!-- Back to home -->
+            <c:choose>
+                <c:when test="${sessionScope.currentUser.role.name() == 'ADMIN'}">
+                    <a href="${pageContext.request.contextPath}/admin.jsp" class="btn btn-outline-primary mt-3">Back to admin page</a>
+                </c:when>
+                <c:when test="${sessionScope.currentUser.role.name() == 'STAFF'}">
+                    <a href="${pageContext.request.contextPath}/welcome.jsp" class="btn btn-outline-primary mt-3">Back to home</a>
+                </c:when>
+            </c:choose>
 
+        </div>
         <script>
             document.addEventListener("DOMContentLoaded", function () {
-                var searchSelect = document.getElementById("search");
-                var statusOptions = document.getElementById("status-options");
-                var statusSearch = document.getElementById("statusSearch");
-                var keySearch = document.getElementById("keySearch");
+                const searchSelect = document.getElementById("search");
+                const statusOptions = document.getElementById("status-options");
+                const statusSearch = document.getElementById("statusSearch");
+                const typeOptions = document.getElementById("type-options");
+                const typeSearch = document.getElementById("typeSearch");
+                const keySearch = document.getElementById("keySearch");
 
-                searchSelect.addEventListener("change", function () {
-                    if (this.value === "getTransactionByStatus") {
+                function updateSearchVisibility() {
+                    const value = searchSelect.value;
+                    if (value === "getTransactionByStatus") {
                         statusOptions.style.display = "block";
-                        keySearch.value = statusSearch.value; // Lấy giá trị ban đầu
-                    } else {
-                        statusOptions.style.display = "none";
-                        keySearch.value = ""; // Xóa giá trị nếu không chọn status
-                    }
-                });
-
-                statusSearch.addEventListener("change", function () {
-                    keySearch.value = this.value; // Cập nhật keySearch với giá trị đã chọn
-                });
-            });
-
-            document.addEventListener("DOMContentLoaded", function () {
-                var searchSelect = document.getElementById("search");
-                var typeOptions = document.getElementById("type-options");
-                var typeSearch = document.getElementById("typeSearch");
-                var keySearch = document.getElementById("keySearch");
-
-                searchSelect.addEventListener("change", function () {
-                    if (this.value === "getTransactionByType") {
-                        typeOptions.style.display = "block";
-                        keySearch.value = typeSearch.value; // Lấy giá trị ban đầu
-                    } else {
                         typeOptions.style.display = "none";
-                        keySearch.value = ""; // Xóa giá trị nếu không chọn type
+                        keySearch.style.display = "none";
+                        keySearch.value = statusSearch.value;
+                    } else if (value === "getTransactionByType") {
+                        typeOptions.style.display = "block";
+                        statusOptions.style.display = "none";
+                        keySearch.style.display = "none";
+                        keySearch.value = typeSearch.value;
+                    } else {
+                        keySearch.style.display = "block";
+                        typeOptions.style.display = "none";
+                        statusOptions.style.display = "none";
+                        keySearch.value = "";
                     }
-                });
+                }
 
-                typeSearch.addEventListener("change", function () {
-                    keySearch.value = this.value; // Cập nhật keySearch với giá trị đã chọn
-                });
+                searchSelect.addEventListener("change", updateSearchVisibility);
+                statusSearch.addEventListener("change", () => keySearch.value = statusSearch.value);
+                typeSearch.addEventListener("change", () => keySearch.value = typeSearch.value);
+
+                updateSearchVisibility(); // Khởi tạo đúng giao diện
             });
         </script>
     </body>

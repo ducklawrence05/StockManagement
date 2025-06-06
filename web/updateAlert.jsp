@@ -33,9 +33,6 @@
 
             <div class="table-responsive">
                 <form action="${pageContext.request.contextPath}/main/alert/update" method="POST">
-
-
-
                     <label for="alertID">Alert ID</label>
                     <input id="AlertID" class="readonly-input" type="text" name="alertID" value="${alert.alertID}" readonly>
                     <br/>
@@ -78,13 +75,8 @@
                     </c:choose>
                     <br/>
                     <c:if test="${requestScope.can == true}">
-
                         <button type="submit" class="btn btn-primary">Update</button>
-
                     </c:if>
-
-
-
                 </form>
             </div>
 

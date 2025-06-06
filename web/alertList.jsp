@@ -14,14 +14,14 @@
         </style>
     </head>
     <body>
-
         <div class="container bg-white p-4 rounded shadow-sm">
             <h2 class="mb-4">Welcome, <c:out value="${sessionScope.currentUser.fullName}" /></h2>
 
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <a href="${pageContext.request.contextPath}/main/alert" class="btn btn-outline-primary">Alert CRUD</a>
-                <form action="${pageContext.request.contextPath}/main/auth/logout" method="POST">
-                    <input type="submit" class="btn btn-danger" value="LOGOUT" />
+            <div class="mb-3">
+                <a href="${pageContext.request.contextPath}/main/alert" class="btn btn-primary me-2">Alert CRUD</a>
+
+                <form action="${pageContext.request.contextPath}/main/auth/logout" method="POST" class="d-inline">
+                    <button type="submit" name="action" value="Logout" class="btn btn-danger">Logout</button>
                 </form>
             </div>
 
@@ -61,7 +61,6 @@
                 </div>
 
                 <div class="col-md-4">
-                    <label>&nbsp;</label>
                     <button type="submit" class="btn btn-primary w-100">Search</button>
                 </div>
             </form>

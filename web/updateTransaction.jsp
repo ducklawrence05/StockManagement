@@ -49,10 +49,10 @@
                 </c:choose>
 
                 <label for="quantity">Quantity</label>
-                <input type="number" id="quantity" name="quantity" value="${transaction.quantity}" class="form-control" min="1" required />
+                <input type="number" id="quantity" name="quantity" value="${transaction.quantity}" class="form-control" required />
 
                 <label for="price">Price</label>
-                <input type="number" id="price" name="price" value="${transaction.price}" step="0.01" class="form-control" min="0.01" required />
+                <input type="number" id="price" name="price" value="${transaction.price}" step="0.01" class="form-control" required />
 
                 <label for="status">Status</label>
                 <c:choose>

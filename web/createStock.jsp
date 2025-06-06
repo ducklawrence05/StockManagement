@@ -31,8 +31,7 @@
         </c:if>
 
         <!-- Create stock form -->
-        <form action="${pageContext.request.contextPath}/stock" method="POST">
-            <input type="hidden" name="action" value="create" />
+        <form action="${pageContext.request.contextPath}/main/stock/create" method="POST">
 
             <div class="mb-3">
                 <label for="ticker" class="form-label">Ticker</label>
@@ -66,7 +65,7 @@
         </form>
 
         <!-- Back to list -->
-        <a href="${pageContext.request.contextPath}/stock" class="btn btn-link mt-3">Back to Stock List</a>
+        <a href="${pageContext.request.contextPath}/main/stock" class="btn btn-link mt-3">Back to Stock List</a>
     </div>
 </body>
 </html>

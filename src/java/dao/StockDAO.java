@@ -13,7 +13,7 @@ public class StockDAO {
     private final String GET_STOCK_BY_TICKER = "SELECT * FROM tblStocks WHERE ticker LIKE ?";
     private final String GET_ALL_STOCK = "SELECT * FROM tblStocks";
     private final String ADD_STOCK = "INSERT INTO tblStocks(ticker, name, sector, price, status) VALUES(?,?,?,?,?)";
-    private final String DELETE_STOCK = "DELETE FROM tblStocks WHERE ticker=?";
+    private final String DELETE_STOCK = "DELETE FROM tblStocks WHERE ticker LIKE ?";
     private final String SEARCH_BY_PRICE = "SELECT * FROM tblStocks WHERE price BETWEEN ? AND ?";
     private final String UPDATE = "UPDATE tblStocks SET name=?, sector=?, price=?, status=? WHERE ticker=?";
     private final String ORDER_BY_PRICE = "SELECT * FROM tblStocks ORDER BY price ";
@@ -45,9 +45,10 @@ public class StockDAO {
     }
 
 
-    public int delete(String userID) throws SQLException {
+    public int delete(String ticker) throws SQLException {
         try ( Connection conn = DBContext.getConnection();  PreparedStatement stm = conn.prepareStatement(DELETE_STOCK)) {
-            stm.setString(1, userID);
+            stm.setString(1, "%" + ticker + "%");
+            System.out.println(stm.toString());
             return stm.executeUpdate();
         }
     }

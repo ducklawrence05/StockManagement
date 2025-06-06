@@ -12,18 +12,19 @@
     <!-- User and Logout -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h3>Welcome, <c:out value="${sessionScope.currentUser.fullName}" /></h3>
+        <a href="${pageContext.request.contextPath}/main/stock" class="btn btn-outline-primary">User CRUD</a>
         <form action="${pageContext.request.contextPath}/main/auth/logout" method="POST">
             <input type="submit" class="btn btn-danger" value="Logout" />
         </form>
     </div>
 
     <!-- Create button -->
-    <form action="${pageContext.request.contextPath}/main/user" method="GET" class="mb-3">
+    <form action="${pageContext.request.contextPath}/main/stock" method="GET" class="mb-3">
         <button type="submit" name="action" value="create" class="btn btn-success">Create Stock</button>
     </form>
 
     <!-- Search Filters -->
-    <form action="${pageContext.request.contextPath}/stock" method="GET" class="row g-2 mb-4">
+    <form action="${pageContext.request.contextPath}/main/stock" method="GET" class="row g-2 mb-4">
         <input type="hidden" name="action" value="filter" />
         <div class="col-md-3">
             <input type="text" name="name" class="form-control" placeholder="Search by Name" />
@@ -40,7 +41,7 @@
     </form>
 
     <!-- Search by price -->
-    <form action="${pageContext.request.contextPath}/stock" method="GET" class="row g-2 mb-4">
+    <form action="${pageContext.request.contextPath}/main/stock" method="GET" class="row g-2 mb-4">
         <input type="hidden" name="action" value="searchByPrice" />
         <div class="col-md-3">
             <input type="number" name="minPrice" class="form-control" placeholder="Min Price" step="0.01" />
@@ -55,12 +56,12 @@
 
     <!-- Sort -->
     <div class="mb-3">
-        <form action="${pageContext.request.contextPath}/stock" method="GET" class="d-inline">
+        <form action="${pageContext.request.contextPath}/main/stock" method="GET" class="d-inline">
             <input type="hidden" name="action" value="orderByPrice" />
             <input type="hidden" name="order" value="ASC" />
             <button type="submit" class="btn btn-info btn-sm">Sort by Price ↑</button>
         </form>
-        <form action="${pageContext.request.contextPath}/stock" method="GET" class="d-inline">
+        <form action="${pageContext.request.contextPath}/main/stock" method="GET" class="d-inline">
             <input type="hidden" name="action" value="orderByPrice" />
             <input type="hidden" name="order" value="DESC" />
             <button type="submit" class="btn btn-info btn-sm">Sort by Price ↓</button>
@@ -102,18 +103,16 @@
                 </td>
                 <td>
                     <!-- Update button -->
-                    <form action="${pageContext.request.contextPath}/stock" method="GET" style="display:inline;">
-                        <input type="hidden" name="action" value="update" />
+                    <form action="${pageContext.request.contextPath}/main/stock/update" method="GET" style="display:inline;">
                         <input type="hidden" name="ticker" value="${s.ticker}" />
                         <button type="submit" class="btn btn-sm btn-warning">Update</button>
                     </form>
                     <!-- Delete button -->
                     <form 
-                        action="${pageContext.request.contextPath}/stock" 
+                        action="${pageContext.request.contextPath}/main/stock/delete" 
                         method="POST" 
                         style="display:inline;" 
                         onsubmit="return confirm('Delete this stock?');">
-                        <input type="hidden" name="action" value="delete" />
                         <input type="hidden" name="ticker" value="${s.ticker}" />
                         <button type="submit" class="btn btn-sm btn-danger">Delete</button>
                     </form>
@@ -122,6 +121,15 @@
         </c:forEach>
         </tbody>
     </table>
+    <!-- Back to home -->
+            <c:choose>
+                <c:when test="${sessionScope.currentUser.role.name() == 'ADMIN'}">
+                    <a href="${pageContext.request.contextPath}/admin.jsp" class="btn btn-outline-primary mt-3">Back to admin page</a>
+                </c:when>
+                <c:when test="${sessionScope.currentUser.role.name() == 'STAFF'}">
+                    <a href="${pageContext.request.contextPath}/welcome.jsp" class="btn btn-outline-primary mt-3">Back to home</a>
+                </c:when>
+            </c:choose>
 </div>
 </body>
 </html>

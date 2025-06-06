@@ -23,8 +23,7 @@
             <p class="text-danger">${ERROR}</p>
         </c:if>
 
-        <form action="${pageContext.request.contextPath}/stock" method="POST">
-            <input type="hidden" name="action" value="update" />
+        <form action="${pageContext.request.contextPath}/main/stock/update" method="POST">
             <input type="hidden" name="ticker" value="${stock.ticker}" />
 
             <div class="mb-3">
@@ -51,7 +50,7 @@
             </div>
 
             <button type="submit" class="btn btn-primary">Update</button>
-            <a href="${pageContext.request.contextPath}/stock" class="btn btn-secondary">Cancel</a>
+            <a href="${pageContext.request.contextPath}/main/stock" class="btn btn-secondary">Cancel</a>
         </form>
     </body>
 </html>

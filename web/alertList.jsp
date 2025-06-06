@@ -66,6 +66,13 @@
                 </div>
             </form>
 
+            <c:if test="${!empty requestScope.MSG}">
+                <div class="alert alert-success">${requestScope.MSG}</div>
+            </c:if>
+            <c:if test="${!empty requestScope.ERRMSG}">
+                <div class="alert alert-danger">${requestScope.ERRMSG}</div>
+            </c:if>
+                
             <c:if test="${!empty alerts}">
                 <table class="table table-bordered table-hover">
                     <thead class="table-light">
@@ -106,14 +113,18 @@
                 </table>
             </c:if>
 
-            <c:if test="${!empty requestScope.MSG}">
-                <div class="alert alert-success">${requestScope.MSG}</div>
-            </c:if>
-            <c:if test="${!empty requestScope.ERRMSG}">
-                <div class="alert alert-danger">${requestScope.ERRMSG}</div>
-            </c:if>
-
+            <!-- Back to home -->
+            <c:choose>
+                <c:when test="${sessionScope.currentUser.role.name() == 'ADMIN'}">
+                    <a href="${pageContext.request.contextPath}/admin.jsp" class="btn btn-outline-primary mt-3">Back to admin page</a>
+                </c:when>
+                <c:when test="${sessionScope.currentUser.role.name() == 'STAFF'}">
+                    <a href="${pageContext.request.contextPath}/welcome.jsp" class="btn btn-outline-primary mt-3">Back to home</a>
+                </c:when>
+            </c:choose>
         </div>
+                
+        
 
         <script>
             function updateSelectOptions() {

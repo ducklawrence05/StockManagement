@@ -1,59 +1,83 @@
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@page import="dto.Stock"%>
-<%@page import="java.util.List"%>
+<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8" />
     <title>Stock List</title>
-    <style>
-        table {
-            border-collapse: collapse;
-        }
-        th, td {
-            border: 1px solid #999;
-            padding: 8px;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-    </style>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
 </head>
 <body>
-    <h2>Stock List</h2>
+<div class="container mt-4">
+    <!-- User and Logout -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3>Welcome, <c:out value="${sessionScope.currentUser.fullName}" /></h3>
+        <form action="${pageContext.request.contextPath}/main/auth/logout" method="POST">
+            <input type="submit" class="btn btn-danger" value="Logout" />
+        </form>
+    </div>
 
-    <!-- Logout Button -->
-    <form action="${pageContext.request.contextPath}/main/auth/logout" method="POST">
-        <input type="submit" value="LOGOUT" />
+    <!-- Create button -->
+    <form action="${pageContext.request.contextPath}/main/user" method="GET" class="mb-3">
+        <button type="submit" name="action" value="create" class="btn btn-success">Create Stock</button>
     </form>
-    <!-- Filter Form -->
-    <form action="stock" method="GET">
-        <input type="text" name="name" placeholder="Filter by name" value="${param.name}" />
-        <input type="text" name="sector" placeholder="Filter by sector" value="${param.sector}" />
-        <input type="text" name="ticker" placeholder="Filter by ticker" value="${param.ticker}" />
+
+    <!-- Search Filters -->
+    <form action="${pageContext.request.contextPath}/stock" method="GET" class="row g-2 mb-4">
         <input type="hidden" name="action" value="filter" />
-        <button type="submit">Filter</button>
+        <div class="col-md-3">
+            <input type="text" name="name" class="form-control" placeholder="Search by Name" />
+        </div>
+        <div class="col-md-3">
+            <input type="text" name="ticker" class="form-control" placeholder="Search by Ticker" />
+        </div>
+        <div class="col-md-3">
+            <input type="text" name="sector" class="form-control" placeholder="Search by Sector" />
+        </div>
+        <div class="col-md-3">
+            <button type="submit" class="btn btn-outline-primary w-100">Search</button>
+        </div>
     </form>
 
-    <!-- Search by Price Range -->
-    <form action="stock" method="GET" style="margin-top: 10px;">
-        <input type="number" name="minPrice" placeholder="Min Price" value="${param.minPrice}" step="0.01" min="0" />
-        <input type="number" name="maxPrice" placeholder="Max Price" value="${param.maxPrice}" step="0.01" min="0" />
-        <input type="hidden" name="action" value="searchbyPrice" />
-        <button type="submit">Search by Price Range</button>
+    <!-- Search by price -->
+    <form action="${pageContext.request.contextPath}/stock" method="GET" class="row g-2 mb-4">
+        <input type="hidden" name="action" value="searchByPrice" />
+        <div class="col-md-3">
+            <input type="number" name="minPrice" class="form-control" placeholder="Min Price" step="0.01" />
+        </div>
+        <div class="col-md-3">
+            <input type="number" name="maxPrice" class="form-control" placeholder="Max Price" step="0.01" />
+        </div>
+        <div class="col-md-3">
+            <button type="submit" class="btn btn-outline-secondary w-100">Search by Price Range</button>
+        </div>
     </form>
 
-    <!-- Sort by Price -->
-    <form action="stock" method="GET" style="margin-top:10px;">
-        <input type="hidden" name="action" value="orderByPrice" />
-        <select name="order">
-            <option value="ASC">Sort Price ASC</option>
-            <option value="DESC">Sort Price DESC</option>
-        </select>
-        <button type="submit">Sort</button>
-    </form>
+    <!-- Sort -->
+    <div class="mb-3">
+        <form action="${pageContext.request.contextPath}/stock" method="GET" class="d-inline">
+            <input type="hidden" name="action" value="orderByPrice" />
+            <input type="hidden" name="order" value="ASC" />
+            <button type="submit" class="btn btn-info btn-sm">Sort by Price ↑</button>
+        </form>
+        <form action="${pageContext.request.contextPath}/stock" method="GET" class="d-inline">
+            <input type="hidden" name="action" value="orderByPrice" />
+            <input type="hidden" name="order" value="DESC" />
+            <button type="submit" class="btn btn-info btn-sm">Sort by Price ↓</button>
+        </form>
+    </div>
 
-    <br>
-    <table>
+    <!-- Messages -->
+    <c:if test="${not empty requestScope.MSG}">
+        <div class="alert alert-success">${requestScope.MSG}</div>
+    </c:if>
+    <c:if test="${not empty requestScope.ERROR}">
+        <div class="alert alert-danger">${requestScope.ERROR}</div>
+    </c:if>
+
+    <!-- Stock Table -->
+    <table class="table table-bordered table-hover">
+        <thead class="table-light">
         <tr>
             <th>Ticker</th>
             <th>Name</th>
@@ -62,34 +86,42 @@
             <th>Status</th>
             <th>Actions</th>
         </tr>
-        <%
-            List<Stock> stocks = (List<Stock>) request.getAttribute("stocks");
-            if (stocks != null) {
-                for (Stock stock : stocks) {
-        %>
-        <tr>
-            <td><%= stock.getTicker() %></td>
-            <td><%= stock.getName() %></td>
-            <td><%= stock.getSector() %></td>
-            <td><%= stock.getPrice() %></td>
-            <td><%= stock.isStatus() ? "Active" : "Inactive" %></td>
-            <td>
-                <form action="stock" method="GET" style="display:inline">
-                    <input type="hidden" name="action" value="searchByTicker" />
-                    <input type="hidden" name="ticker" value="<%= stock.getTicker() %>" />
-                    <button type="submit">Update</button>
-                </form>
-                <form action="stock" method="POST" style="display:inline" onsubmit="return confirm('Are you sure you want to delete this stock?');">
-                    <input type="hidden" name="action" value="delete" />
-                    <input type="hidden" name="ticker" value="<%= stock.getTicker() %>" />
-                    <button type="submit">Delete</button>
-                </form>
-            </td>
-        </tr>
-        <%
-                }
-            }
-        %>
+        </thead>
+        <tbody>
+        <c:forEach var="s" items="${stocks}">
+            <tr>
+                <td>${s.ticker}</td>
+                <td>${s.name}</td>
+                <td>${s.sector}</td>
+                <td>${s.price}</td>
+                <td>
+                    <c:choose>
+                        <c:when test="${s.status}">Executed</c:when>
+                        <c:otherwise>Pending</c:otherwise>
+                    </c:choose>
+                </td>
+                <td>
+                    <!-- Update button -->
+                    <form action="${pageContext.request.contextPath}/stock" method="GET" style="display:inline;">
+                        <input type="hidden" name="action" value="update" />
+                        <input type="hidden" name="ticker" value="${s.ticker}" />
+                        <button type="submit" class="btn btn-sm btn-warning">Update</button>
+                    </form>
+                    <!-- Delete button -->
+                    <form 
+                        action="${pageContext.request.contextPath}/stock" 
+                        method="POST" 
+                        style="display:inline;" 
+                        onsubmit="return confirm('Delete this stock?');">
+                        <input type="hidden" name="action" value="delete" />
+                        <input type="hidden" name="ticker" value="${s.ticker}" />
+                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        </c:forEach>
+        </tbody>
     </table>
+</div>
 </body>
 </html>

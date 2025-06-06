@@ -17,12 +17,12 @@ import utils.AuthUtils;
 
 @WebServlet(name = "StockController", urlPatterns = {"/stock"})
 public class StockController extends HttpServlet {
-    private final StockService stockService = new StockService();
+    private StockService stockService = new StockService();
 
     private final String CREATE = "create";
     private final String GET_ALL = "getAll";
     private final String ORDER_BY_PRICE = "orderByPrice";
-    private final String SEARCH_BY_PRICE = "searchbyPrice";
+    private final String SEARCH_BY_PRICE = "searchByPrice";
     private final String SEARCH_BY_NAME = "searchByName";
     private final String SEARCH_BY_TICKER = "searchByTicker";
     private final String SEARCH_BY_SECTOR = "searchBySector";
@@ -38,7 +38,7 @@ public class StockController extends HttpServlet {
 
         String action = request.getParameter("action");
         if (action == null) action = GET_ALL;
-
+        String url = Url.STOCK_LIST_PAGE;
         List<Stock> stocks = null;
         switch (action) {
             case GET_ALL:
@@ -62,6 +62,13 @@ public class StockController extends HttpServlet {
             case "filter":
                 stocks = filterStocks(request, response);
                 break;
+            case UPDATE:
+                loadUpdateStockForm(request, response);
+                return;
+            case CREATE: {
+                url = Url.ADD_STOCK_PAGE;
+                break;
+            }
         }
 
         request.setAttribute("stocks", stocks);
@@ -83,14 +90,14 @@ public class StockController extends HttpServlet {
             switch (action) {
                 case CREATE:
                     createStock(request, response);
-                    url = Url.ADD_STOCK_PAGE;
+                    url = Url.STOCK_LIST_PAGE;
                     break;
                 case UPDATE:
                     updateStock(request, response);
                     request.setAttribute("stocks", stockService.getAllStock());
                     break;
                 case DELETE:
-                    deleteStock(request, response);
+                    delete(request, response);
                     return;
             }
 
@@ -119,6 +126,9 @@ public class StockController extends HttpServlet {
             throws ServletException, IOException {
         try {
             String order = request.getParameter("order");
+            if (order == null || (!order.equalsIgnoreCase("ASC") && !order.equalsIgnoreCase("DESC"))) {
+                order = "ASC";
+            }
             return stockService.findAllOrderByPrice(order);
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -133,15 +143,17 @@ public class StockController extends HttpServlet {
             String minStr = request.getParameter("minPrice");
             String maxStr = request.getParameter("maxPrice");
 
-            if ((minStr == null || minStr.isEmpty()) && (maxStr == null || maxStr.isEmpty())) {
-                return stockService.getAllStock();
+            float min = (minStr == null || minStr.isEmpty()) ? 0 : Float.parseFloat(minStr);
+            float max = (maxStr == null || maxStr.isEmpty()) ? Float.MAX_VALUE : Float.parseFloat(maxStr);
+
+            if (min > max) {
+                float tmp = min;
+                min = max;
+                max = tmp;
             }
 
-            int min = (minStr == null || minStr.isEmpty()) ? Integer.MIN_VALUE : Integer.parseInt(minStr);
-            int max = (maxStr == null || maxStr.isEmpty()) ? Integer.MAX_VALUE : Integer.parseInt(maxStr);
-
             return stockService.searchbyPrice(min, max);
-        } catch (SQLException ex) {
+        } catch (SQLException | NumberFormatException ex) {
             ex.printStackTrace();
             request.setAttribute("MSG", Message.EMTY_STOCK_PRICE);
         }
@@ -186,13 +198,31 @@ public class StockController extends HttpServlet {
 
     private void createStock(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, SQLException {
-        boolean status;
         String ticker = request.getParameter("ticker");
         String name = request.getParameter("name");
         String sector = request.getParameter("sector");
-        float price = Float.parseFloat(request.getParameter("price"));
-        int statusRaw = Integer.parseInt(request.getParameter("status"));
-        status = statusRaw == 1;
+        String priceStr = request.getParameter("price");
+        String statusStr = request.getParameter("status");
+
+        if (ticker == null || ticker.isEmpty() || name == null || name.isEmpty() ||
+            sector == null || sector.isEmpty() || priceStr == null || priceStr.isEmpty() || statusStr == null) {
+            request.setAttribute("MSG", Message.CREATE_STOCK_FAILED);
+            return;
+        }
+
+        float price;
+        try {
+            price = Float.parseFloat(priceStr);
+            if (price <= 0) {
+                request.setAttribute("MSG", Message.STOCK_PRICE_UNDER_LIMIT);
+                return;
+            }
+        } catch (NumberFormatException e) {
+            request.setAttribute("MSG", Message.STOCK_PRICE_UNDER_LIMIT);
+            return;
+        }
+
+        boolean status = statusStr.equals("1");
 
         Stock stock = new Stock(ticker, name, sector, price, status);
         String message = stockService.create(stock);
@@ -202,59 +232,49 @@ public class StockController extends HttpServlet {
     private void updateStock(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, SQLException {
         String ticker = request.getParameter("ticker");
-        List<Stock> foundList = stockService.searchByTicker(ticker);
-
-        if (foundList == null || foundList.isEmpty()) {
-            request.setAttribute("MSG", Message.STOCK_NOT_FOUND);
+        String name = request.getParameter("name");
+        String sector = request.getParameter("sector");
+        String priceStr = request.getParameter("price");
+        String statusInput = request.getParameter("status");
+        if (ticker == null || name == null || sector == null || statusInput == null ||
+            ticker.isEmpty() || name.isEmpty() || sector.isEmpty() || priceStr == null || priceStr.isEmpty()) {
+            request.setAttribute("MSG", Message.CREATE_STOCK_FAILED);
             return;
         }
 
-        Stock oldStock = foundList.get(0);
-
-        String nameInput = request.getParameter("name");
-        String sectorInput = request.getParameter("sector");
-        String priceInput = request.getParameter("price");
-        String statusInput = request.getParameter("status");
-
-        String name = (nameInput == null || nameInput.isEmpty()) ? oldStock.getName() : nameInput;
-        String sector = (sectorInput == null || sectorInput.isEmpty()) ? oldStock.getSector() : sectorInput;
-
-        float price = oldStock.getPrice();
-        if (priceInput != null && !priceInput.isEmpty()) {
-            price = Float.parseFloat(priceInput);
+        float price;
+        try {
+            price = Float.parseFloat(priceStr);
+            if (price <= 0) {
+                request.setAttribute("MSG", Message.STOCK_PRICE_UNDER_LIMIT);
+                return;
+            }
+        } catch (NumberFormatException e) {
+            request.setAttribute("MSG", Message.STOCK_PRICE_UNDER_LIMIT);
+            return;
         }
 
-        boolean status = oldStock.isStatus();
-        if (statusInput != null && !statusInput.isEmpty()) {
-            status = "1".equals(statusInput) || "true".equalsIgnoreCase(statusInput);
+        boolean status;
+        if ("executed".equalsIgnoreCase(statusInput)) {
+            status = true;
+        } else if ("pending".equalsIgnoreCase(statusInput)) {
+            status = false;
+        } else {
+            request.setAttribute("MSG", Message.STOCK_STATUS_RONGE);
+            return;
         }
 
         Stock updatedStock = new Stock(ticker, name, sector, price, status);
         String message = stockService.update(updatedStock);
+
         request.setAttribute("MSG", message);
     }
 
-    private void deleteStock(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        try {
-            String ticker = request.getParameter("ticker");
-
-            if (ticker == null || ticker.trim().isEmpty()) {
-                request.setAttribute("MSG", "Invalid ticker!");
-                return;
-            }
-
-            String message = stockService.delete(ticker);
-            request.setAttribute("MSG", message);
-
-            List<Stock> stocks = stockService.getAllStock();
-            request.setAttribute("stocks", stocks);
-            request.getRequestDispatcher(Url.STOCK_LIST_PAGE).forward(request, response);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            request.setAttribute("MSG", "System error when deleting stock!");
-            request.getRequestDispatcher(Url.ERROR_PAGE).forward(request, response);
-        }
+    private void delete(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException, SQLException {
+        String tinker = request.getParameter("tinker");
+        String message = stockService.delete(tinker);
+        request.setAttribute("MSG", message);
     }
 
     private List<Stock> filterStocks(HttpServletRequest request, HttpServletResponse response)
@@ -283,4 +303,25 @@ public class StockController extends HttpServlet {
         }
         return null;
     }
+
+    private void loadUpdateStockForm(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
+        String ticker = request.getParameter("ticker");
+
+        try {
+            List<Stock> results = stockService.searchByTicker(ticker);
+            if (!results.isEmpty()) {
+                request.setAttribute("stock", results.get(0)); 
+                request.getRequestDispatcher("/updateStock.jsp").forward(request, response);
+            } else {
+                request.setAttribute("MSG",Message.UPDATE_STOCK_FAILED);
+                request.getRequestDispatcher("/stockList.jsp").forward(request, response);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            request.setAttribute("MSG", Message.UPDATE_STOCK_FAILED);
+            request.getRequestDispatcher("/error.jsp").forward(request, response);
+        }
+    }
 }
+

@@ -1,51 +1,57 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@page import="dto.Stock"%>
-<%
-    Stock stock = (Stock) request.getAttribute("stock");
-    if (stock == null) {
-        response.sendRedirect("stock");
-        return;
-    }
-%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Update Stock</title>
-    <style>
-        form {
-            margin: 20px;
-        }
-        label {
-            display: block;
-            margin-top: 10px;
-        }
-    </style>
-</head>
-<body>
-    <h2>Update Stock - <%= stock.getTicker() %></h2>
-    <form action="stock" method="POST" onsubmit="return confirm('Are you sure you want to update this stock?');">
-        <input type="hidden" name="action" value="update">
-        <input type="hidden" name="ticker" value="<%= stock.getTicker() %>">
+    <head>
+        <meta charset="UTF-8">
+        <title>Update Stock</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    </head>
+    <body class="container mt-5">
+        <h3>Welcome, <c:out value="${sessionScope.currentUser.fullName}" /></h3>
 
-        <label for="name">Name:</label>
-        <input type="text" name="name" placeholder="Leave empty to keep: <%= stock.getName() %>">
+        <form action="${pageContext.request.contextPath}/main/auth/logout" method="POST">
+            <input type="submit" class="btn btn-danger" value="LOGOUT" />
+        </form>
 
-        <label for="sector">Sector:</label>
-        <input type="text" name="sector" placeholder="Leave empty to keep: <%= stock.getSector() %>">
+        <h2>Update Stock</h2>
 
-        <label for="price">Price:</label>
-        <input type="number" name="price" step="0.01" placeholder="Leave empty to keep: <%= stock.getPrice() %>">
+        <c:if test="${not empty MSG}">
+            <p class="text-success">${MSG}</p>
+        </c:if>
+        <c:if test="${not empty ERROR}">
+            <p class="text-danger">${ERROR}</p>
+        </c:if>
 
-        <label for="status">Status (1 = Active, 0 = Inactive):</label>
-        <select name="status">
-            <option value="">Keep current: <%= stock.isStatus() ? "Active" : "Inactive" %></option>
-            <option value="1">Active</option>
-            <option value="0">Inactive</option>
-        </select>
+        <form action="${pageContext.request.contextPath}/stock" method="POST">
+            <input type="hidden" name="action" value="update" />
+            <input type="hidden" name="ticker" value="${stock.ticker}" />
 
-        <br><br>
-        <button type="submit">Confirm Update</button>
-        <a href="stock"><button type="button">Cancel</button></a>
-    </form>
-</body>
+            <div class="mb-3">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" value="${stock.name}" class="form-control" required />
+            </div>
+
+            <div class="mb-3">
+                <label for="sector">Sector</label>
+                <input type="text" id="sector" name="sector" value="${stock.sector}" class="form-control" required />
+            </div>
+
+            <div class="mb-3">
+                <label for="price">Price</label>
+                <input type="number" id="price" name="price" value="${stock.price}" step="0.01" class="form-control" required />
+            </div>
+
+            <div class="mb-3">
+                <label for="status">Status</label>
+                <select id="status" name="status" class="form-select" required>
+                    <option value="pending" ${!stock.status ? "selected" : ""}>Pending</option>
+                    <option value="executed" ${stock.status ? "selected" : ""}>Executed</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Update</button>
+            <a href="${pageContext.request.contextPath}/stock" class="btn btn-secondary">Cancel</a>
+        </form>
+    </body>
 </html>

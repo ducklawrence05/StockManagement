@@ -1,41 +1,72 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+    <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Create New Stock</title>
+    <meta charset="UTF-8" />
+    <title>Create Stock</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
 </head>
 <body>
-<h2>Create New Stock</h2>
+    <div class="post-user-container container mt-5">
+        <!-- Display current user -->
+        <h3>Welcome, <c:out value="${sessionScope.currentUser.fullName}" /></h3>
 
-<form action="${pageContext.request.contextPath}/stock" method="post">
-    <input type="hidden" name="action" value="create">
+        <!-- Logout button -->
+        <form action="${pageContext.request.contextPath}/main/auth/logout" method="POST" class="mb-3">
+            <input type="submit" class="btn btn-danger" value="LOGOUT" />
+        </form>
 
-    <label for="ticker">Ticker:</label>
-    <input type="text" name="ticker" required><br>
+        <!-- Page title -->
+        <h3>Create New Stock</h3>
 
-    <label for="name">Name:</label>
-    <input type="text" name="name" required><br>
+        <!-- Notification message -->
+        <c:if test="${not empty requestScope.MSG}">
+            <p class="alert alert-info">${requestScope.MSG}</p>
+        </c:if>
 
-    <label for="sector">Sector:</label>
-    <input type="text" name="sector" required><br>
+        <c:if test="${not empty requestScope.ERROR}">
+            <p class="alert alert-danger">${requestScope.ERROR}</p>
+        </c:if>
 
-    <label for="price">Price:</label>
-    <input type="number" name="price" step="0.01" required><br>
+        <!-- Create stock form -->
+        <form action="${pageContext.request.contextPath}/stock" method="POST">
+            <input type="hidden" name="action" value="create" />
 
-    <label for="status">Status:</label>
-    <select name="status">
-        <option value="1">Active</option>
-        <option value="0">Inactive</option>
-    </select><br><br>
+            <div class="mb-3">
+                <label for="ticker" class="form-label">Ticker</label>
+                <input type="text" id="ticker" name="ticker" placeholder="Enter stock ticker" required class="form-control" />
+            </div>
 
-    <input type="submit" value="Create Stock">
-</form>
+            <div class="mb-3">
+                <label for="name" class="form-label">Stock Name</label>
+                <input type="text" id="name" name="name" placeholder="Enter stock name" required class="form-control" />
+            </div>
 
-<c:if test="${not empty MSG}">
-    <p style="color: green">${MSG}</p>
-</c:if>
+            <div class="mb-3">
+                <label for="sector" class="form-label">Sector</label>
+                <input type="text" id="sector" name="sector" placeholder="Enter sector" required class="form-control" />
+            </div>
 
-<a href="${pageContext.request.contextPath}/main/stock?action=getAll">Back to List</a>
+            <div class="mb-3">
+                <label for="price" class="form-label">Price</label>
+                <input type="number" id="price" name="price" placeholder="Enter price" step="0.01" required class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label for="status" class="form-label">Status</label>
+                <select id="status" name="status" required class="form-select">
+                    <option value="1">Executed</option>
+                    <option value="0">Pending</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">Create Stock</button>
+        </form>
+
+        <!-- Back to list -->
+        <a href="${pageContext.request.contextPath}/stock" class="btn btn-link mt-3">Back to Stock List</a>
+    </div>
 </body>
 </html>

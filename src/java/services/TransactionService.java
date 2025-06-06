@@ -20,9 +20,22 @@ public class TransactionService {
     private TransactionDAO transactionDAO = new TransactionDAO();
     private UserDAO userDAO = new UserDAO();
     
-    
     public String  createTransaction(String userID, String ticker,
             String type, int quantity, float price, String status)throws SQLException, Exception{
+        if (isNullOrEmptyString(userID) 
+                || isNullOrEmptyString(ticker)
+                || isNullOrEmptyString(type)
+                || isNullOrEmptyString(status)){
+            return Message.ALL_FIELDS_ARE_REQUIRED;
+        }
+        
+        if(quantity <= 0){
+            return Message.QUANTITY_CAN_NOT_BE_NEGATIVE;
+        }
+        
+        if(price <= 0.0){
+            return Message.PRICE_CAN_NOT_BE_NEGATIVE;
+        }
         
         if(transactionDAO.createTransaction(userID, ticker, type, quantity, price, status)){
             return Message.CREATE_TRANSACTION_FAILED;
@@ -51,11 +64,11 @@ public class TransactionService {
         }
         
         if(quantity <= 0){
-            return Message.UPDATE_TRANSACTION_FAILED_QUANTITY;
+            return Message.QUANTITY_CAN_NOT_BE_NEGATIVE;
         }
         
         if(price <= 0.0){
-            return Message.UPDATE_TRANSACTION_FAILED_PRICE;
+            return Message.PRICE_CAN_NOT_BE_NEGATIVE;
         }
         
         if(isNullOrEmptyString(status)){

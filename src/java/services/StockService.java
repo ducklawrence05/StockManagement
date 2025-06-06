@@ -27,19 +27,29 @@ public class StockService {
     }
     
     //update
-    public String update(Stock stock) throws SQLException{
-        if(!stockDAO.isTickerExist(stock.getTicker())){
-            return Message.EMTY_STOCK_LIST;
+    public String update(Stock stock) throws SQLException {
+        if(stockDAO.update(stock) == 0){
+            return Message.UPDATE_STOCK_FAILED;
         }
-        if(stock.getPrice()<=0){return Message.STOCK_PRICE_UNDER_LIMIT;}
-        return stockDAO.update(stock);
+        
+        return Message.UPDATE_STOCK_SUCCESSFULLY;
     }
     
     //delete
-        public String delete(String ticker) throws SQLException {
-        if (ticker == null || ticker == "") return Message.DELETE_STOCK_FAILED;
-        boolean deleted = stockDAO.delete(ticker);
-        return deleted ? Message.DELETE_STOCK_SUCCESSFULLY : Message.EMTY_STOCK_LIST;
+    public String delete(String ticker) throws SQLException{
+        if(stockDAO.delete(ticker) == 0){
+            return Message.STOCK_NOT_FOUND;
+        }
+        
+        return Message.DELETE_STOCK_SUCCESSFULLY;
+    }
+    
+    private boolean isNullOrEmptyString(String str){
+        return str == null || str.isEmpty();
+    }
+    
+    private boolean checkConfirmPassword(String pwd, String confirmPwd) {
+        return pwd.equals(confirmPwd);
     }
 
     

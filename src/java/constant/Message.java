@@ -51,6 +51,8 @@ public class Message {
     public static final String UPDATE_TRANSACTION_FAILED = "UPDATE Transaction failed";
     public static final String DELETE_TRANSACTION_SUCCESSFULLY = "UPDATE Transaction successfully";
     public static final String TRANSACTION_NOT_FOUND = "TRANSACTION not found";
+    public static final String UPDATE_TRANSACTION_FAILED_QUANTITY = "UPDATE Transaction failed (quantity > 0)";
+    public static final String UPDATE_TRANSACTION_FAILED_PRICE = "UPDATE Transaction failed (price > 0)";
     
     
     // Alert

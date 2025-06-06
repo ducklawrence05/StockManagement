@@ -50,12 +50,12 @@ public class TransactionService {
             type = transaction.getType();
         }
         
-        if(quantity == 0){
-            quantity = transaction.getQuantity();
+        if(quantity <= 0){
+            return Message.UPDATE_TRANSACTION_FAILED_QUANTITY;
         }
         
-        if(price == 0.0){
-            price = transaction.getPrice();
+        if(price <= 0.0){
+            return Message.UPDATE_TRANSACTION_FAILED_PRICE;
         }
         
         if(isNullOrEmptyString(status)){

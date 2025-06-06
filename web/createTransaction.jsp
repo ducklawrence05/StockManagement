@@ -50,8 +50,12 @@
             
             <button type="submit" name="action" value="create">Create Transaction</button>
             
-        </form>
+        </form> <br />
             
-        <a href="transactionList.jsp">Back to Transaction List</a>
+        <form 
+                action="${pageContext.request.contextPath}/main/transaction" 
+                method="GET">
+                <input type="submit" name="action" value="Back to Transaction List"></input>    
+            </form> 
     </body>
 </html>

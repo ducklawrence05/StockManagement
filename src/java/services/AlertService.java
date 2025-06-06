@@ -40,6 +40,9 @@ public class AlertService {
     }
 
     public String createAlert(String userID, String ticker, float threshold, String direction) throws SQLException {
+        if(threshold < 0){
+            return Message.THRESHOLD_CAN_NOT_BE_NEGATIVE;
+        }
         if (dao.create(userID, ticker, threshold, direction)) {
             return Message.CREATE_ALERT_SUCCESSFULLY;
         }
@@ -51,6 +54,9 @@ public class AlertService {
     }
 
     public String updateAlert(int alertID, float threshold, String status) throws SQLException {
+        if(threshold < 0){
+            return Message.THRESHOLD_CAN_NOT_BE_NEGATIVE;
+        }
         if (dao.update(alertID, threshold, status)) {
             return Message.UPDATE_ALERT_SUCCESSFULLY;
         }

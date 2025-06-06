@@ -121,7 +121,6 @@ public class TransactionController extends HttpServlet {
                     break;
                 }
                 case UPDATE: {
-                    
                     updateTransaction(request, response);
                     url = Url.UPDATE_TRANSACTION_PAGE;
                     break;

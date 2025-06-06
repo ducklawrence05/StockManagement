@@ -21,7 +21,7 @@ public class Url {
     
     // Stock
     public static final String STOCK_LIST_PAGE = "/stockList.jsp";
-    public static final String ADD_STOCK_PAGE = "/addStock.jsp";
+    public static final String ADD_STOCK_PAGE = "/createStock.jsp";
     public static final String UPDATE_STOCK_PAGE = "/updateStock.jsp";
     
     // Transaction

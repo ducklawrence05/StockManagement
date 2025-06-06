@@ -22,7 +22,7 @@ public class StockController extends HttpServlet {
     private final String CREATE = "create";
     private final String GET_ALL = "getAll";
     private final String ORDER_BY_PRICE = "orderByPrice";
-    private final String SEARCH_BY_PRICE = "searchbyPrice";
+    private final String SEARCH_BY_PRICE = "searchByPrice";
     private final String SEARCH_BY_NAME = "searchByName";
     private final String SEARCH_BY_TICKER = "searchByTicker";
     private final String SEARCH_BY_SECTOR = "searchBySector";
@@ -86,7 +86,7 @@ public class StockController extends HttpServlet {
             switch (action) {
                 case CREATE:
                     createStock(request, response);
-                    url = Url.ADD_STOCK_PAGE;
+                    url = Url.STOCK_LIST_PAGE;
                     break;
                 case UPDATE:
                     updateStock(request, response);
@@ -122,6 +122,9 @@ public class StockController extends HttpServlet {
             throws ServletException, IOException {
         try {
             String order = request.getParameter("order");
+            if (order == null || (!order.equalsIgnoreCase("ASC") && !order.equalsIgnoreCase("DESC"))) {
+                order = "ASC";
+            }
             return stockService.findAllOrderByPrice(order);
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -136,15 +139,17 @@ public class StockController extends HttpServlet {
             String minStr = request.getParameter("minPrice");
             String maxStr = request.getParameter("maxPrice");
 
-            if ((minStr == null || minStr.isEmpty()) && (maxStr == null || maxStr.isEmpty())) {
-                return stockService.getAllStock();
+            float min = (minStr == null || minStr.isEmpty()) ? 0 : Float.parseFloat(minStr);
+            float max = (maxStr == null || maxStr.isEmpty()) ? Float.MAX_VALUE : Float.parseFloat(maxStr);
+
+            if (min > max) {
+                float tmp = min;
+                min = max;
+                max = tmp;
             }
 
-            int min = (minStr == null || minStr.isEmpty()) ? Integer.MIN_VALUE : Integer.parseInt(minStr);
-            int max = (maxStr == null || maxStr.isEmpty()) ? Integer.MAX_VALUE : Integer.parseInt(maxStr);
-
             return stockService.searchbyPrice(min, max);
-        } catch (SQLException ex) {
+        } catch (SQLException | NumberFormatException ex) {
             ex.printStackTrace();
             request.setAttribute("MSG", Message.EMTY_STOCK_PRICE);
         }
@@ -189,13 +194,31 @@ public class StockController extends HttpServlet {
 
     private void createStock(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, SQLException {
-        boolean status;
         String ticker = request.getParameter("ticker");
         String name = request.getParameter("name");
         String sector = request.getParameter("sector");
-        float price = Float.parseFloat(request.getParameter("price"));
-        int statusRaw = Integer.parseInt(request.getParameter("status"));
-        status = statusRaw == 1;
+        String priceStr = request.getParameter("price");
+        String statusStr = request.getParameter("status");
+
+        if (ticker == null || ticker.isEmpty() || name == null || name.isEmpty() ||
+            sector == null || sector.isEmpty() || priceStr == null || priceStr.isEmpty() || statusStr == null) {
+            request.setAttribute("MSG", Message.CREATE_STOCK_FAILED);
+            return;
+        }
+
+        float price;
+        try {
+            price = Float.parseFloat(priceStr);
+            if (price <= 0) {
+                request.setAttribute("MSG", Message.STOCK_PRICE_UNDER_LIMIT);
+                return;
+            }
+        } catch (NumberFormatException e) {
+            request.setAttribute("MSG", Message.STOCK_PRICE_UNDER_LIMIT);
+            return;
+        }
+
+        boolean status = statusStr.equals("1");
 
         Stock stock = new Stock(ticker, name, sector, price, status);
         String message = stockService.create(stock);
@@ -219,7 +242,7 @@ public class StockController extends HttpServlet {
         try {
             price = Float.parseFloat(priceStr);
             if (price <= 0) {
-                request.setAttribute("ERROR", Message.STOCK_PRICE_UNDER_LIMIT);
+                request.setAttribute("MSG", Message.STOCK_PRICE_UNDER_LIMIT);
                 return;
             }
         } catch (NumberFormatException e) {
@@ -297,5 +320,5 @@ public class StockController extends HttpServlet {
             request.getRequestDispatcher("/error.jsp").forward(request, response);
         }
     }
-
 }
+

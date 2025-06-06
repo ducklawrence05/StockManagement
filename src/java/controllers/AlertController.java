@@ -236,7 +236,7 @@ public class AlertController extends HttpServlet {
             String userID = request.getParameter("userID");
             float threshold = Float.parseFloat(request.getParameter("threshold"));
             String status = request.getParameter("status");
-            String message = alertService.updateAlert(alertID, threshold, status);
+            String message = alertService.updateAlert(alertID, direction, threshold, status);
             request.setAttribute("alert", new Alert(alertID, userID, ticker, threshold, direction, status));
             if(message.equals(Message.THRESHOLD_CAN_NOT_BE_NEGATIVE)){
                 request.setAttribute("ERRMSG", message);

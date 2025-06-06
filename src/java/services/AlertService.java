@@ -52,11 +52,11 @@ public class AlertService {
         return alert.getUserID().equalsIgnoreCase(userID);
     }
 
-    public String updateAlert(int alertID, float threshold, String status) throws SQLException {
+    public String updateAlert(int alertID, String direction, float threshold, String status) throws SQLException {
         if(threshold < 0){
             return Message.THRESHOLD_CAN_NOT_BE_NEGATIVE;
         }
-        if (dao.update(alertID, threshold, status)) {
+        if (dao.update(alertID, direction, threshold, status)) {
             return Message.UPDATE_ALERT_SUCCESSFULLY;
         }
         return Message.UPDATE_ALERT_FAILED;

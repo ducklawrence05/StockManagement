@@ -56,7 +56,7 @@
                     <td>
                         <c:choose>
                             <c:when test="${requestScope.can == true}">
-                                <input style="text-align: center" type="text" name="threshold" value="${alert.threshold}">
+                                <input style="text-align: center" type="text" name="threshold" value="${alert.threshold}" required="">
                             </c:when>
                             <c:otherwise>
                                 <input style="text-align: center" type="text" name="threshold" value="${alert.threshold}" readonly>

@@ -128,7 +128,7 @@
     </c:if>
 
     <c:if test="${!empty requestScope.ERRMSG}">
-        <p style="color: red;">${requestScope.MSG} ${requestScope.ERRMSG}</p>
+        <p style="color: red;">${requestScope.ERRMSG}</p>
         <hr />
     </c:if>
 

@@ -24,7 +24,7 @@ public class TransactionService {
     public String  createTransaction(String userID, String ticker,
             String type, int quantity, float price, String status)throws SQLException, Exception{
         
-        if(transactionDAO.createTransaction(userID, ticker, type, quantity, price, status)){
+        if(transactionDAO.createTransaction(userID, ticker, type, quantity, price, status) == false){
             return Message.CREATE_TRANSACTION_FAILED;
         }
         return Message.CREATE_TRANSACTION_SUCCESSFULLY;
@@ -70,7 +70,7 @@ public class TransactionService {
         
     }
     
-    public String deleteTransaction(String id) throws SQLException{
+    public String deleteTransaction(int id) throws SQLException{
         if(transactionDAO.deleteTransaction(id) == false){
             return Message.TRANSACTION_NOT_FOUND;
         }

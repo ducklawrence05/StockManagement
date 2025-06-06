@@ -119,12 +119,12 @@ public class TransactionDAO {
         return isUpdated;
     }
 
-    public boolean deleteTransaction(String id) throws SQLException {
+    public boolean deleteTransaction(int id) throws SQLException {
         boolean isDelete = false;
         try ( Connection conn = DBContext.getConnection()) {
             if (conn != null) {
                 PreparedStatement stm = conn.prepareStatement(DELETE_TRANSACTION);
-                stm.setString(1, id);
+                stm.setInt(1, id);
                 isDelete = stm.executeUpdate() > 0;
             }
             return isDelete;

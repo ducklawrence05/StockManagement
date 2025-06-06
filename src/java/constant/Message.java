@@ -57,5 +57,6 @@ public class Message {
     public static final String IS_NOT_CREATOR = "You are not the creator of this alert";
     public static final String THRESHOLD_CAN_NOT_BE_NEGATIVE = "Thrshold can not be negative";
     public static final String ALERT_STATUS_IS_ACTIVE = "Alert status is active, can not update or delete";
-    
+    public static final String ALL_FIELDS_ARE_REQUIRED = "All fields are required";
+    public static final String ALL_FIELDS_ARE_REQUIRED_INPUT_TRUE_FROM = "All fields are required and please input true form of fields";
 }

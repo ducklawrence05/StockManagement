@@ -4,6 +4,7 @@
     Author     : admin
 --%>
 
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page import="java.util.ArrayList"%>
 <%@page import="dto.Transaction"%>
 <%@page import="dto.User"%>
@@ -13,78 +14,123 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Transaction List Page</title>
+        <style>
+            body {
+                font-family: Arial;
+                margin: 20px;
+            }
+            a {
+                color: #06c;
+                text-decoration: none;
+            }
+            a:hover {
+                text-decoration: underline;
+            }
+            table {
+                border-collapse: collapse;
+                margin-top: 10px;
+            }
+            th, td {
+                border: 1px solid #ccc;
+                padding: 4px 8px;
+                white-space: nowrap;
+            }
+            th {
+                background: #f0f0f0;
+            }
+            td.actions {
+                text-align: center;
+            }
+            input[type=number] {
+                width:80px;
+            }
+        </style>
+
     </head>
+
+
     <body>
-        <%
-            User loginUser = (User) session.getAttribute("LOGIN_USER");
-            if (loginUser == null) {
-                response.sendRedirect("login.jsp");
-                return;
-            }
-        %>
-        <h1>Welcome: <%= loginUser.getFullName()%></h1>
-        <form action="MainController" method="POST">
-            <button type="submit" name="action" value="Logout">Logout</button> </br>
-            <input type="text" name="search" placeholder="Search">
-            <button type="submit" name="action" value="SearchTransaction">Search</button>
+        <h1>Welcome, <c:out value="${sessionScope.currentUser.fullName}"/></h1>
+        <a 
+            href="${pageContext.request.contextPath}/main/transaction"
+            style="text-decoration: none; color: black"
+            >Transaction CRUD</a>
+        <hr />
+        <hr />
+
+        <form action="${pageContext.request.contextPath}/main/auth/logout" method="POST">
+            <button type="submit" name="action" value="Logout">Logout</button>
         </form>
-        <a href="createTransaction.jsp">Create New Transaction</a><br/>
-        <a href="stockList.jsp">Go to Stock List</a><br/>
-        <a href="alertList.jsp">Go to Alert List</a><br/>
-        <%
-            String MSG = (String) request.getAttribute("MSG");
-            if (MSG != null) {
-        %>
-        <h3> <%= MSG%> </h3>
-        <%
-            }
-            ArrayList<Transaction> list = (ArrayList<Transaction>) request.getAttribute("list");
-            if (list != null) {
-        %>
+
+        <hr />    
+
+        <form action="${pageContext.request.contextPath}/main/transaction" method="GET">
+            <label for="keySearch">Search</label>
+            <input type="text" id="keySearch" name="keySearch" placeholder="Search..."/> |
+
+            <select name="action">
+                <option value="getTransactionByTicker">Search by ticker</option>
+                <option value="getTransactionByType">Search by type</option>
+                <option value="getTransactionByStatus">Search by status</option>
+                <option value="getAllTransactions">Search all</option>
+            </select>
+
+            <button type="submit">Search</button>
+        </form>
+
+        <c:if test="${empty transactions}">
+            <p>No matching transactions found!</p>
+        </c:if>
+
+        <form 
+            action="${pageContext.request.contextPath}/main/transaction/create" 
+            method="GET">
+            <input type="submit" name="action" value="create"></input>    
+        </form> 
+
         <table>
-            <tr>
-                <th>No</th>
-                <th>User ID</th>
-                <th>Ticker</th>
-                <th>Type</th>
-                <th>Quantity</th>
-                <th>Price</th>
-                <th>Status</th>
-                    <% if (loginUser != null && "AD".equals(loginUser.getRoleID())) { %>
-                <th>Function</th>
-                    <% } %>
-            </tr>
-            <%
-                int count = 0;
-                for (Transaction transaction : list) {
-                    count++;
-            %>
-            <tr>
-            <form action="MainController" method="POST">
-                <td><%= count%></td>
-                <td><%= transaction.getUserID()%></td>
-                <td><%= transaction.getTicker()%></td>
-                <td><%= transaction.getType()%></td>
-                <td><%= transaction.getQuantity()%></td>
-                <td><%= transaction.getPrice()%></td>
-                <td><%= transaction.getStatus()%></td>
-                <input type="hidden" name="id" value="<%= transaction.getId()%>">
-                <td>
-                    <% if ("pending".equals(transaction.getStatus()) && loginUser != null && "AD".equals(loginUser.getRoleID())) {%>
-                    <form action="MainController" method="POST">
-                        <input type="hidden" name="transactionId" value="<%= transaction.getId()%>" />
-                        <input type="hidden" name="status" value="executed" />
-                        <button type="submit" name="action" value="UpdateTransaction">Update</button>
-                    </form>
-                    <% } %>
-                </td>
-            </form>
-        </tr>
-        <% }
-        %>
-    </table>
-    <%
-        }
-    %>
-</body>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>User ID</th>
+                    <th>Ticker</th>
+                    <th>Type</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Status</th>      
+                </tr>
+            </thead>
+            <tbody>
+                <c:forEach var = "transaction" items="${requestScope.transactions}" varStatus="st">
+
+                    <tr>
+                        <td>${transaction.id}</td>
+                        <td>${transaction.userID}</td>
+                        <td>${transaction.ticker}</td>
+                        <td>${transaction.type}</td>
+                        <td>${transaction.quantity}</td>
+                        <td>${transaction.price}</td>
+                        <td>${transaction.status}</td>
+                        <td class="action">
+
+                            <form 
+                                action="${pageContext.request.contextPath}/main/transaction/update" 
+                                method="GET">
+                                <input type="hidden" name="id" value="${transaction.id}">
+                                <button type="submit" name="action" value="update">Update</button>    
+                            </form> 
+
+                            <form 
+                                action="${pageContext.request.contextPath}/main/transaction/delete" 
+                                method="POST">
+
+                                <input type="hidden" name="id" value="${transaction.id}"> </input>
+                                <button type="submit" name="action" value="delete">Delete</button>
+                            </form>                       
+                        </td>
+                    </tr>
+                </c:forEach>
+            </tbody>    
+        </table>
+    </body>
 </html>

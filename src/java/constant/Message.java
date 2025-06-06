@@ -11,20 +11,22 @@ package constant;
 public class Message {
     // System
     public static final String SYSTEM_ERROR = "System error";
+    public static final String UNAUTHENTICATION = "You are not authenticated. Please log in.";
     public static final String UNAUTHORIZED = "You do not have permission to access this function.";
-    public static final String ACTION_NOT_FOUND = "Action not found.";
+    public static final String CONTROLLER_NOT_FOUND = "Controller not found.";
+    public static final String ALL_FIELDS_ARE_REQUIRED = "All fields are required.";
     
     // User
     public static final String PASSWORD_NOT_MATCH_CONFIRM_PASSWORD = "Password not match confirm password!";
     public static final String PASSWORD_AND_CONFIRM_PASSWORD_ARE_REQUIRED = "Password and confirm password are required";
     public static final String OLD_PASSWORD_ARE_REQUIRED = "Old password is required";
+    public static final String ROLE_ID_NOT_FOUND = "Role ID not found";
     public static final String CREATE_USER_SUCCESSFULLY = "Create user successfully";
     public static final String CREATE_USER_FAILED = "Create user failed";
     public static final String USER_ID_IS_EXISTED = "User ID is existed";
     public static final String UPDATE_USER_SUCCESSFULLY = "Update user successfully";
     public static final String UPDATE_USER_FAILED = "Update user failed";
     public static final String DELETE_USER_SUCCESSFULLY = "Delete user successfully";
-    public static final String USER_FOUND = "User found";
     public static final String USER_NOT_FOUND = "User not found";
     public static final String INVALID_USER_ID_OR_PASSWORD = "Invalid user ID or password.";
 
@@ -34,7 +36,15 @@ public class Message {
     public static final String STOCK_NOT_FOUND = "Stock not found";
     public static final String TICKER_NOT_FOUND = "Ticker not found";
     public static final String SECTOR_NOT_FOUND = "Sector not found";
-    
+    public static final String STOCK_TICKER_IS_EXISTED = "Stock ticker is existed";
+    public static final String STOCK_PRICE_UNDER_LIMIT = "Price is under limit";
+    public static final String CREATE_STOCK_SUCCESSFULLY = "Create stock successfully";
+    public static final String CREATE_STOCK_FAILED = "Create stock failed";
+    public static final String UPDATE_STOCK_FAILED = "Update stock failed";
+    public static final String UPDATE_STOCK_SUCCESSFULLY = "Update stock successfully";
+    public static final String DELETE_STOCK_FAILED = "Delete stock failed";
+    public static final String DELETE_STOCK_SUCCESSFULLY = "Delete stock successfully";
+
     // Transaction
     public static final String TRANSACTION_ID_IS_EXISTED = "Transaction ID is existed";
     public static final String CREATE_TRANSACTION_SUCCESSFULLY = "Create Transaction successfully";

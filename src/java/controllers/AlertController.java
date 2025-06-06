@@ -8,7 +8,6 @@ import constant.Message;
 import constant.Role;
 import constant.Url;
 import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -18,10 +17,8 @@ import java.util.List;
 import services.AlertService;
 import utils.AuthUtils;
 import dto.Alert;
-import jakarta.websocket.Session;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import services.UserService;
 
 /**
  *
@@ -257,8 +254,7 @@ public class AlertController extends HttpServlet {
                 threshold = _threshold;
             }
             String status = request.getParameter("status");
-
-            String message = alertService.updateAlert(alertID, threshold, status);
+            String message = alertService.updateAlert(alertID, direction, threshold, status);
             request.setAttribute("alert", new Alert(alertID, userID, ticker, threshold, direction, status));
             if (message.equals(Message.THRESHOLD_CAN_NOT_BE_NEGATIVE)) {
                 request.setAttribute("ERRMSG", message);

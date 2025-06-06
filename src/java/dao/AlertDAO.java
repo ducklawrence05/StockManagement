@@ -23,7 +23,7 @@ public class AlertDAO {
     private final String SEARCH_ALERT_BY_DIRECTION = "SELECT * FROM tblAlerts WHERE  direction LIKE ?";
     private final String SEARCH_ALERT_BY_STATUS = "SELECT * FROM tblAlerts WHERE  status LIKE ?";
     private final String CREATE_ALERT = "INSERT INTO tblAlerts(userID, ticker, threshold, direction) VALUES(?, ?, ?, ?)";
-    private final String UPDATE_ALERT = "UPDATE tblAlerts SET threshold = ?, status = ? WHERE alertID = ?";
+    private final String UPDATE_ALERT = "UPDATE tblAlerts SET direction = ?, threshold = ?, status = ? WHERE alertID = ?";
     private final String DELETE_ALERT = "DELETE FROM tblAlerts WHERE alertID = ? AND status = 'inactive'";
     private final String GET_ALL_ALERT = "SELECT * FROM tblAlerts";
     private final String GET_ALERT_BY_ID = "SELECT * FROM tblAlerts WHERE alertID = ?";
@@ -91,13 +91,14 @@ public class AlertDAO {
         return isCreated;
     }
 
-    public boolean update(int alertID, float threshold, String status) throws SQLException {
+    public boolean update(int alertID, String direction, float threshold, String status) throws SQLException {
 
         boolean isUpdated = false;
         try ( Connection conn = DBContext.getConnection();  PreparedStatement stm = conn.prepareStatement(UPDATE_ALERT);) {
-            stm.setFloat(1, threshold);
-            stm.setString(2, status);
-            stm.setInt(3, alertID);
+            stm.setString(1, direction);
+            stm.setFloat(2, threshold);
+            stm.setString(3, status);
+            stm.setInt(4, alertID);
             isUpdated = stm.executeUpdate() > 0;
         }
         return isUpdated;

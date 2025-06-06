@@ -1,95 +1,95 @@
-<%@ page contentType="text/html; charset=UTF-8" language="java" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page import="dto.Stock"%>
+<%@page import="java.util.List"%>
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <title>Stock List</title>
-        <style>
-            body {
-                font-family: Arial;
-                margin: 20px;
-            }
-            a {
-                color: #06c;
-                text-decoration: none;
-            }
-            a:hover {
-                text-decoration: underline;
-            }
-            table {
-                border-collapse: collapse;
-                margin-top: 10px;
-            }
-            th, td {
-                border: 1px solid #ccc;
-                padding: 4px 8px;
-                white-space: nowrap;
-            }
-            th {
-                background: #f0f0f0;
-            }
-            td.actions {
-                text-align: center;
-            }
-            input[type=number] {
-                width:80px;
-            }
-        </style>
-    </head>
-    <body>
-        <h1>Welcome, <c:out value="${sessionScope.currentUser.fullName}"/></h1>
-        <p><a href="${pageContext.request.contextPath}/LogoutController">Logout</a></p>
+<head>
+    <title>Stock List</title>
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #999;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h2>Stock List</h2>
 
-        <!-- Price‐range search -->
-        <form action="${pageContext.request.contextPath}/SearchPriceController" method="POST">
-            Price between
-            <input type="number" step="0.01" name="minPrice" placeholder="min"
-                   value="${param.minPrice}" required/>
-            and
-            <input type="number" step="0.01" name="maxPrice" placeholder="max"
-                   value="${param.maxPrice}" required/>
-            <button type="submit">Search Price</button>
-        </form>
+    <!-- Logout Button -->
+    <form action="${pageContext.request.contextPath}/main/auth/logout" method="POST">
+        <input type="submit" value="LOGOUT" />
+    </form>
+    <!-- Filter Form -->
+    <form action="stock" method="GET">
+        <input type="text" name="name" placeholder="Filter by name" value="${param.name}" />
+        <input type="text" name="sector" placeholder="Filter by sector" value="${param.sector}" />
+        <input type="text" name="ticker" placeholder="Filter by ticker" value="${param.ticker}" />
+        <input type="hidden" name="action" value="filter" />
+        <button type="submit">Filter</button>
+    </form>
 
-        <!-- Sort links -->
-        <p style="margin-top:8px;">
-            Sort by price:
-            <a href="${pageContext.request.contextPath}/MainController?sort=asc">Ascending</a> |
-            <a href="${pageContext.request.contextPath}/MainController?sort=desc">Descending</a> |
-            <a href="${pageContext.request.contextPath}/MainController">None</a>
-        </p>
+    <!-- Search by Price Range -->
+    <form action="stock" method="GET" style="margin-top: 10px;">
+        <input type="number" name="minPrice" placeholder="Min Price" value="${param.minPrice}" step="0.01" min="0" />
+        <input type="number" name="maxPrice" placeholder="Max Price" value="${param.maxPrice}" step="0.01" min="0" />
+        <input type="hidden" name="action" value="searchbyPrice" />
+        <button type="submit">Search by Price Range</button>
+    </form>
 
-        <c:if test="${empty listStock}">
-            <p>No matching stocks found!</p>
-        </c:if>
+    <!-- Sort by Price -->
+    <form action="stock" method="GET" style="margin-top:10px;">
+        <input type="hidden" name="action" value="orderByPrice" />
+        <select name="order">
+            <option value="ASC">Sort Price ASC</option>
+            <option value="DESC">Sort Price DESC</option>
+        </select>
+        <button type="submit">Sort</button>
+    </form>
 
-        <table>
-            <thead>
-                <tr>
-                    <th>No</th><th>Ticker</th><th>Name</th><th>Sector</th><th>Price</th><th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <c:forEach var="stock" items="${listStock}" varStatus="st">
-                    <tr>
-                        <form action="${pageContext.request.contextPath}/ActionController" method="POST">
-                            <td>${st.count}</td>
-                            <td>
-                                <input type="hidden" name="ticker" value="${stock.ticker}"/>
-                                ${stock.ticker}
-                            </td>
-                            <td><input type="text"  name="name"   value="${stock.name}"   required/></td>
-                            <td><input type="text"  name="sector" value="${stock.sector}" required/></td>
-                            <td><input type="number"step="0.01" name="price"  value="${stock.price}" required/></td>
-                            <td class="actions">
-                                <button type="submit" name="action" value="update">Update</button>
-                                <button type="submit" name="action" value="delete">Delete</button>
-                            </td>
-                        </form>
-                    </tr>
-                </c:forEach>
-            </tbody>
-</table>
+    <br>
+    <table>
+        <tr>
+            <th>Ticker</th>
+            <th>Name</th>
+            <th>Sector</th>
+            <th>Price</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+        <%
+            List<Stock> stocks = (List<Stock>) request.getAttribute("stocks");
+            if (stocks != null) {
+                for (Stock stock : stocks) {
+        %>
+        <tr>
+            <td><%= stock.getTicker() %></td>
+            <td><%= stock.getName() %></td>
+            <td><%= stock.getSector() %></td>
+            <td><%= stock.getPrice() %></td>
+            <td><%= stock.isStatus() ? "Active" : "Inactive" %></td>
+            <td>
+                <form action="stock" method="GET" style="display:inline">
+                    <input type="hidden" name="action" value="searchByTicker" />
+                    <input type="hidden" name="ticker" value="<%= stock.getTicker() %>" />
+                    <button type="submit">Update</button>
+                </form>
+                <form action="stock" method="POST" style="display:inline" onsubmit="return confirm('Are you sure you want to delete this stock?');">
+                    <input type="hidden" name="action" value="delete" />
+                    <input type="hidden" name="ticker" value="<%= stock.getTicker() %>" />
+                    <button type="submit">Delete</button>
+                </form>
+            </td>
+        </tr>
+        <%
+                }
+            }
+        %>
+    </table>
 </body>
 </html>

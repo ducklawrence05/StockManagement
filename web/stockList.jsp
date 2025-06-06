@@ -112,7 +112,8 @@
                         action="${pageContext.request.contextPath}/stock" 
                         method="POST" 
                         style="display:inline;" 
-                        onsubmit="return confirm('Delete this stock?');">
+                        onsubmit="return confirm('Delete this stock?');"
+                    >
                         <input type="hidden" name="action" value="delete" />
                         <input type="hidden" name="ticker" value="${s.ticker}" />
                         <button type="submit" class="btn btn-sm btn-danger">Delete</button>
@@ -122,6 +123,15 @@
         </c:forEach>
         </tbody>
     </table>
+    <!-- Back to home -->
+    <c:choose>
+        <c:when test="${sessionScope.currentUser.role.name() == 'ADMIN'}">
+            <a href="${pageContext.request.contextPath}/admin.jsp" class="btn btn-outline-primary mt-3">Back to admin page</a>
+        </c:when>
+        <c:when test="${sessionScope.currentUser.role.name() == 'STAFF'}">
+            <a href="${pageContext.request.contextPath}/welcome.jsp" class="btn btn-outline-primary mt-3">Back to home</a>
+        </c:when>
+    </c:choose>
 </div>
 </body>
 </html>

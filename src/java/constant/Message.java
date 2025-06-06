@@ -11,8 +11,10 @@ package constant;
 public class Message {
     // System
     public static final String SYSTEM_ERROR = "System error";
+    public static final String UNAUTHENTICATION = "You are not authenticated. Please log in.";
     public static final String UNAUTHORIZED = "You do not have permission to access this function.";
-    public static final String ACTION_NOT_FOUND = "Action not found.";
+    public static final String CONTROLLER_NOT_FOUND = "Controller not found.";
+    public static final String ALL_FIELDS_ARE_REQUIRED = "All fields are required.";
     
     // User
     public static final String PASSWORD_NOT_MATCH_CONFIRM_PASSWORD = "Password not match confirm password!";
@@ -24,7 +26,6 @@ public class Message {
     public static final String UPDATE_USER_SUCCESSFULLY = "Update user successfully";
     public static final String UPDATE_USER_FAILED = "Update user failed";
     public static final String DELETE_USER_SUCCESSFULLY = "Delete user successfully";
-    public static final String USER_FOUND = "User found";
     public static final String USER_NOT_FOUND = "User not found";
     public static final String INVALID_USER_ID_OR_PASSWORD = "Invalid user ID or password.";
 
@@ -61,7 +62,7 @@ public class Message {
     public static final String UPDATE_ALERT_SUCCESSFULLY = "Update alert successfully";
     public static final String UPDATE_ALERT_FAILED = "Update alert failed";
     public static final String DELETE_ALERT_SUCCESSFULLY = "Delete alert successfully";
-    public static final String DELETE_ALERT_FAILED = "Delete alert failed";
+    public static final String DELETE_ALERT_FAILED = "Delete alert failed: ";
     public static final String ALERT_NOT_FOUND = "Alert not found";
     public static final String ALERT_FOUND = "Alert found";
     public static final String IS_NOT_CREATOR = "You are not the creator of this alert";

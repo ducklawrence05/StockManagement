@@ -10,7 +10,6 @@ import constant.Url;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
  import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -108,6 +107,8 @@ public class UserController extends HttpServlet {
                 case UPDATE: {
                     updateUser(request, response);
                     url = Url.UPDATE_USER_PAGE;
+                    User user = getUserByID(request, response);
+                    request.setAttribute("user", user);
                     break;
                 }
                 case DELETE: {
@@ -134,8 +135,6 @@ public class UserController extends HttpServlet {
             if (user == null) {
                 user = new User();
                 request.setAttribute("MSG", Message.USER_NOT_FOUND);
-            } else {
-                request.setAttribute("MSG", Message.USER_FOUND);
             }
             return user;
         } catch (SQLException ex) {
@@ -181,7 +180,7 @@ public class UserController extends HttpServlet {
     }
     
     private void createUser(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException, SQLException {
+            throws ServletException, IOException, SQLException, NumberFormatException {
         String userID = request.getParameter("userID");
         String fullName = request.getParameter("fullName");
         String password = request.getParameter("password");
@@ -216,6 +215,4 @@ public class UserController extends HttpServlet {
 
         request.setAttribute("MSG", message);
     }
-    
-    
 }

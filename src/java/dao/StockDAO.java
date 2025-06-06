@@ -1,6 +1,7 @@
 package dao;
 
 import constant.Message;
+import constant.Role;
 import dto.Stock;
 import utils.DBContext;
 
@@ -44,11 +45,10 @@ public class StockDAO {
         }
     }
 
-    public boolean delete(String ticker) throws SQLException {
-        try (Connection conn = DBContext.getConnection();
-             PreparedStatement ps = conn.prepareStatement(DELETE_STOCK)) {
-            ps.setString(1, ticker);
-            return ps.executeUpdate() > 0;
+    public int delete(String userID) throws SQLException {
+        try ( Connection conn = DBContext.getConnection();  PreparedStatement stm = conn.prepareStatement(DELETE_STOCK)) {
+            stm.setString(1, userID);
+            return stm.executeUpdate();
         }
     }
 
@@ -118,23 +118,20 @@ public class StockDAO {
         return list;
     }
 
-    public String update(Stock s) throws SQLException {
+    public int update(Stock stock) throws SQLException {
         try (Connection conn = DBContext.getConnection();
-             PreparedStatement ps = conn.prepareStatement(UPDATE)) {
-            ps.setString(1, s.getName());
-            ps.setString(2, s.getSector());
-            ps.setFloat(3, s.getPrice());
-            ps.setBoolean(4, s.isStatus());
-            ps.setString(5, s.getTicker());
+             PreparedStatement stm = conn.prepareStatement(UPDATE)) {
 
-            int rows = ps.executeUpdate();
-            if (rows > 0) {
-                return Message.UPDATE_STOCK_SUCCESSFULLY;
-            } else {
-                return Message.UPDATE_STOCK_FAILED;
-            }
+            stm.setString(1, stock.getName());
+            stm.setString(2, stock.getSector());
+            stm.setFloat(3, stock.getPrice());
+            stm.setBoolean(4, stock.isStatus());
+            stm.setString(5, stock.getTicker());
+
+            return stm.executeUpdate(); 
         }
     }
+
 
     private Stock mapRow(ResultSet rs) throws SQLException {
         return new Stock(

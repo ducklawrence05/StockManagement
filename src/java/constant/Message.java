@@ -43,7 +43,7 @@ public class Message {
     public static final String UPDATE_STOCK_SUCCESSFULLY = "Update stock successfully";
     public static final String DELETE_STOCK_FAILED = "Delete stock failed";
     public static final String DELETE_STOCK_SUCCESSFULLY = "Delete stock successfully";
-
+    public static final String STOCK_STATUS_RONGE = "Invalid valued";
     // Transaction
     public static final String TRANSACTION_ID_IS_EXISTED = "Transaction ID is existed";
     public static final String CREATE_TRANSACTION_SUCCESSFULLY = "Create Transaction successfully";

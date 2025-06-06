@@ -17,7 +17,7 @@
         <div class="container bg-white p-4 rounded shadow-sm">
             <h2 class="mb-4">Welcome, <c:out value="${sessionScope.currentUser.fullName}" /></h2>
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <a href="${pageContext.request.contextPath}/user" class="btn btn-outline-primary">User CRUD</a>
+                <a href="${pageContext.request.contextPath}/main/user" class="btn btn-outline-primary">User CRUD</a>
                 <form action="${pageContext.request.contextPath}/main/auth/logout" method="POST">
                     <input type="submit" class="btn btn-danger" value="LOGOUT" />
                 </form>

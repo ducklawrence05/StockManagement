@@ -19,6 +19,11 @@ public class Alert {
     public Alert() {
     }
 
+    public Alert(int alertID, float threshold) {
+        this.alertID = alertID;
+        this.threshold = threshold;
+    }
+
     public Alert(int alertID, String userID, String ticker, float threshold, String direction, String status) {
         this.alertID = alertID;
         this.userID = userID;

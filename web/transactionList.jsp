@@ -51,7 +51,11 @@
 
     <body>
         <h1>Welcome, <c:out value="${sessionScope.currentUser.fullName}"/></h1>
-
+        <a 
+            href="${pageContext.request.contextPath}/main/transaction"
+            style="text-decoration: none; color: black"
+            >Transaction CRUD</a>
+        <hr />
         <hr />
 
         <form action="${pageContext.request.contextPath}/main/auth/logout" method="POST">
@@ -136,8 +140,8 @@
             <button type="submit">Search</button>
         </form>
 
-        <c:if test="${empty users}">
-            <p>No matching users found!</p>
+        <c:if test="${empty transactions}">
+            <p>No matching transactions found!</p>
         </c:if>
 
         <form 

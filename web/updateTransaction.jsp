@@ -18,8 +18,7 @@
             <input type="submit" value="LOGOUT" />
         </form>
 
-        <h3>Update transaction</h3>
-        
+        <h3>Update transaction</h3>  
         <p style="color: green;">${requestScope.MSG}</p>
        
         <hr />
@@ -48,6 +47,6 @@
                 
             </form>    
 
-        <a href="${pageContext.request.contextPath}/transaction">Back to transaction CRUD</a>
+        <a href="${pageContext.request.contextPath}/main/transaction">Back to transaction CRUD</a>
     </body>
 </html>

@@ -9,7 +9,7 @@ import constant.Role;
 import constant.Url;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
- import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -26,6 +26,7 @@ import utils.AuthUtils;
  */
 @WebServlet(name = "UserController", urlPatterns = {"/user"})
 public class UserController extends HttpServlet {
+
     private UserService userService = new UserService();
 
     private final String CREATE = "create";
@@ -42,13 +43,15 @@ public class UserController extends HttpServlet {
         if (!AuthUtils.checkAuthorization(request, response, Role.ADMIN)) {
             return;
         }
-        
+
         String action = request.getParameter("action");
-        if (action == null) action = GET_ALL_USERS;
-        
+        if (action == null) {
+            action = GET_ALL_USERS;
+        }
+
         List<User> users = null;
         String url = Url.USER_LIST_PAGE;
-        switch(action) {
+        switch (action) {
             case CREATE: {
                 url = Url.CREATE_USER_PAGE;
                 break;
@@ -57,7 +60,7 @@ public class UserController extends HttpServlet {
                 url = Url.UPDATE_USER_PAGE;
                 break;
             }
-            case GET_USER_BY_ID:{
+            case GET_USER_BY_ID: {
                 users = new ArrayList<>();
                 users.add(getUserByID(request, response));
                 url = Url.UPDATE_USER_PAGE;
@@ -76,13 +79,13 @@ public class UserController extends HttpServlet {
                 break;
             }
         }
-        
+
         if (action.equals(GET_USER_BY_ID)) {
             request.setAttribute("user", users.get(0));
         } else {
             request.setAttribute("users", users);
         }
-        
+
         request.setAttribute("roleList", Role.values());
         request.getRequestDispatcher(url).forward(request, response);
     }
@@ -95,7 +98,9 @@ public class UserController extends HttpServlet {
         }
 
         String action = request.getParameter("action");
-        if (action == null) action = "";
+        if (action == null) {
+            action = "";
+        }
         String url = Url.USER_LIST_PAGE;
         try {
             switch (action) {
@@ -116,7 +121,7 @@ public class UserController extends HttpServlet {
                     break;
                 }
             }
-            
+
             request.setAttribute("users", userService.getAllUsers());
             request.setAttribute("roleList", Role.values());
             request.getRequestDispatcher(url).forward(request, response);
@@ -126,7 +131,7 @@ public class UserController extends HttpServlet {
             request.getRequestDispatcher(Url.ERROR_PAGE).forward(request, response);
         }
     }
-    
+
     private User getUserByID(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
@@ -143,18 +148,18 @@ public class UserController extends HttpServlet {
         }
         return null;
     }
-    
+
     private List<User> getAllUsers(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-             return userService.getAllUsers();
+            return userService.getAllUsers();
         } catch (SQLException ex) {
             ex.printStackTrace();
             request.setAttribute("MSG", Message.SYSTEM_ERROR);
         }
         return null;
     }
-    
+
     private List<User> getUsersByID(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
@@ -166,7 +171,7 @@ public class UserController extends HttpServlet {
         }
         return null;
     }
-    
+
     private List<User> getUsersByName(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
@@ -178,7 +183,7 @@ public class UserController extends HttpServlet {
         }
         return null;
     }
-    
+
     private void createUser(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, SQLException, NumberFormatException {
         String userID = request.getParameter("userID");
@@ -186,13 +191,16 @@ public class UserController extends HttpServlet {
         String password = request.getParameter("password");
         String confirmPassword = request.getParameter("confirmPassword");
         int roleID = Integer.parseInt(request.getParameter("roleID"));
-        
-        String message = userService.createUser(userID, fullName,
-                Role.fromValue(roleID), password, confirmPassword);
-
+        String message;
+        try {
+            message = userService.createUser(userID, fullName,
+                    Role.fromValue(roleID), password, confirmPassword);
+        } catch (IllegalArgumentException ex) {
+            message = Message.ROLE_ID_NOT_FOUND;
+        }
         request.setAttribute("MSG", message);
     }
-    
+
     private void updateUser(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, SQLException, NumberFormatException {
         String userID = request.getParameter("userID");
@@ -201,13 +209,16 @@ public class UserController extends HttpServlet {
         String password = request.getParameter("password");
         String confirmPassword = request.getParameter("confirmPassword");
         int roleID = Integer.parseInt(request.getParameter("roleID"));
-
-        String message = userService.updateUser(userID, fullName,
-                Role.fromValue(roleID), oldPassword, password, confirmPassword);
-
+        String message;
+        try {
+            message = userService.updateUser(userID, fullName,
+                    Role.fromValue(roleID), oldPassword, password, confirmPassword);
+        } catch (IllegalArgumentException ex) {
+            message = Message.ROLE_ID_NOT_FOUND;
+        }
         request.setAttribute("MSG", message);
     }
-    
+
     private void deleteUser(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, SQLException {
         String userID = request.getParameter("userID");

@@ -20,7 +20,7 @@ public class TransactionService {
     private TransactionDAO transactionDAO = new TransactionDAO();
     private UserDAO userDAO = new UserDAO();
     
-    public String  createTransaction(String userID, String ticker,
+    public String createTransaction(String userID, String ticker,
             String type, int quantity, float price, String status)throws SQLException, Exception{
         if (isNullOrEmptyString(userID) 
                 || isNullOrEmptyString(ticker)
@@ -37,7 +37,7 @@ public class TransactionService {
             return Message.PRICE_CAN_NOT_BE_NEGATIVE;
         }
         
-        if(transactionDAO.createTransaction(userID, ticker, type, quantity, price, status) == false){
+        if(!transactionDAO.createTransaction(userID, ticker, type, quantity, price, status)){
             return Message.CREATE_TRANSACTION_FAILED;
         }
         return Message.CREATE_TRANSACTION_SUCCESSFULLY;
@@ -75,7 +75,7 @@ public class TransactionService {
             status = transaction.getStatus();
         }
         
-        if(transactionDAO.updateTransaction(id,userID, sticker, type, quantity, price, status) == false){
+        if(!transactionDAO.updateTransaction(id,userID, sticker, type, quantity, price, status)){
             return Message.UPDATE_TRANSACTION_FAILED;
         }
         
@@ -84,7 +84,7 @@ public class TransactionService {
     }
     
     public String deleteTransaction(int id) throws SQLException{
-        if(transactionDAO.deleteTransaction(id) == false){
+        if(!transactionDAO.deleteTransaction(id)){
             return Message.TRANSACTION_NOT_FOUND;
         }
         return Message.DELETE_TRANSACTION_SUCCESSFULLY;

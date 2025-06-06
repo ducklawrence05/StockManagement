@@ -36,9 +36,12 @@ public class StockService {
     }
     
     //delete
-    public String delete(String ticker) throws SQLException{
-        return stockDAO.delete(ticker);
+        public String delete(String ticker) throws SQLException {
+        if (ticker == null || ticker == "") return Message.DELETE_STOCK_FAILED;
+        boolean deleted = stockDAO.delete(ticker);
+        return deleted ? Message.DELETE_STOCK_SUCCESSFULLY : Message.EMTY_STOCK_LIST;
     }
+
     
     //get all
     public List<Stock> getAllStock() throws SQLException{
@@ -64,7 +67,7 @@ public class StockService {
             min = max;
             max = temp;
         }
-        return stockDAO.searchbyPrice(min, max);
+        return stockDAO.searchByPrice(min, max);
     }
     
     //search by name

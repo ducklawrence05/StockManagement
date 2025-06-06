@@ -25,6 +25,6 @@ public enum Role {
                 return role;
             }
         }
-        throw new IllegalArgumentException("Không có Role với giá trị: " + value);
+        throw new IllegalArgumentException("Role does not have value: " + value);
     }
 }

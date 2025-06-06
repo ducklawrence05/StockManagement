@@ -1,34 +1,24 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
-
 package controllers;
 
 import constant.Message;
 import constant.Role;
 import constant.Url;
 import dto.Stock;
-import dto.User;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.sql.SQLException;
+import java.util.List;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.sql.SQLException;
-import java.util.List;
 import services.StockService;
 import utils.AuthUtils;
 
-/**
- *
- * @author Huy
- */
-@WebServlet(name="StockController", urlPatterns={"/stock"})
+@WebServlet(name = "StockController", urlPatterns = {"/stock"})
 public class StockController extends HttpServlet {
-    private StockService stockService = new StockService();
+    private final StockService stockService = new StockService();
+
     private final String CREATE = "create";
     private final String GET_ALL = "getAll";
     private final String ORDER_BY_PRICE = "orderByPrice";
@@ -38,75 +28,72 @@ public class StockController extends HttpServlet {
     private final String SEARCH_BY_SECTOR = "searchBySector";
     private final String UPDATE = "update";
     private final String DELETE = "delete";
-    
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+            throws ServletException, IOException {
         if (!AuthUtils.checkAuthorization(request, response, Role.ADMIN, Role.STAFF)) {
             return;
         }
+
         String action = request.getParameter("action");
         if (action == null) action = GET_ALL;
-        
+
         List<Stock> stocks = null;
-        switch(action) {
-            case GET_ALL: {
+        switch (action) {
+            case GET_ALL:
                 stocks = getAllStocks(request, response);
                 break;
-            }
-            case ORDER_BY_PRICE: {
-                stocks = getAllStocks(request, response);
+            case ORDER_BY_PRICE:
+                stocks = findAllOrderByPrice(request, response);
                 break;
-            }
-            case SEARCH_BY_PRICE: {
-                stocks = searchbyPrice(request, response);
+            case SEARCH_BY_PRICE:
+                stocks = searchByPrice(request, response);
                 break;
-            }
-            case SEARCH_BY_NAME: {
-                stocks = searchbyName(request, response);
+            case SEARCH_BY_NAME:
+                stocks = searchByName(request, response);
                 break;
-            }
-            case SEARCH_BY_TICKER: {
-                stocks = searchbyTicker(request, response);
+            case SEARCH_BY_TICKER:
+                stocks = searchByTicker(request, response);
                 break;
-            }
-            case SEARCH_BY_SECTOR: {
-                stocks = searchbySector(request, response);
+            case SEARCH_BY_SECTOR:
+                stocks = searchBySector(request, response);
                 break;
-            }
+            case "filter":
+                stocks = filterStocks(request, response);
+                break;
         }
-        
+
         request.setAttribute("stocks", stocks);
         request.getRequestDispatcher(Url.STOCK_LIST_PAGE).forward(request, response);
-    } 
+    }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+            throws ServletException, IOException {
         if (!AuthUtils.checkAuthorization(request, response, Role.ADMIN)) {
             return;
         }
+
         String action = request.getParameter("action");
         if (action == null) action = "";
         String url = Url.STOCK_LIST_PAGE;
+
         try {
             switch (action) {
-                case CREATE: {
+                case CREATE:
                     createStock(request, response);
                     url = Url.ADD_STOCK_PAGE;
                     break;
-                }
-                case UPDATE: {
+                case UPDATE:
                     updateStock(request, response);
-                    url = Url.UPDATE_STOCK_PAGE;
+                    request.setAttribute("stocks", stockService.getAllStock());
                     break;
-                }
-                case DELETE: {
+                case DELETE:
                     deleteStock(request, response);
-                    break;
-                }
+                    return;
             }
-            
+
             request.setAttribute("stocks", stockService.getAllStock());
             request.setAttribute("roleList", Role.values());
             request.getRequestDispatcher(url).forward(request, response);
@@ -116,17 +103,18 @@ public class StockController extends HttpServlet {
             request.getRequestDispatcher(Url.ERROR_PAGE).forward(request, response);
         }
     }
+
     private List<Stock> getAllStocks(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-             return stockService.getAllStock();
+            return stockService.getAllStock();
         } catch (SQLException ex) {
             ex.printStackTrace();
             request.setAttribute("MSG", Message.SYSTEM_ERROR);
         }
         return null;
     }
-    
+
     private List<Stock> findAllOrderByPrice(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
@@ -138,11 +126,20 @@ public class StockController extends HttpServlet {
         }
         return null;
     }
-    private List<Stock> searchbyPrice(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException{
+
+    private List<Stock> searchByPrice(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         try {
-            int min = Integer.parseInt(request.getParameter("min")) ;
-            int max = Integer.parseInt(request.getParameter("max"));
+            String minStr = request.getParameter("minPrice");
+            String maxStr = request.getParameter("maxPrice");
+
+            if ((minStr == null || minStr.isEmpty()) && (maxStr == null || maxStr.isEmpty())) {
+                return stockService.getAllStock();
+            }
+
+            int min = (minStr == null || minStr.isEmpty()) ? Integer.MIN_VALUE : Integer.parseInt(minStr);
+            int max = (maxStr == null || maxStr.isEmpty()) ? Integer.MAX_VALUE : Integer.parseInt(maxStr);
+
             return stockService.searchbyPrice(min, max);
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -150,10 +147,11 @@ public class StockController extends HttpServlet {
         }
         return null;
     }
-    private List<Stock> searchbyName(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException{
+
+    private List<Stock> searchByName(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         try {
-            String name = (String)request.getParameter("name");
+            String name = request.getParameter("name");
             return stockService.searchByName(name);
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -161,10 +159,11 @@ public class StockController extends HttpServlet {
         }
         return null;
     }
-    private List<Stock> searchbyTicker(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException{
+
+    private List<Stock> searchByTicker(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         try {
-            String ticker = (String)request.getParameter("ticker");
+            String ticker = request.getParameter("ticker");
             return stockService.searchByTicker(ticker);
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -172,10 +171,11 @@ public class StockController extends HttpServlet {
         }
         return null;
     }
-    private List<Stock> searchbySector(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException{
+
+    private List<Stock> searchBySector(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         try {
-            String sector = (String)request.getParameter("sector");
+            String sector = request.getParameter("sector");
             return stockService.searchBySector(sector);
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -183,39 +183,104 @@ public class StockController extends HttpServlet {
         }
         return null;
     }
+
     private void createStock(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException, SQLException{
+            throws ServletException, IOException, SQLException {
         boolean status;
-        String ticker = (String)request.getParameter("ticker");
-        String name = (String)request.getParameter("ticker");
-        String sector = (String)request.getParameter("sector");
-        float price = (float)Integer.parseInt(request.getParameter("price"));
-        int statusRaw = Integer.parseInt(request.getParameter("status")) ;
-        if(statusRaw == 1){
-            status=true;
-        }
-        else{
-            status=false;
-        }
+        String ticker = request.getParameter("ticker");
+        String name = request.getParameter("name");
+        String sector = request.getParameter("sector");
+        float price = Float.parseFloat(request.getParameter("price"));
+        int statusRaw = Integer.parseInt(request.getParameter("status"));
+        status = statusRaw == 1;
+
         Stock stock = new Stock(ticker, name, sector, price, status);
         String message = stockService.create(stock);
         request.setAttribute("MSG", message);
     }
 
-    private void updateStock(HttpServletRequest request, HttpServletResponse response) 
-            throws ServletException, IOException, SQLException, NumberFormatException{
-        boolean isSuccesfull;
-        String name = (String)request.getParameter("name");
-        List<Stock> list = stockService.searchByName(name);
-        Stock stock = list.get(0);
-        String message = stockService.update(stock);
+    private void updateStock(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException, SQLException {
+        String ticker = request.getParameter("ticker");
+        List<Stock> foundList = stockService.searchByTicker(ticker);
+
+        if (foundList == null || foundList.isEmpty()) {
+            request.setAttribute("MSG", Message.STOCK_NOT_FOUND);
+            return;
+        }
+
+        Stock oldStock = foundList.get(0);
+
+        String nameInput = request.getParameter("name");
+        String sectorInput = request.getParameter("sector");
+        String priceInput = request.getParameter("price");
+        String statusInput = request.getParameter("status");
+
+        String name = (nameInput == null || nameInput.isEmpty()) ? oldStock.getName() : nameInput;
+        String sector = (sectorInput == null || sectorInput.isEmpty()) ? oldStock.getSector() : sectorInput;
+
+        float price = oldStock.getPrice();
+        if (priceInput != null && !priceInput.isEmpty()) {
+            price = Float.parseFloat(priceInput);
+        }
+
+        boolean status = oldStock.isStatus();
+        if (statusInput != null && !statusInput.isEmpty()) {
+            status = "1".equals(statusInput) || "true".equalsIgnoreCase(statusInput);
+        }
+
+        Stock updatedStock = new Stock(ticker, name, sector, price, status);
+        String message = stockService.update(updatedStock);
         request.setAttribute("MSG", message);
     }
 
-    private void  deleteStock(HttpServletRequest request, HttpServletResponse response) 
-            throws ServletException, IOException, SQLException, NumberFormatException{
-        String ticker = (String)request.getParameter("ticker");
-        String message = stockService.delete(ticker);
-        request.setAttribute("MSG", message);
+    private void deleteStock(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            String ticker = request.getParameter("ticker");
+
+            if (ticker == null || ticker.trim().isEmpty()) {
+                request.setAttribute("MSG", "Invalid ticker!");
+                return;
+            }
+
+            String message = stockService.delete(ticker);
+            request.setAttribute("MSG", message);
+
+            List<Stock> stocks = stockService.getAllStock();
+            request.setAttribute("stocks", stocks);
+            request.getRequestDispatcher(Url.STOCK_LIST_PAGE).forward(request, response);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            request.setAttribute("MSG", "System error when deleting stock!");
+            request.getRequestDispatcher(Url.ERROR_PAGE).forward(request, response);
+        }
+    }
+
+    private List<Stock> filterStocks(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            String name = request.getParameter("name");
+            String sector = request.getParameter("sector");
+            String ticker = request.getParameter("ticker");
+
+            if ((name == null || name.isEmpty()) &&
+                (sector == null || sector.isEmpty()) &&
+                (ticker == null || ticker.isEmpty())) {
+                return stockService.getAllStock();
+            }
+
+            if (ticker != null && !ticker.isEmpty()) {
+                return stockService.searchByTicker(ticker);
+            } else if (name != null && !name.isEmpty()) {
+                return stockService.searchByName(name);
+            } else {
+                return stockService.searchBySector(sector);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            request.setAttribute("MSG", Message.SYSTEM_ERROR);
+        }
+        return null;
     }
 }

@@ -93,7 +93,7 @@ public class StockController extends HttpServlet {
                     request.setAttribute("stocks", stockService.getAllStock());
                     break;
                 case DELETE:
-                    deleteStock(request, response);
+                    delete(request, response);
                     return;
             }
 
@@ -266,11 +266,10 @@ public class StockController extends HttpServlet {
         request.setAttribute("MSG", message);
     }
 
-    private void deleteStock(HttpServletRequest request, HttpServletResponse response)
+    private void delete(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, SQLException {
-        String ticker = request.getParameter("ticker");
-        String message = stockService.delete(ticker);
-
+        String tinker = request.getParameter("tinker");
+        String message = stockService.delete(tinker);
         request.setAttribute("MSG", message);
     }
 

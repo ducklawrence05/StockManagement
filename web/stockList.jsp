@@ -18,7 +18,7 @@
     </div>
 
     <!-- Create button -->
-    <form action="${pageContext.request.contextPath}/stock" method="GET" class="mb-3">
+    <form action="${pageContext.request.contextPath}/stock" method="POST" class="mb-3">
         <input type="hidden" name="action" value="addPage" />
         <button type="submit" class="btn btn-success">Create New Stock</button>
     </form>
@@ -106,7 +106,13 @@
                     <form action="${pageContext.request.contextPath}/stock" method="POST" style="display:inline;">
                         <input type="hidden" name="action" value="delete" />
                         <input type="hidden" name="ticker" value="${s.ticker}" />
-                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure to delete this stock?');">Delete</button>
+                        <form 
+                                        action="${pageContext.request.contextPath}/main/stock/delete" 
+                                        method="POST" 
+                                        onsubmit="return confirm('Delete this stock?');"
+                                        >
+                                        <button type="submit" name="tinker" value="${stock.tinker}" class="btn btn-sm btn-danger">Delete</button>
+                                    </form>
                     </form>
                 </td>
             </tr>

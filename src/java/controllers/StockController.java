@@ -63,16 +63,17 @@ public class StockController extends HttpServlet {
                 stocks = filterStocks(request, response);
                 break;
             case UPDATE:
+                url = Url.UPDATE_STOCK_PAGE;
                 loadUpdateStockForm(request, response);
-                return;
+                break;
             case CREATE: {
-                url = Url.ADD_STOCK_PAGE;
+                url = Url.CREATE_STOCK_PAGE;
                 break;
             }
         }
 
         request.setAttribute("stocks", stocks);
-        request.getRequestDispatcher(Url.STOCK_LIST_PAGE).forward(request, response);
+        request.getRequestDispatcher(url).forward(request, response);
     }
 
     @Override
@@ -90,19 +91,20 @@ public class StockController extends HttpServlet {
             switch (action) {
                 case CREATE:
                     createStock(request, response);
-                    url = Url.STOCK_LIST_PAGE;
+                    url = Url.CREATE_STOCK_PAGE;
                     break;
                 case UPDATE:
                     updateStock(request, response);
-                    request.setAttribute("stocks", stockService.getAllStock());
+                    Stock stock = searchByTicker(request, response).get(0);
+                    request.setAttribute("stock", stock);
+                    url = Url.UPDATE_STOCK_PAGE;
                     break;
                 case DELETE:
                     delete(request, response);
-                    return;
+                    break;
             }
 
             request.setAttribute("stocks", stockService.getAllStock());
-            request.setAttribute("roleList", Role.values());
             request.getRequestDispatcher(url).forward(request, response);
         } catch (NumberFormatException | SQLException ex) {
             ex.printStackTrace();
@@ -272,8 +274,8 @@ public class StockController extends HttpServlet {
 
     private void delete(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, SQLException {
-        String tinker = request.getParameter("tinker");
-        String message = stockService.delete(tinker);
+        String ticker = request.getParameter("ticker");
+        String message = stockService.delete(ticker);
         request.setAttribute("MSG", message);
     }
 
@@ -311,11 +313,9 @@ public class StockController extends HttpServlet {
         try {
             List<Stock> results = stockService.searchByTicker(ticker);
             if (!results.isEmpty()) {
-                request.setAttribute("stock", results.get(0)); 
-                request.getRequestDispatcher("/updateStock.jsp").forward(request, response);
+                request.setAttribute("stock", results.get(0));
             } else {
-                request.setAttribute("MSG",Message.UPDATE_STOCK_FAILED);
-                request.getRequestDispatcher("/stockList.jsp").forward(request, response);
+                request.setAttribute("MSG",Message.STOCK_NOT_FOUND);
             }
         } catch (SQLException e) {
             e.printStackTrace();

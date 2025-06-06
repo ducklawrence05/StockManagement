@@ -31,8 +31,7 @@
         </c:if>
 
         <!-- Create stock form -->
-        <form action="${pageContext.request.contextPath}/stock" method="POST">
-            <input type="hidden" name="action" value="create" />
+        <form action="${pageContext.request.contextPath}/main/stock/create" method="POST">
 
             <div class="mb-3">
                 <label for="ticker" class="form-label">Ticker</label>

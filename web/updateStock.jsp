@@ -23,8 +23,7 @@
             <p class="text-danger">${ERROR}</p>
         </c:if>
 
-        <form action="${pageContext.request.contextPath}/stock" method="POST">
-            <input type="hidden" name="action" value="update" />
+        <form action="${pageContext.request.contextPath}/main/stock/update" method="POST">
             <input type="hidden" name="ticker" value="${stock.ticker}" />
 
             <div class="mb-3">

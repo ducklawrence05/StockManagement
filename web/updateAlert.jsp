@@ -29,28 +29,43 @@
             <div class="table-responsive">
                 <form action="${pageContext.request.contextPath}/main/alert/update" method="POST">
                     <label for="alertID">Alert ID</label>
-                    <input id="AlertID" class="readonly-input" type="text" name="alertID" value="${alert.alertID}" readonly>
-                    <br />
+                    <input id="AlertID" class="form-control" type="text" name="alertID" value="${alert.alertID}" readonly>
+                    
                     <label for="userID">User ID</label>
-                    <input id="userID" class="readonly-input" type="text" name="userID" value="${alert.userID}" readonly>
-                    <br />
+                    <input id="userID" class="form-control" type="text" name="userID" value="${alert.userID}" readonly>
+                    
                     <label for="ticker">Ticker</label>
-                    <input id="ticker" class="readonly-input" type="text" name="ticker" value="${alert.ticker}" readonly>
-                    <br />
+                    <input id="ticker" class="form-control" type="text" name="ticker" value="${alert.ticker}" readonly>
+                    
                     <label for="direction">Direction</label>
-                    <input id="direction" class="readonly-input" type="text" name="direction" value="${alert.direction}" readonly>
-                    <br />
+                    <c:choose>
+                        <c:when test="${requestScope.can == true}">
+                            <select  id="direction" name="direction" class="form-select">
+                                <option value="${alert.direction}" selected>${alert.direction}</option>
+                                <c:if test="${alert.direction.equalsIgnoreCase('increase')}">
+                                    <option value="decrease">decrease</option>
+                                </c:if>
+                                <c:if test="${alert.direction.equalsIgnoreCase('decrease')}">
+                                    <option value="increase">increase</option>
+                                </c:if>
+                            </select>
+                        </c:when>
+                        <c:otherwise>
+                            <input id="direction" class="form-control" type="text" name="direction" value="${alert.direction}" readonly>
+                        </c:otherwise>
+                    </c:choose>
+                    
                     <label for="threshold">Threshold</label><br />
                     <c:choose>
                         <c:when test="${requestScope.can == true}">
-                            <input id="threshold" style="text-align: center" type="number" name="threshold" step="0.01" value="${alert.threshold}" required />
-                            <input id="threshold" style="text-align: center" type="hidden" name="_threshold" value="${alert.threshold}" />
+                            <input id="threshold" class="form-control" type="number" name="threshold" step="0.01" value="${alert.threshold}" required />
+                            <input id="threshold" class="form-control" type="hidden" name="_threshold" value="${alert.threshold}" />
                         </c:when>
                         <c:otherwise>
-                            <input id="threshold" style="text-align: center" type="text" name="threshold" value="${alert.threshold}" readonly>
+                            <input id="threshold" class="form-control" type="text" name="threshold" value="${alert.threshold}" readonly>
                         </c:otherwise>
                     </c:choose>
-                    <br />
+                    
                     <label for="status">Status</label><br />
                     <c:choose>
                         <c:when test="${requestScope.can == true}">
@@ -65,13 +80,13 @@
                             </select>
                         </c:when>
                         <c:otherwise>
-                            <input id="status" class="readonly-input" type="text" name="status" value="${alert.status}" readonly>
+                            <input id="status" class="form-control" type="text" name="status" value="${alert.status}" readonly>
                         </c:otherwise>
                     </c:choose>
                             
                     <br/>
                     <c:if test="${requestScope.can == true}">
-                        <button type="submit" class="btn btn-primary">Update</button>
+                        <button type="submit" class="btn btn-primary w-100">Update</button>
                     </c:if>
                 </form>
             </div>

@@ -27,7 +27,8 @@ public class TransactionDAO {
     private final String SEARCH_TRANSACTION_BY_TYPE = "SELECT * FROM tblTransactions WHERE type LIKE ?";
     private final String SEARCH_TRANSACTION_BY_STATUS = "SELECT * FROM tblTransactions WHERE status LIKE ?";
     private final String CREATE_TRANSACTION = "INSERT INTO tblTransactions (userID, ticker, type, quantity, price, status)  VALUES(?,?,?,?,?,?)";
-    private final String UPDATE_TRANSACTION = "UPDATE tblTransactions SET userID = ?, ticker = ?, type = ?, quantity = ?, price = ?, status = ? WHERE id = ?";
+    //private final String UPDATE_TRANSACTION = "UPDATE tblTransactions SET userID = ?, ticker = ?, type = ?, quantity = ?, price = ?, status = ? WHERE id = ?";
+    private final String UPDATE_TRANSACTION = "UPDATE tblTransactions SET quantity = ?, price = ?, status = ? WHERE id = ?";
     private final String DELETE_TRANSACTION = "DELETE FROM tblTransactions WHERE id LIKE ?";
     
     public List<Transaction> getAllTransaction() throws SQLException {
@@ -103,17 +104,18 @@ public class TransactionDAO {
 
     }
     
-    public boolean updateTransaction(int id,String userID, String sticker, String type,
+    public boolean updateTransaction(int id,
+//            String userID, String sticker, String type,
             int quantity, float  price, String status) throws Exception {
         boolean isUpdated = false;
         try ( Connection conn = DBContext.getConnection();  PreparedStatement stm = conn.prepareStatement(UPDATE_TRANSACTION)) {  
-                stm.setString(1, userID);
-                stm.setString(2, sticker);
-                stm.setString(3, type);
-                stm.setInt(4, quantity);
-                stm.setFloat(5, price);
-                stm.setString(6, status);
-                stm.setInt(7, id);
+//                stm.setString(1, userID);
+//                stm.setString(2, sticker);
+//                stm.setString(3, type);
+                stm.setInt(1, quantity);
+                stm.setFloat(2, price);
+                stm.setString(3, status);
+                stm.setInt(4, id);
                 isUpdated = stm.executeUpdate() > 0;
         }
         return isUpdated;

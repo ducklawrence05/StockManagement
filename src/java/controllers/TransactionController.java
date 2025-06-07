@@ -249,7 +249,8 @@ public class TransactionController extends HttpServlet {
         float price = Float.parseFloat(request.getParameter("price"));
         String status = request.getParameter("status");
 
-        String message = transactionService.updateTransaction(id, userID, ticker, type,
+        String message = transactionService.updateTransaction(id, 
+//                userID, ticker, type,
                 quantity, price, status);
         request.setAttribute("can", true);
         Transaction transaction = new Transaction(id, userID, ticker, type, quantity, price, status);

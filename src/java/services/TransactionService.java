@@ -43,7 +43,8 @@ public class TransactionService {
         return Message.CREATE_TRANSACTION_SUCCESSFULLY;
     }
     
-    public String updateTransaction(int id,String userID, String sticker, String type,
+    public String updateTransaction(int id,
+            //String userID, String ticker, String type,
             int quantity, float  price, String status) throws SQLException, Exception{
         if(!transactionDAO.checkTransactionExists(id)){
             return Message.TRANSACTION_NOT_FOUND;
@@ -51,17 +52,17 @@ public class TransactionService {
         
         Transaction transaction = transactionDAO.getTransactionByID(id);
         
-        if(isNullOrEmptyString(userID)){
-            userID = transaction.getUserID();
-        }
-        
-        if(isNullOrEmptyString(sticker)){
-            sticker = transaction.getTicker();
-        }
-        
-        if(isNullOrEmptyString(type)){
-            type = transaction.getType();
-        }
+//        if(isNullOrEmptyString(userID)){
+//            userID = transaction.getUserID();
+//        }
+//        
+//        if(isNullOrEmptyString(ticker)){
+//            ticker = transaction.getTicker();
+//        }
+//        
+//        if(isNullOrEmptyString(type)){
+//            type = transaction.getType();
+//        }
         
         if(quantity <= 0){
             return Message.QUANTITY_CAN_NOT_BE_NEGATIVE;
@@ -75,7 +76,9 @@ public class TransactionService {
             status = transaction.getStatus();
         }
         
-        if(!transactionDAO.updateTransaction(id,userID, sticker, type, quantity, price, status)){
+        if(!transactionDAO.updateTransaction(id,
+                //userID, ticker, type, 
+                quantity, price, status)){
             return Message.UPDATE_TRANSACTION_FAILED;
         }
         

@@ -28,26 +28,28 @@
                 <input type="text" id="userID" name="userID" value="${transaction.userID}" class="form-control" readonly />
 
                 <label for="ticker">Ticker</label>
-                <input type="text" id="ticker" name="ticker" value="${transaction.ticker}" class="form-control" required />
+                <input type="text" id="ticker" name="ticker" value="${transaction.ticker}" class="form-control" readonly />
 
                 <label for="type">Type</label>
-                <c:choose>
-                    <c:when test="${requestScope.can == true}">
-                        <select name="type" id="type" class="form-select">
-                            <option value="${transaction.type}" selected>${transaction.type}</option>
-                            <c:if test="${transaction.type.equalsIgnoreCase('buy')}">
-                                <option>sell</option>
-                            </c:if>
-                            <c:if test="${transaction.type.equalsIgnoreCase('sell')}">
-                                <option>buy</option>
-                            </c:if>
-                        </select>
-                    </c:when>
-                    <c:otherwise>
-                        <input class="readonly-input" type="text" name="type" value="${transaction.type}" readonly>
-                    </c:otherwise>
-                </c:choose>
+                <input type="text" id="type" name="type" value="${transaction.type}" class="form-control" readonly>
+                <!-- 
+                    <c:choose>
+                        <c:when test="${requestScope.can == true}">
+                            <select name="type" id="type" class="form-select">
+                                <option value="${transaction.type}" selected>${transaction.type}</option>
+                                <c:if test="${transaction.type.equalsIgnoreCase('buy')}">
+                                    <option>sell</option>
+                                </c:if>
+                                <c:if test="${transaction.type.equalsIgnoreCase('sell')}">
+                                    <option>buy</option>
+                                </c:if>
+                            </select>
+                        </c:when>
+                        <c:otherwise>
 
+                        </c:otherwise>
+                    </c:choose>
+                -->
                 <label for="quantity">Quantity</label>
                 <input type="number" id="quantity" name="quantity" value="${transaction.quantity}" class="form-control" required />
 
@@ -59,11 +61,11 @@
                     <c:when test="${requestScope.can == true}">
                         <select name="status" id="status" class="form-select">
                             <option value="${transaction.status}" selected>${transaction.status}</option>
-                            <c:if test="${transaction.status.equalsIgnoreCase('execute')}">
-                                <option>pending</option>
+                            <c:if test="${transaction.status.equalsIgnoreCase('executed')}">
+                                <option value="pending">pending</option>
                             </c:if>
                             <c:if test="${transaction.status.equalsIgnoreCase('pending')}">
-                                <option>execute</option>
+                                <option value="executed">executed</option>
                             </c:if>
                         </select>
                     </c:when>

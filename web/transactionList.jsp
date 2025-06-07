@@ -7,6 +7,11 @@
         <title>Transaction List Page</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
+        <style>
+            input, select {
+                margin-bottom: 0px;
+            }
+        </style>
     </head>
 
     <body>
@@ -22,7 +27,7 @@
             </div>
 
             <form action="${pageContext.request.contextPath}/main/transaction" method="GET" class="mb-3">
-                <button type="submit" name="action" value="create" class="btn btn-success">Create User</button>
+                <button type="submit" name="action" value="create" class="btn btn-success">Create Transaction</button>
             </form>
 
             <!-- Search form -->

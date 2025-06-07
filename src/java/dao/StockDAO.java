@@ -47,8 +47,7 @@ public class StockDAO {
 
     public int delete(String ticker) throws SQLException {
         try ( Connection conn = DBContext.getConnection();  PreparedStatement stm = conn.prepareStatement(DELETE_STOCK)) {
-            stm.setString(1, "%" + ticker + "%");
-            System.out.println(stm.toString());
+            stm.setString(1, ticker + "%");
             return stm.executeUpdate();
         }
     }

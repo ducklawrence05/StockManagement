@@ -30,38 +30,44 @@
             </form>
 
             <form action="${pageContext.request.contextPath}/main/alert" method="GET" class="row g-2 mb-4">
-                <div class="col-md-4">
-                    <label for="action">Search By</label>
-                    <select id="action" name="action" class="form-select" onchange="updateSelectOptions()">
-                        <option value="getAlertsByDirection">Direction</option>
-                        <option value="getAlertsByStatus">Status</option>
-                        <option value="getAlertsByTicker">Ticker</option>
-                    </select>
-                </div>
+                <div class="row g-2 align-items-center">
+                    <div class="col-md-4">
+                        <label for="action">Search By</label>
+                        <select id="action" name="action" class="form-select" onchange="updateSelectOptions()">
+                            <option value="getAlertsByDirection">Direction</option>
+                            <option value="getAlertsByStatus">Status</option>
+                            <option value="getAlertsByTicker">Ticker</option>
+                        </select>
+                    </div>
 
-                <div class="col-md-4" id="directionSelect">
-                    <label for="directionValue">Direction</label>
-                    <select id="directionValue" name="keySearch" class="form-select" disabled>
-                        <option value="Increase">Increase</option>
-                        <option value="Decrease">Decrease</option>
-                    </select>
-                </div>
+                    <div class="col-md-4" id="directionSelect">
+                        <label for="directionValue">Direction</label>
+                        <select id="directionValue" name="keySearch" class="form-select" disabled>
+                            <option value="Increase">Increase</option>
+                            <option value="Decrease">Decrease</option>
+                        </select>
+                    </div>
 
-                <div class="col-md-4" id="statusSelect">
-                    <label for="statusValue">Status</label>
-                    <select id="statusValue" name="keySearch" class="form-select" disabled>
-                        <option value="Active">Active</option>
-                        <option value="Inactive">Inactive</option>
-                    </select>
-                </div>
+                    <div class="col-md-4" id="statusSelect">
+                        <label for="statusValue">Status</label>
+                        <select id="statusValue" name="keySearch" class="form-select" disabled>
+                            <option value="Active">Active</option>
+                            <option value="Inactive">Inactive</option>
+                        </select>
+                    </div>
 
-                <div class="col-md-4" id="tickerInput">
-                    <label for="tickerValue">Ticker</label>
-                    <input type="text" id="tickerValue" name="keySearch" placeholder="Ex: VNM" class="form-control" disabled />
-                </div>
+                    <div class="col-md-4" id="tickerInput">
+                        <label for="tickerValue">Ticker</label>
+                        <input type="text" id="tickerValue" name="keySearch" placeholder="Ex: VNM" class="form-control" disabled />
+                    </div>
 
-                <div class="col-md-4">
-                    <button type="submit" class="btn btn-primary w-100">Search</button>
+                    <div class="col-md-4">
+                        <button 
+                            type="submit" 
+                            style="margin-top:1%"
+                            class="btn btn-primary w-100"
+                        >Search</button>
+                    </div>
                 </div>
             </form>
 
@@ -71,7 +77,7 @@
             <c:if test="${!empty requestScope.ERRMSG}">
                 <div class="alert alert-danger">${requestScope.ERRMSG}</div>
             </c:if>
-                
+
             <c:if test="${!empty alerts}">
                 <table class="table table-bordered table-hover">
                     <thead class="table-light">
@@ -122,8 +128,8 @@
                 </c:when>
             </c:choose>
         </div>
-                
-        
+
+
 
         <script>
             function updateSelectOptions() {

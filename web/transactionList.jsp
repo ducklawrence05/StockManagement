@@ -33,29 +33,29 @@
             <!-- Search form -->
             <form action="${pageContext.request.contextPath}/main/transaction" method="GET" class="mb-3">
                 <div class="row g-2 align-items-center">
-                    <div class="col-auto">
+                    <div class="col-md-4">
                         <select id="search" name="action" class="form-select">
                             <option value="getTransactionByTicker">Search by ticker</option>
                             <option value="getTransactionByType">Search by type</option>
                             <option value="getTransactionByStatus">Search by status</option>
                         </select>
                     </div>
-                    <div class="col-auto">
+                    <div class="col-md-4">
                         <input type="text" id="keySearch" name="keySearch" class="form-control" placeholder="Search..." />
                     </div>
-                    <div class="col-auto" id="type-options" style="display:none;">
+                    <div class="col-md-4" id="type-options" style="display:none;">
                         <select id="typeSearch" class="form-select">
                             <option value="buy">buy</option>
                             <option value="sell">sell</option>
                         </select>
                     </div>
-                    <div class="col-auto" id="status-options" style="display:none;">
+                    <div class="col-md-4" id="status-options" style="display:none;">
                         <select id="statusSearch" class="form-select">
                             <option value="executed">Executed</option>
                             <option value="pending">Pending</option>
                         </select>
                     </div>
-                    <div class="col-auto">
+                    <div class="col-md-4">
                         <button type="submit" class="btn btn-success">Search</button>
                     </div>
                 </div>

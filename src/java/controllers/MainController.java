@@ -40,16 +40,15 @@ public class MainController extends HttpServlet {
             if (parts.length >= 4) {
                 String controller = parts[3]; // controller
                 String action = parts.length >= 5 ? parts[4] : ""; // action
-                
                 // in case url is /main/controller?action=
-                if (action.isEmpty() && controller.contains("?action=")) {
-                    parts = controller.split("\\?action=");
-                    controller = parts[0]; // "controller"
-                    if (parts.length > 1) {
-                        action = parts[1]; // "action"
-                    }
-                }
-
+//                if (action.isEmpty() && controller.contains("?action=")) {
+//                    parts = controller.split("\\?action=");
+//                    controller = parts[0]; // "controller"
+//                    if (parts.length > 1) {
+//                        action = parts[1]; // "action"
+//                    }
+//                }
+                    
                 if (!controller.equals(AUTH) && !action.equals("login")) {
                     if (!AuthUtils.checkAuthentication(request, response)) return;
                 }

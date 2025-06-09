@@ -14,9 +14,9 @@
             <h4>Welcome <c:out value="${sessionScope.currentUser.fullName}" /></h4>
 
             <div class="d-grid gap-2 col-6 mx-auto mt-4 mb-3">
-                <a href="${pageContext.request.contextPath}/stock" class="btn btn-secondary">Stock List</a>
-                <a href="${pageContext.request.contextPath}/alert" class="btn btn-warning">Alert List</a>
-                <a href="${pageContext.request.contextPath}/transaction" class="btn btn-success">Transaction List</a>
+                <a href="${pageContext.request.contextPath}/main/stock" class="btn btn-secondary">Stock List</a>
+                <a href="${pageContext.request.contextPath}/main/alert" class="btn btn-warning">Alert List</a>
+                <a href="${pageContext.request.contextPath}/main/transaction" class="btn btn-success">Transaction List</a>
             </div>
             
             <form

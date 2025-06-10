@@ -1,0 +1,12 @@
+tìm cái nào có chữ news thì chỉnh hết
+dùng ctrl + F gõ news, netbean sẽ bôi đen cho dễ tìm
+
+sql -> dao -> service -> entity controller -> MAIN controller (quan trọng)
+
+File jsp cần chỉnh:
+
+thêm a tới controller mới tạo admin và cả welcome
+
+...list.jsp
+create....jsp
+update....jsp

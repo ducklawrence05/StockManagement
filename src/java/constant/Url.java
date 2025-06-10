@@ -14,6 +14,11 @@ public class Url {
     public static final String WELCOME_PAGE = "/welcome.jsp";
     public static final String ADMIN_PAGE = "/admin.jsp";
     
+    // Sample
+    public static final String NEWS_LIST_PAGE = "/newsList.jsp";
+    public static final String CREATE_NEWS_PAGE = "/createNews.jsp";
+    public static final String UPDATE_NEWS_PAGE = "/updateNews.jsp";
+    
     // User
     public static final String USER_LIST_PAGE = "/userList.jsp";
     public static final String CREATE_USER_PAGE = "/createUser.jsp";
@@ -40,4 +45,5 @@ public class Url {
     public static final String STOCK_CONTROLLER = "/stock";
     public static final String TRANSACTION_CONTROLLER = "/transaction";
     public static final String ALERT_CONTROLLER = "/alert";
+    public static final String NEWS_CONTROLLER = "/news";
 }

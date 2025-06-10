@@ -30,7 +30,6 @@ public class UserController extends HttpServlet {
     private UserService userService = new UserService();
 
     private final String CREATE = "create";
-    private final String GET_USER_BY_ID = "getUserByID";
     private final String GET_ALL_USERS = "getAllUsers";
     private final String GET_USERS_BY_ID = "getUsersByID";
     private final String GET_USERS_BY_NAME = "getUsersByName";
@@ -57,10 +56,6 @@ public class UserController extends HttpServlet {
                 break;
             }
             case UPDATE: {
-                url = Url.UPDATE_USER_PAGE;
-                break;
-            }
-            case GET_USER_BY_ID: {
                 users = new ArrayList<>();
                 users.add(getUserByID(request, response));
                 url = Url.UPDATE_USER_PAGE;
@@ -80,7 +75,7 @@ public class UserController extends HttpServlet {
             }
         }
 
-        if (action.equals(GET_USER_BY_ID)) {
+        if (action.equals(UPDATE)) {
             request.setAttribute("user", users.get(0));
         } else {
             request.setAttribute("users", users);

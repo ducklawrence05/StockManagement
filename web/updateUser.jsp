@@ -21,7 +21,7 @@
             <hr />
 
             <form id="updateForm" action="${pageContext.request.contextPath}/main/user/update" method="POST">
-                <input type="hidden" name="userID" value="${user.userID}" />
+                <input type="hidden" name="userID" value="${user.userID}"/>
 
                 <label for="fullName">Full name</label>
                 <input type="text" id="fullName" name="fullName" value="${user.fullName}" required class="form-control" />

@@ -17,6 +17,7 @@
                 <a href="${pageContext.request.contextPath}/main/stock" class="btn btn-secondary">Stock List</a>
                 <a href="${pageContext.request.contextPath}/main/alert" class="btn btn-warning">Alert List</a>
                 <a href="${pageContext.request.contextPath}/main/transaction" class="btn btn-success">Transaction List</a>
+                <a href="${pageContext.request.contextPath}/main/news" class="btn btn-success">News List</a>
             </div>
             
             <form

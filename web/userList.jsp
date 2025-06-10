@@ -43,7 +43,10 @@
                     <button type="submit" class="btn btn-primary w-100">Search</button>
                 </div>
             </form>
-
+            <c:if test="${!empty requestScope.MSG}">
+                <div class="alert alert-success">${requestScope.MSG}</div>
+            </c:if>
+                
             <c:if test="${empty users}">
                 <div class="alert alert-warning">No matching users found!</div>
             </c:if>

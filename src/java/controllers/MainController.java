@@ -29,6 +29,8 @@ public class MainController extends HttpServlet {
     private final String STOCK = "stock";
     private final String TRANSACTION = "transaction";
     private final String ALERT = "alert";
+    // thêm url của controller rồi thêm case dưới switch case
+    private final String NEWS = "news";
     
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
@@ -72,6 +74,10 @@ public class MainController extends HttpServlet {
                     }
                     case ALERT:{
                         url = Url.ALERT_CONTROLLER;
+                        break;
+                    }
+                    case NEWS:{
+                        url = Url.NEWS_CONTROLLER;
                         break;
                     }
                     default: {

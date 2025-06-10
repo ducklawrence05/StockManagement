@@ -24,7 +24,7 @@ public class StockDAO {
     public boolean isTickerExist(String ticker) throws SQLException {
         try (Connection conn = DBContext.getConnection();
              PreparedStatement stm = conn.prepareStatement(GET_STOCK_BY_TICKER)) {
-            stm.setString(1, ticker);
+            stm.setString(1, "%" + ticker + "%");
             return stm.executeQuery().next();
         }
     }
